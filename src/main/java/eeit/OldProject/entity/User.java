@@ -17,30 +17,43 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UserId")
     private Long userId;
 
+    @Column(name = "UserAccount")
     private String userAccount;
 
+    @Column(name = "UserPassword")
     private String userPassword;
 
+    @Column(name = "UserName")
     private String userName;
 
+    @Column(name = "EmailAddress")
     private String emailAddress;
 
+    @Column(name = "PhoneNumber")
     private String phoneNumber;
 
+    @Column(name = "Address")
     private String address;
 
+    @Column(name = "AccountRank")
     private String accountRank;
 
+    @Column(name = "Category")
     private String category;
 
+    @Column(name = "CreatedAt")
     private LocalDateTime createdAt;
 
+    @Column(name = "SocialPlatformId")
     private String socialPlatformId;
 
+    @Column(name = "ProfileId")
     private String profileId;
 
+    @Column(name = "ProfilePicture")
     private String profilePicture;
 
     @Column(length = 1000)
