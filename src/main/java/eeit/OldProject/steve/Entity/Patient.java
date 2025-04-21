@@ -17,7 +17,7 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PatientId")
-    private Integer patientId;
+    private Long patientId;
 
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)
