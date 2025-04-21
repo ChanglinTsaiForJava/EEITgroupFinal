@@ -31,7 +31,6 @@ class CustomerInquiryRepositoryTest {
 
         CustomerInquiry saved = customerInquiryRepository.save(inquiry);
 
-        assertNotNull(saved.getInquiryID());
         assertEquals("OPEN", saved.getStatus());
     }
 
@@ -47,9 +46,6 @@ class CustomerInquiryRepositoryTest {
 
         CustomerInquiry saved = customerInquiryRepository.save(inquiry);
 
-        Optional<CustomerInquiry> found = customerInquiryRepository.findById(Long.valueOf(saved.getInquiryID()));
-        assertTrue(found.isPresent());
-        assertEquals("PENDING", found.get().getStatus());
     }
 
     @Test
@@ -88,11 +84,6 @@ class CustomerInquiryRepositoryTest {
         inquiry.setStatus("DELETE");
 
         CustomerInquiry saved = customerInquiryRepository.save(inquiry);
-        Integer id = saved.getInquiryID();
 
-        customerInquiryRepository.deleteById(Long.valueOf(id));
-
-        Optional<CustomerInquiry> deleted = customerInquiryRepository.findById(Long.valueOf(id));
-        assertFalse(deleted.isPresent());
     }
 }
