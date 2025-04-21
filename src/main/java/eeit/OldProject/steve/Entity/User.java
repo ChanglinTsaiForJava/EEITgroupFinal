@@ -56,10 +56,12 @@ public class User {
     @Column(name = "ProfilePicture")
     private String profilePicture;
 
-    @Column(length = 1000)
+    @Column(length = 1000, name = "Bio")
+
     private String bio;
 
-    @Column(length = 1000)
+    @Column(length = 1000, name = "Intro")
+
     private String intro;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
