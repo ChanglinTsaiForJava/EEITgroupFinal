@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "favorite_employee")
-public class favorite_employee {
+@Table(name = "favorite_product")
+public class Favorite_product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "FavCaregiverId")
-    private Long favCaregiverId;
+    @Column(name = "FavProductId")
+    private Long favProductId;
 
     @Column(name = "ArchivedDate")
     private LocalDateTime archivedDate;
@@ -25,6 +25,6 @@ public class favorite_employee {
     @Column(name = "UserId")
     private Long userId;
 
-    @Column(name = "CaregiverId")
-    private Long caregiverId;
+    @Column(name = "ProductId")
+    private Long productId;
 }

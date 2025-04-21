@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "favorite_course")
-public class favorite_course {
+public class Favorite_course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FavCourseId")
