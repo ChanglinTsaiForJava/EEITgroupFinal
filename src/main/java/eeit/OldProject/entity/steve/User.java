@@ -1,4 +1,4 @@
-package eeit.OldProject.entity;
+package eeit.OldProject.entity.steve;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
