@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import eeit.OldProject.daniel.entity.Post;
 import eeit.OldProject.daniel.repository.PostRepository;
@@ -20,6 +21,7 @@ class PostServiceTest {
     private PostRepository postRepo;
 
     @Test
+    @Transactional
     void testSaveAndFindAll() {
         // 清除資料
 //        postRepo.deleteAll();
