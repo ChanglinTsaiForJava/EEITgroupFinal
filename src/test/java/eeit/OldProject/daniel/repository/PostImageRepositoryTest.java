@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eeit.OldProject.daniel.entity.Post;
 import eeit.OldProject.daniel.entity.PostImage;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @SpringBootTest
 class PostImageRepositoryTest {

@@ -1,7 +1,5 @@
 package eeit.OldProject.daniel.entity;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -11,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,25 +21,29 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"post"})
+@ToString(exclude = {"savedPost","savedCollection"})
 @Entity
-@Table(name = "post_image", schema = "final")
-public class PostImage {
+@Table(name = "saved_post_collector", schema = "final")
+public class SavedPostCollector {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ImageId")
-    private Long imageId;
+    @Column(name = "SavedPostCollectorId")
+    private Long savedPostCollectorId;
 
-    @Lob
-    @Column(name = "ImageData", columnDefinition = "LONGBLOB")
-    private byte[] imageData;
+    @Column(name = "SavedPostId")
+    private Long savedPostId;
 
-    @Column(name = "UploadedAt")
-    private LocalDateTime uploadedAt;
+    @Column(name = "SavedCollectionId")
+    private Long savedCollectionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId")
-//    @JsonIgnoreProperties("images")
-    private Post post;
+    @JoinColumn(name = "SavedPostId", insertable = false, updatable = false)
+    @JsonIgnoreProperties("collectors")
+    private SavedPost savedPost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SavedCollectionId", insertable = false, updatable = false)
+    @JsonIgnoreProperties("savedPosts")
+    private SavedCollection savedCollection;
 }

@@ -22,7 +22,7 @@ class PostServiceTest {
     @Test
     void testSaveAndFindAll() {
         // 清除資料
-        postRepo.deleteAll();
+//        postRepo.deleteAll();
 
         // 建立資料
         Post post = new Post();

@@ -1,7 +1,5 @@
 package eeit.OldProject.daniel.entity;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -11,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,25 +21,29 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"post"})
+@ToString(exclude = {"postCategory","post"})
 @Entity
-@Table(name = "post_image", schema = "final")
-public class PostImage {
+@Table(name = "post_category_classifier", schema = "final")
+public class PostCategoryClassifier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ImageId")
-    private Long imageId;
+    @Column(name = "PostCategoryClassifierId")
+    private Long postCategoryClassifierId;
 
-    @Lob
-    @Column(name = "ImageData", columnDefinition = "LONGBLOB")
-    private byte[] imageData;
+    @Column(name = "PostCategoryId")
+    private Long postCategoryId;
 
-    @Column(name = "UploadedAt")
-    private LocalDateTime uploadedAt;
+    @Column(name = "PostId")
+    private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId")
-//    @JsonIgnoreProperties("images")
+    @JoinColumn(name = "PostCategoryId", insertable = false, updatable = false)
+    @JsonIgnoreProperties("classifiers")
+    private PostCategory postCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JsonIgnoreProperties("classifiers")
     private Post post;
 }

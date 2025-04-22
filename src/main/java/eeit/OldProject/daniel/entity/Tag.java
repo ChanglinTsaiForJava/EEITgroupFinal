@@ -1,18 +1,17 @@
 package eeit.OldProject.daniel.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,25 +23,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"post"})
+@ToString(exclude = {"postTags"})
 @Entity
-@Table(name = "post_image", schema = "final")
-public class PostImage {
+@Table(name = "tag", schema = "final")
+public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ImageId")
-    private Long imageId;
+    @Column(name = "TagId")
+    private Long tagId;
 
-    @Lob
-    @Column(name = "ImageData", columnDefinition = "LONGBLOB")
-    private byte[] imageData;
+    @Column(name = "TagName", length = 80)
+    private String tagName;
 
-    @Column(name = "UploadedAt")
-    private LocalDateTime uploadedAt;
+    @Column(name = "CreatedAt")
+    private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId")
-//    @JsonIgnoreProperties("images")
-    private Post post;
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("tag")
+    private List<PostTag> postTags;
 }

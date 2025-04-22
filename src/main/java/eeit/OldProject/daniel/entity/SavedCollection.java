@@ -14,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -28,50 +27,31 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"user","comment","reactions","reports"})
+@ToString(exclude = {"user","savedPosts"})
 @Entity
-@Table(name = "reply", schema = "final")
-public class Reply {
+@Table(name = "saved_collection", schema = "final")
+public class SavedCollection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ReplyId")
-    private Long replyId;
+    @Column(name = "SavedCollectionId")
+    private Long savedCollectionId;
 
-    @Lob
-    @Column(name = "Content", columnDefinition = "LONGTEXT")
-    private String content;
+    @Column(name = "CollectionName", length = 40)
+    private String collectionName;
 
     @Column(name = "CreatedAt")
     private LocalDateTime createdAt;
 
-    @Column(name = "ModifiedAt")
-    private LocalDateTime modifiedAt;
-
-    @Column(name = "Status")
-    private Byte status;
-
     @Column(name = "UserId")
     private Long userId;
 
-    @Column(name = "CommentId")
-    private Long commentId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserId", insertable = false, updatable = false)
-    @JsonIgnoreProperties("replies")
+    @JsonIgnoreProperties("collections")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CommentId", insertable = false, updatable = false)
-    @JsonIgnoreProperties("replies")
-    private Comment comment;
-
-    @OneToMany(mappedBy = "reply", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("reply")
-    private List<ReplyReaction> reactions;
-
-    @OneToMany(mappedBy = "reply", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("reply")
-    private List<ReplyReport> reports;
+    @OneToMany(mappedBy = "savedCollection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("savedCollection")
+    private List<SavedPostCollector> savedPosts;
 }

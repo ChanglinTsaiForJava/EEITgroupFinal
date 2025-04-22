@@ -11,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,25 +23,32 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"post"})
+@ToString(exclude = {"post","tag"})
 @Entity
-@Table(name = "post_image", schema = "final")
-public class PostImage {
+@Table(name = "post_tag", schema = "final")
+public class PostTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ImageId")
-    private Long imageId;
+    @Column(name = "PostTagId")
+    private Long postTagId;
 
-    @Lob
-    @Column(name = "ImageData", columnDefinition = "LONGBLOB")
-    private byte[] imageData;
+    @Column(name = "CreatedAt")
+    private LocalDateTime createdAt;
 
-    @Column(name = "UploadedAt")
-    private LocalDateTime uploadedAt;
+    @Column(name = "PostId")
+    private Long postId;
+
+    @Column(name = "TagId")
+    private Long tagId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId")
-//    @JsonIgnoreProperties("images")
+    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JsonIgnoreProperties("postTags")
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TagId", insertable = false, updatable = false)
+    @JsonIgnoreProperties("postTags")
+    private Tag tag;
 }

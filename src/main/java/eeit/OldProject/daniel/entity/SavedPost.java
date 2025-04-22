@@ -14,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -28,28 +27,18 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"user","post","reactions","reports","replies"})
+@ToString(exclude = {"user","post","collectors"})
 @Entity
-@Table(name = "comment", schema = "final")
-public class Comment {
+@Table(name = "saved_post", schema = "final")
+public class SavedPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CommentId")
-    private Long commentId;
-
-    @Lob
-    @Column(name = "Content", columnDefinition = "LONGTEXT")
-    private String content;
+    @Column(name = "SavedPostId")
+    private Long savedPostId;
 
     @Column(name = "CreatedAt")
     private LocalDateTime createdAt;
-
-    @Column(name = "ModifiedAt")
-    private LocalDateTime modifiedAt;
-
-    @Column(name = "Status")
-    private Byte status;
 
     @Column(name = "UserId")
     private Long userId;
@@ -59,23 +48,15 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserId", insertable = false, updatable = false)
-    @JsonIgnoreProperties("comments")
+    @JsonIgnoreProperties("savedPosts")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PostId", insertable = false, updatable = false)
-    @JsonIgnoreProperties("comments")
+    @JsonIgnoreProperties("savedPosts")
     private Post post;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("comment")
-    private List<CommentReaction> reactions;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("comment")
-    private List<CommentReport> reports;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("comment")
-    private List<Reply> replies;
+    @OneToMany(mappedBy = "savedPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("savedPost")
+    private List<SavedPostCollector> collectors;
 }
