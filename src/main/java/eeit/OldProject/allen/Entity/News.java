@@ -1,11 +1,9 @@
 package eeit.OldProject.allen.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @NoArgsConstructor
@@ -25,14 +23,15 @@ public class News {
     @Column(name = "Thumbnail", length = 255)
     private String thumbnail;
 
-    @ManyToOne
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryId", nullable = false)
     private NewsCategory category;
 
     @Column(name = "CreateBy", nullable = false, length = 100)
     private String createBy;
 
-    @Column(name = "CreateAt", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "CreateAt")
     private LocalDateTime createAt;
 
     @Column(name = "PublishAt")
@@ -44,13 +43,13 @@ public class News {
     @Column(name = "ModifyAt")
     private LocalDateTime modifyAt;
 
-    @Column(name = "Status", columnDefinition = "TINYINT(1) DEFAULT 0")
+    @Column(name = "Status")
     private Integer status;
 
     @Column(name = "Content", columnDefinition = "LONGTEXT")
     private String content;
 
-    @Column(name = "ViewCount", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "ViewCount")
     private Integer viewCount;
 
     @Column(name = "Tags", length = 255)

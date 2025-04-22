@@ -1,9 +1,8 @@
 package eeit.OldProject.allen.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +18,7 @@ public class Announcement {
     @Column(name = "AnnouncementID")
     private Integer announcementId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID", nullable = false)
     private AnnouncementCategory category;
 
@@ -32,7 +31,8 @@ public class Announcement {
     @Column(name = "CreateBy", nullable = false, length = 100)
     private String createBy;
 
-    @Column(name = "CreateAt", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    @Column(name = "CreateAt", updatable = false)
     private LocalDateTime createAt;
 
     @Column(name = "PublishAt")
@@ -44,12 +44,12 @@ public class Announcement {
     @Column(name = "ModifyAt")
     private LocalDateTime modifyAt;
 
-    @Column(name = "Status", columnDefinition = "TINYINT(1) DEFAULT 0")
+    @Column(name = "Status")
     private Integer status;
 
-    @Column(name = "ViewCount", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "ViewCount")
     private Integer viewCount;
 
-    @Column(name = "PinTop", columnDefinition = "TINYINT(1) DEFAULT 0")
+    @Column(name = "PinTop")
     private Integer pinTop;
 }
