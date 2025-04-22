@@ -1,20 +1,26 @@
-package eeit.OldProject.entity;
+package eeit.OldProject.steve.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "patient")
 public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PatientID")
+    @Column(name = "PatientId")
     private Integer patientId;
 
     @ManyToOne
-    @JoinColumn(name = "UserID", nullable = false)
+    @JoinColumn(name = "UserId", nullable = false)
     private User user;
 
     @Column(name = "Birthday")

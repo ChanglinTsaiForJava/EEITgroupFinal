@@ -1,8 +1,8 @@
-package eeit.OldProject.controller;
+package eeit.OldProject.steve.Controller;
 
 
-import eeit.OldProject.Repository.UserRepository;
-import eeit.OldProject.entity.User;
+import eeit.OldProject.steve.Repository.UserRepository;
+import eeit.OldProject.steve.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
