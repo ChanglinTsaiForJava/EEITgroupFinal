@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eeit.OldProject.daniel.entity.Post;
 import eeit.OldProject.daniel.entity.PostImage;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 @SpringBootTest
 class PostImageRepositoryTest {
@@ -46,7 +44,8 @@ class PostImageRepositoryTest {
 		img.setImageData(data);
 		img.setUploadedAt(LocalDateTime.now());
 		img.setPost(saved);
-		imageRepo.save(img);
+		PostImage savedImage = imageRepo.save(img);
+		System.out.println("savedImage="+savedImage);
 
 		// 驗證
 		List<PostImage> list = imageRepo.findByPostPostId(saved.getPostId());

@@ -43,6 +43,6 @@ public class PostImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PostId")
-//    @JsonIgnoreProperties("images")
+    @JsonIgnoreProperties("images")
     private Post post;
 }

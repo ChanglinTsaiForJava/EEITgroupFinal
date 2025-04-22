@@ -73,6 +73,6 @@ public class Post {
     private List<Comment> comments;
     
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonIgnoreProperties("post")
+    @JsonIgnoreProperties("post")
     private List<PostImage> images;
 }
