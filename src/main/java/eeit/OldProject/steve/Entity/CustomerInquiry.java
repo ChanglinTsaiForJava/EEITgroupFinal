@@ -17,13 +17,13 @@ public class CustomerInquiry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "InquiryId")
-    private Integer inquiryId;
+    private Long inquiryId;
 
     @Column(name = "UserId")
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "Caregiver")
-    private Integer caregiver;
+    private Long caregiverId;
 
     @Column(name = "Email")
     private String email;

@@ -1,5 +1,6 @@
 package eeit.OldProject.steve.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,10 +18,14 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PatientId")
-    private Integer patientId;
+    private Long patientId;
+
+    @Column(name = "Name")
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)
+    @JsonIgnore
     private User user;
 
     @Column(name = "Birthday")
