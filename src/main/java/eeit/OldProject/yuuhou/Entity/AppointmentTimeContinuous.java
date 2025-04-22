@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CaregiversAppointment {
+public class AppointmentTimeContinuous {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
