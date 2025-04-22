@@ -6,6 +6,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
 
 @RestController
 @RequestMapping("/user")
@@ -23,12 +27,30 @@ public class UserController {
             return ResponseEntity.status(401).body("尚未登入");
         }
 
-        // 更新使用者資料
+        // 更新使用者資料，包含 ProfilePicture URL
         User user = userService.updateUser(userId, updatedUser);
         if (user == null) {
             return ResponseEntity.status(404).body("使用者不存在");
         }
 
         return ResponseEntity.ok("使用者資訊更新成功");
+    }
+
+    // 編輯使用者圖片 URL
+    @PutMapping("/edit-profile-picture")
+    public ResponseEntity<?> editProfilePicture(@RequestParam("profilePicture") MultipartFile profilePicture, HttpSession session) throws IOException {
+        // 從 session 取得已登入的 userId
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("尚未登入");
+        }
+
+        // 上傳圖片並取得 URL
+        String imageUrl = userService.uploadProfilePicture(userId, profilePicture);
+        if (imageUrl == null) {
+            return ResponseEntity.status(500).body("圖片上傳失敗");
+        }
+
+        return ResponseEntity.ok("使用者圖片更新成功，圖片 URL: " + imageUrl);
     }
 }
