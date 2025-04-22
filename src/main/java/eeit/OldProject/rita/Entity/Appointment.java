@@ -59,7 +59,7 @@ public class Appointment {
 }
 enum TimeType {
     continuous,
-    multi_period
+    multi
 }
 
 enum AppointmentStatus {
