@@ -1,7 +1,7 @@
 package eeit.OldProject.steve.Controller;
 
-import eeit.OldProject.steve.Entity.EmployeeRating;
-import eeit.OldProject.steve.Service.EmployeeRatingService;
+import eeit.OldProject.steve.Entity.ProductRating;
+import eeit.OldProject.steve.Service.ProductRatingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,29 +11,29 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/employee-rating")
-public class EmployeeRatingController {
+@RequestMapping("/product-rating")
+public class ProductRatingController {
 
     @Autowired
-    private EmployeeRatingService employeeRatingService;
+    private ProductRatingService productRatingService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addRating(@RequestBody EmployeeRating rating, HttpSession session) {
+    public ResponseEntity<?> addRating(@RequestBody ProductRating rating, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
 
-        employeeRatingService.addRating(rating, userId);
-        return ResponseEntity.ok("照護員評價新增成功");
+        productRatingService.addRating(rating, userId);
+        return ResponseEntity.ok("產品評價新增成功");
     }
 
     @GetMapping("/all")
-    public List<EmployeeRating> getAllRatings() {
-        return employeeRatingService.getAllRatings();
+    public List<ProductRating> getAllRatings() {
+        return productRatingService.getAllRatings();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getRatingById(@PathVariable Long id) {
-        Optional<EmployeeRating> rating = employeeRatingService.getRatingById(id);
+        Optional<ProductRating> rating = productRatingService.getRatingById(id);
 
         if (rating.isPresent()) {
             return ResponseEntity.ok(rating.get());
@@ -42,26 +42,25 @@ public class EmployeeRatingController {
         }
     }
 
-
-    @GetMapping("/by-caregiver/{caregiverId}")
-    public List<EmployeeRating> getRatingsByCaregiverId(@PathVariable Long caregiverId) {
-        return employeeRatingService.getRatingsByCaregiverId(caregiverId);
+    @GetMapping("/by-product/{productId}")
+    public List<ProductRating> getRatingsByProductId(@PathVariable Long productId) {
+        return productRatingService.getRatingsByProductId(productId);
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<?> editRating(@PathVariable Long id, @RequestBody EmployeeRating updated, HttpSession session) {
+    public ResponseEntity<?> editRating(@PathVariable Long id, @RequestBody ProductRating updated, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
 
-        Optional<EmployeeRating> existingOpt = employeeRatingService.getRatingById(id);
+        Optional<ProductRating> existingOpt = productRatingService.getRatingById(id);
         if (existingOpt.isEmpty()) return ResponseEntity.status(404).body("找不到評價");
 
-        EmployeeRating existing = existingOpt.get();
+        ProductRating existing = existingOpt.get();
         if (!existing.getUserId().equals(userId)) {
             return ResponseEntity.status(403).body("無權限修改此評價");
         }
 
-        employeeRatingService.updateRating(existing, updated);
+        productRatingService.updateRating(existing, updated);
         return ResponseEntity.ok("評價更新成功");
     }
 
@@ -70,15 +69,15 @@ public class EmployeeRatingController {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
 
-        Optional<EmployeeRating> existingOpt = employeeRatingService.getRatingById(id);
+        Optional<ProductRating> existingOpt = productRatingService.getRatingById(id);
         if (existingOpt.isEmpty()) return ResponseEntity.status(404).body("找不到評價");
 
-        EmployeeRating existing = existingOpt.get();
+        ProductRating existing = existingOpt.get();
         if (!existing.getUserId().equals(userId)) {
             return ResponseEntity.status(403).body("無權限刪除此評價");
         }
 
-        employeeRatingService.deleteRating(existing);
+        productRatingService.deleteRating(existing);
         return ResponseEntity.ok("評價已刪除");
     }
 }
