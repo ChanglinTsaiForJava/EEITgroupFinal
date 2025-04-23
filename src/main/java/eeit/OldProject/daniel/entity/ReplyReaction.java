@@ -43,19 +43,13 @@ public class ReplyReaction {
     @Column(name = "ModifiedAt")
     private LocalDateTime modifiedAt;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "ReplyId")
-    private Long replyId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
-    @JsonIgnoreProperties("reactions")
+    @JoinColumn(name = "UserId")
+    @JsonIgnoreProperties("replyReactions")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ReplyId", insertable = false, updatable = false)
+    @JoinColumn(name = "ReplyId")
     @JsonIgnoreProperties("reactions")
     private Reply reply;
 }

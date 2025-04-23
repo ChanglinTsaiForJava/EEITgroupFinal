@@ -39,3 +39,4 @@ public class PostTopic {
     @JsonIgnoreProperties("postTopic")
     private List<PostTopicClassifier> classifiers;
 }
+

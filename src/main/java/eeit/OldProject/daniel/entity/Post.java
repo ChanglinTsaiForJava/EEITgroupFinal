@@ -31,7 +31,7 @@ import lombok.ToString;
 @ToString(exclude = {"user","comments"})
 @Entity
 @Table(name = "post", schema = "final")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Post {
 
     @Id

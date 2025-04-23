@@ -51,19 +51,13 @@ public class Reply {
     @Column(name = "Status")
     private Byte status;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "CommentId")
-    private Long commentId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
+    @JoinColumn(name = "UserId")
     @JsonIgnoreProperties("replies")
     private User user;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CommentId", insertable = false, updatable = false)
+    @JoinColumn(name = "CommentId")
     @JsonIgnoreProperties("replies")
     private Comment comment;
 
@@ -75,3 +69,4 @@ public class Reply {
     @JsonIgnoreProperties("reply")
     private List<ReplyReport> reports;
 }
+

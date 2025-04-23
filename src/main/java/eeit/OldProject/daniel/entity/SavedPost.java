@@ -40,19 +40,13 @@ public class SavedPost {
     @Column(name = "CreatedAt")
     private LocalDateTime createdAt;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "PostId")
-    private Long postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
+    @JoinColumn(name = "UserId")
     @JsonIgnoreProperties("savedPosts")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostId")
     @JsonIgnoreProperties("savedPosts")
     private Post post;
 

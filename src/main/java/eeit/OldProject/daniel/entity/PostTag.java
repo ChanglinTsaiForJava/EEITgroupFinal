@@ -36,19 +36,13 @@ public class PostTag {
     @Column(name = "CreatedAt")
     private LocalDateTime createdAt;
 
-    @Column(name = "PostId")
-    private Long postId;
-
-    @Column(name = "TagId")
-    private Long tagId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostId")
     @JsonIgnoreProperties("postTags")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TagId", insertable = false, updatable = false)
+    @JoinColumn(name = "TagId")
     @JsonIgnoreProperties("postTags")
     private Tag tag;
 }

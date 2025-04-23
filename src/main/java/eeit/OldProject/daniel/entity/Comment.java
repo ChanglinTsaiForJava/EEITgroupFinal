@@ -51,19 +51,13 @@ public class Comment {
     @Column(name = "Status")
     private Byte status;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "PostId")
-    private Long postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
+    @JoinColumn(name = "UserId")
     @JsonIgnoreProperties("comments")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostId")
     @JsonIgnoreProperties("comments")
     private Post post;
 
@@ -79,3 +73,4 @@ public class Comment {
     @JsonIgnoreProperties("comment")
     private List<Reply> replies;
 }
+
