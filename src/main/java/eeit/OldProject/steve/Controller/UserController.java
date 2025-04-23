@@ -18,6 +18,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // 查詢當前使用者的所有資料
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserProfile(HttpSession session) {
+        // 從 session 取得已登入的 userId
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("尚未登入");
+        }
+
+        // 查詢使用者資料
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return ResponseEntity.status(404).body("使用者不存在");
+        }
+
+        return ResponseEntity.ok(user);
+    }
     // 編輯使用者資訊
     @PutMapping("/edit")
     public ResponseEntity<?> editUserInfo(@RequestBody User updatedUser, HttpSession session) {

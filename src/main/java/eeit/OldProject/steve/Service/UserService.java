@@ -12,6 +12,8 @@ public interface UserService {
     boolean updateProfilePicture(Long userId, String profilePictureUrl);
 
     String uploadProfilePicture(Long userId, MultipartFile profilePicture) throws IOException; // 添加 throws IOException
+
+    User getUserById(Long userId);
     // 其他需要的方法可以在這裡定義
 
 }

@@ -84,6 +84,12 @@ public class UserServiceImpl implements UserService {
 
         return imageUrl;
     }
+    // 查詢使用者資料
+    @Override
+    public User getUserById(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        return optionalUser.orElse(null);  // 若找不到使用者則返回 null
+    }
 
     // 更新使用者圖片 URL
     @Override
