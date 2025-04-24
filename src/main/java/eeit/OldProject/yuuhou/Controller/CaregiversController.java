@@ -26,8 +26,8 @@ public class CaregiversController {
     @Autowired
     private CaregiversService caregiversService;
 
-    
-    
+
+
     @GetMapping
     public List<CaregiversEntity> getAll() {
         return caregiversService.findAll();
