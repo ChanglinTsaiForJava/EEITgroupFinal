@@ -35,4 +35,8 @@ public class CourseRating {
 
     @Column(name = "CourseId")
     private Long courseId;
+
+    //pending discussion with Rita
+    @Column(name = "PaymentId")
+    private Long paymentId;
 }
