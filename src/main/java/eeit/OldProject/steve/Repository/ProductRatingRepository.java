@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductRatingRepository extends JpaRepository<ProductRating, Long> {
     List<ProductRating> findByProductId(Long productId);
+    boolean existsByPaymentId(Long paymentId);
 }

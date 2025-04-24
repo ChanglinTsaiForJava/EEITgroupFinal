@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface EmployeeRatingRepository extends JpaRepository<EmployeeRating, Long> {
     List<EmployeeRating> findByCaregiverId(Long caregiverId);
+    boolean existsByPaymentId(Long paymentId);
 }
 

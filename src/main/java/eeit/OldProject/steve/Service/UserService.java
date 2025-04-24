@@ -15,6 +15,7 @@ public interface UserService {
 
     User getUserById(Long userId);
     // 其他需要的方法可以在這裡定義
+    User createUser(User user);
 
 }
 

@@ -1,14 +1,19 @@
 package eeit.OldProject.steve.Controller;
 
 
-import eeit.OldProject.steve.Repository.UserRepository;
+import eeit.OldProject.steve.DTO.RegisterRequestDTO;
 import eeit.OldProject.steve.Entity.User;
+import eeit.OldProject.steve.Repository.UserRepository;
+import eeit.OldProject.steve.Service.UserService;
+import eeit.OldProject.steve.DTO.PendingUser;
+import eeit.OldProject.steve.DTO.VerificationStorage;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -16,29 +21,71 @@ import java.time.LocalDateTime;
 @RequestMapping("/user")
 public class RegisterController {
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User requestUser) {
+    @Autowired
+    private VerificationStorage verificationStorage;
 
-//        if (userRepository.existsByUserAccount(requestUser.getUserAccount())) {
-//            return ResponseEntity.badRequest().body("帳號已存在");
-//        }
+    @Autowired
+    private JavaMailSender mailSender;
 
-        // 建立一個新的 User，只填需要的欄位
-        System.out.println(requestUser.toString());
-        User newUser = new User();
-        newUser.setUserAccount(requestUser.getUserAccount());
-        newUser.setUserPassword(requestUser.getUserPassword());
-        newUser.setUserName(requestUser.getUserName());
-        newUser.setEmailAddress(requestUser.getEmailAddress());
-        newUser.setCreatedAt(LocalDateTime.now()); // 自動加上建立時間
-        System.out.println(requestUser.toString());
+    @PostMapping("/register/send")
+    public ResponseEntity<?> sendVerificationEmail(@RequestBody @Valid RegisterRequestDTO requestDTO) {
+        if (userRepository.existsByUserAccount(requestDTO.getUserAccount())) {
+            return ResponseEntity.badRequest().body("帳號已存在");
+        }
 
+        // 建立一個 User 實體（尚未存入 DB）
+        User user = new User();
+        user.setUserAccount(requestDTO.getUserAccount());
+        user.setUserPassword(requestDTO.getUserPassword());
+        user.setUserName(requestDTO.getUserName());
+        user.setEmailAddress(requestDTO.getEmailAddress());
+        user.setPhoneNumber(requestDTO.getPhoneNumber());
+        user.setAddress(requestDTO.getAddress());
 
-        return ResponseEntity.ok( userRepository.save(newUser));
+        String code = String.valueOf((int)(Math.random() * 900000) + 100000);
+        PendingUser pendingUser = new PendingUser(user, code, LocalDateTime.now().plusMinutes(15));
+        verificationStorage.save(user.getEmailAddress(), pendingUser);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmailAddress());
+        message.setSubject("註冊驗證碼");
+        message.setText("您的驗證碼是：" + code + "，請在 15 分鐘內完成註冊。");
+        mailSender.send(message);
+
+        return ResponseEntity.ok("驗證碼已寄出，請查收信箱");
+    }
+
+    @PostMapping("/register/verify")
+    public ResponseEntity<?> verifyCode(@RequestParam String email, @RequestParam String code) {
+        PendingUser pending = verificationStorage.get(email);
+        if (pending == null || pending.isExpired()) {
+            return ResponseEntity.badRequest().body("驗證碼已過期或無效");
+        }
+
+        if (!pending.getVerificationCode().equals(code)) {
+            return ResponseEntity.badRequest().body("驗證碼錯誤");
+        }
+
+        User newUser = pending.getUser();
+        newUser.setCreatedAt(LocalDateTime.now());
+        userService.createUser(newUser);
+        verificationStorage.remove(email);
+
+        return ResponseEntity.ok("註冊成功！");
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("資料格式錯誤");
+        return ResponseEntity.badRequest().body(errorMessage);
     }
 }
 

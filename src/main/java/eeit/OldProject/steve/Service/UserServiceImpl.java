@@ -103,4 +103,9 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
 }
