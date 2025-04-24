@@ -1,6 +1,6 @@
-package eeit.OldProject.Repository;
+package eeit.OldProject.steve.Repository;
 
-import eeit.OldProject.entity.User;
+import eeit.OldProject.steve.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

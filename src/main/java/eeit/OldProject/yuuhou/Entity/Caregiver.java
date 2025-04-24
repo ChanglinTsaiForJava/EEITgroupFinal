@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder // 👉 @Builder = 使用建構器模式建立物件
 @Entity // 👉 @Entity = 表示這是一個資料庫實體類別
 @Table(name = "caregivers") // 👉 指定對應資料表名稱
-public class CaregiversEntity {
+public class Caregiver {
 
     @Id // 👉 主鍵
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 👉 對應 AUTO_INCREMENT
@@ -69,7 +69,7 @@ public class CaregiversEntity {
     private String serviceArea;
 
     @Lob // 👉 @Lob 代表 large object（對應 TEXT 類型）
-    @Column(name="Description")
+    @Column(name="Description",columnDefinition = "TEXT")
     private String description;
 
     @Column(name="Reminder")

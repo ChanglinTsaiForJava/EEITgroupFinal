@@ -1,13 +1,16 @@
 package eeit.OldProject.yuuhou.Service;
 
 
+
+
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eeit.OldProject.yuuhou.Entity.CaregiversEntity;
+import eeit.OldProject.yuuhou.Entity.Caregiver;
 import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
 
 @Service
@@ -18,18 +21,18 @@ public class CaregiverServiceImpl implements CaregiversService {
 
     
     @Override
-    public List<CaregiversEntity> findAll() {
+    public List<Caregiver> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Optional<CaregiversEntity> findById(Long id) {
+    public Optional<Caregiver> findById(Long id) {
         return repository.findById(id);
     }
 
     @Override
-    public CaregiversEntity save(CaregiversEntity caregiversEntity) {
-        return repository.save(caregiversEntity);
+    public Caregiver save(Caregiver caregiver) {
+        return repository.save(caregiver);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class CaregiverServiceImpl implements CaregiversService {
     }
 
     @Override
-    public Optional<CaregiversEntity> findByEmail(String email) {
+    public Optional<Caregiver> findByEmail(String email) {
         return repository.findByEmail(email);
     }
 }

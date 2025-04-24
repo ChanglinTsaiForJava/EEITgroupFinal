@@ -1,20 +1,31 @@
-package eeit.OldProject.entity;
+package eeit.OldProject.steve.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "patient")
 public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PatientID")
-    private Integer patientId;
+    @Column(name = "PatientId")
+    private Long patientId;
+
+    @Column(name = "Name")
+    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "UserID", nullable = false)
+    @JoinColumn(name = "UserId", nullable = false)
+    @JsonIgnore
     private User user;
 
     @Column(name = "Birthday")

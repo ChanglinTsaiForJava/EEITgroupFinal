@@ -3,18 +3,19 @@ package eeit.OldProject.yuuhou.Service;
 import java.util.List;
 import java.util.Optional;
 
-import eeit.OldProject.yuuhou.Entity.CaregiversEntity;
+import eeit.OldProject.yuuhou.Entity.Caregiver;
+
 public interface CaregiversService {
 
 
-    List<CaregiversEntity> findAll();
+    List<Caregiver> findAll();
 
-    Optional<CaregiversEntity> findById(Long id);
+    Optional<Caregiver> findById(Long id);
 
-    CaregiversEntity save(CaregiversEntity caregiversEntity);
+    Caregiver save(Caregiver caregiver);
 
     void deleteById(Long id);
 
-    Optional<CaregiversEntity> findByEmail(String email);
+    Optional<Caregiver> findByEmail(String email);
     
 }
