@@ -1,18 +1,23 @@
 package eeit.OldProject.allen.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import eeit.OldProject.allen.Entity.News;
 
+
 @Repository
-public interface NewsRepository extends JpaRepository<News, Integer>{
-		
-	//彈性搜尋
+public interface NewsRepository extends JpaRepository<News, Integer> {
+	
+	//狀態篩選
+	Page<News> findByStatus(Integer status, Pageable pageable);
+	
 	@Query("""
 		    SELECT n FROM News n
 		    WHERE 
@@ -24,12 +29,16 @@ public interface NewsRepository extends JpaRepository<News, Integer>{
 		            OR LOWER(n.content) LIKE LOWER(CONCAT('%', :keyword, '%'))
 		            OR LOWER(n.tags) LIKE LOWER(CONCAT('%', :keyword, '%'))
 		        )
+		    AND (:status IS NULL OR n.status = :status)
+		    AND (:dateFrom IS NULL OR n.publishAt >= :dateFrom)
+		    AND (:dateTo IS NULL OR n.publishAt <= :dateTo)
 		""")
-		Page<News> searchFlexiblePaged(
+		Page<News> searchFlexiblePagedWithDateRange(
 		    @Param("keyword") String keyword,
 		    @Param("categoryId") Integer categoryId,
+		    @Param("status") Integer status,
+		    @Param("dateFrom") LocalDateTime dateFrom,
+		    @Param("dateTo") LocalDateTime dateTo,
 		    Pageable pageable
 		);
-	
 }
-
