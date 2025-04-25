@@ -34,5 +34,9 @@ public class EmployeeRating {
 
     @Column(name = "CaregiverId")
     private Long caregiverId ;
+
+    //pending discussion with Rita
+    @Column(name = "PaymentId")
+    private Long paymentId;
 }
 

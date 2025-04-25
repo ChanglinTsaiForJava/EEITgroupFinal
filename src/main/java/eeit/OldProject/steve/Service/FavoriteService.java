@@ -27,6 +27,11 @@ public class FavoriteService {
 
     // 新增收藏課程
     public Favorite_course addFavoriteCourse(Long userId, Long courseId) {
+        // 檢查是否已經收藏
+        if (favoriteCourseRepository.findByUserIdAndCourseId(userId, courseId).isPresent()) {
+            throw new IllegalStateException("該課程已經加入收藏");
+        }
+
         Favorite_course favorite = new Favorite_course();
         favorite.setUserId(userId);
         favorite.setCourseId(courseId);
@@ -34,8 +39,13 @@ public class FavoriteService {
         return favoriteCourseRepository.save(favorite);
     }
 
+
     // 新增收藏員工（照顧者）
     public Favorite_employee addFavoriteEmployee(Long userId, Long caregiverId) {
+        if (favoriteEmpRepository.findByUserIdAndCaregiverId(userId, caregiverId).isPresent()) {
+            throw new IllegalStateException("該照顧者已經加入收藏");
+        }
+
         Favorite_employee favorite = new Favorite_employee();
         favorite.setUserId(userId);
         favorite.setCaregiverId(caregiverId);
@@ -45,6 +55,10 @@ public class FavoriteService {
 
     // 新增收藏產品
     public Favorite_product addFavoriteProduct(Long userId, Long productId) {
+        if (favoriteProductRepository.findByUserIdAndProductId(userId, productId).isPresent()) {
+            throw new IllegalStateException("該產品已經加入收藏");
+        }
+
         Favorite_product favorite = new Favorite_product();
         favorite.setUserId(userId);
         favorite.setProductId(productId);

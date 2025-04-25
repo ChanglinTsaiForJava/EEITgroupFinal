@@ -33,4 +33,8 @@ public class ProductRating {
 
     @Column(name = "ProductId")
     private Long productId;
+
+    //pending discussion with Rita
+    @Column(name = "PaymentId")
+    private Long paymentId;
 }

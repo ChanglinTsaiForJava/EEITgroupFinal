@@ -24,8 +24,12 @@ public class FavoriteController {
     public ResponseEntity<?> addFavoriteCourse(@RequestParam Long courseId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
-        Favorite_course favorite = favoriteService.addFavoriteCourse(userId, courseId);
-        return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+        try {
+            Favorite_course favorite = favoriteService.addFavoriteCourse(userId, courseId);
+            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 新增收藏員工（照顧者）
@@ -33,8 +37,12 @@ public class FavoriteController {
     public ResponseEntity<?> addFavoriteEmployee(@RequestParam Long caregiverId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
-        Favorite_employee favorite = favoriteService.addFavoriteEmployee(userId, caregiverId);
-        return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+        try {
+            Favorite_employee favorite = favoriteService.addFavoriteEmployee(userId, caregiverId);
+            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 新增收藏產品
@@ -42,8 +50,12 @@ public class FavoriteController {
     public ResponseEntity<?> addFavoriteProduct(@RequestParam Long productId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
-        Favorite_product favorite = favoriteService.addFavoriteProduct(userId, productId);
-        return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+        try {
+            Favorite_product favorite = favoriteService.addFavoriteProduct(userId, productId);
+            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 獲取所有收藏課程
