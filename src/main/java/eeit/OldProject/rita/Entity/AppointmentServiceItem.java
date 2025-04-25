@@ -1,28 +1,27 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Entity
-@Table(name = "appointment_service")
-@Getter
-@Setter
+@Table(name = "appointment_service_Item")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentService {
+public class AppointmentServiceItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+
     @Column(name = "AppointmentId")
     private Long appointmentId;
 
     @Column(name = "ServiceId")
     private Long serviceId;
 
-    @Column(name = "CustomDescription")
+    @Column(name = "CustomDescription", columnDefinition = "TEXT", nullable = true)
     private String customDescription;
 
     // Relationships
@@ -32,6 +31,6 @@ public class AppointmentService {
 
     @ManyToOne
     @JoinColumn(name = "ServiceId", insertable = false, updatable = false)
-    private Service service;
+    private ServiceItem serviceItem;
 }
 

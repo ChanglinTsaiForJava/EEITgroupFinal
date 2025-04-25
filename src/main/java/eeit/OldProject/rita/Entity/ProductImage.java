@@ -1,15 +1,12 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "product_image")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductImage {
@@ -23,10 +20,10 @@ public class ProductImage {
     private Long productId;
 
     @Lob
-    @Column(name = "ProductImage")
+    @Column(name = "ProductImage", columnDefinition = "LONGBLOB", nullable = true)
     private byte[] productImage;
 
-    @Column(name = "IsPrimary")
+    @Column(name = "IsPrimary", nullable = true)
     private Boolean isPrimary;
 
     //Relationships

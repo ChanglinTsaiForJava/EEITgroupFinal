@@ -1,37 +1,36 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-    @Entity
-    @Table(name = "appointment_disease")
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public class AppointmentDisease {
+@Entity
+@Table(name = "appointment_disease")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AppointmentDisease {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "DiseaseId")
-        private Long diseaseId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
 
-        @Column(name = "AppointmentId")
-        private Long appointmentId;
+    @Column(name = "DiseaseId")
+    private Long diseaseId;
 
-        @Column(name = "CustomDescription")
-        private String customDescription;
+    @Column(name = "AppointmentId")
+    private Long appointmentId;
 
-        // Relationships
-        @ManyToOne
-        @JoinColumn(name = "DiseaseId", insertable = false, updatable = false)
-        private Disease disease;
+    @Column(name = "CustomDescription", columnDefinition = "TEXT", nullable = true)
+    private String customDescription;
 
-        @ManyToOne
-        @JoinColumn(name = "AppointmentId", insertable = false, updatable = false)
-        private Appointment appointment;
-    }
+    // Relationships
+    @ManyToOne
+    @JoinColumn(name = "DiseaseId", insertable = false, updatable = false)
+    private Disease disease;
+
+    @ManyToOne
+    @JoinColumn(name = "AppointmentId", insertable = false, updatable = false)
+    private Appointment appointment;
+}
 

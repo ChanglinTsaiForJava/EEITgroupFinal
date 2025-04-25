@@ -2,16 +2,14 @@ package eeit.OldProject.rita.Entity;
 
 import eeit.OldProject.steve.Entity.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "user_points")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPoints {
@@ -25,23 +23,23 @@ public class UserPoints {
     private Long userId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ChangeType")
+    @Column(name = "ChangeType", nullable = true)
     private ChangeType changeType;
 
-    @Column(name = "Points")
+    @Column(name = "Points", nullable = true)
     private Integer points;
 
-    @Column(name = "ReferenceId")
+    @Column(name = "ReferenceId", nullable = true)
     private Integer referenceId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ReferenceType")
+    @Column(name = "ReferenceType", nullable = true)
     private ReferenceType referenceType;
 
-    @Column(name = "TotalPoints")
+    @Column(name = "TotalPoints", nullable = true)
     private Integer totalPoints;
 
-    @Column(name = "CreatedAt")
+    @Column(name = "CreatedAt", nullable = true)
     private Timestamp createdAt;
 
     @ManyToOne
