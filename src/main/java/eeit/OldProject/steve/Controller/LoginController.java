@@ -37,6 +37,12 @@ public class LoginController {
             return ResponseEntity.badRequest().body("帳號不存在");
         }
     }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        // 移除 session 裡的 userId
+        session.invalidate(); // 這行會直接整個 session 清除
+        return ResponseEntity.ok("登出成功");
+    }
 }
 
 
