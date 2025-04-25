@@ -39,8 +39,8 @@ public class CaregiversController {
     }
 
     @PostMapping
-    public Caregiver create(@RequestBody Caregiver caregiver) {
-        return caregiversService.save(caregiver);
+    public Caregiver create(@RequestBody Caregiver caregiversEntity) {
+        return caregiversService.save(caregiversEntity);
     }
 
     @PutMapping("/{id}")
