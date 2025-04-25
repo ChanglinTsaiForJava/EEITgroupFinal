@@ -8,5 +8,4 @@ import eeit.OldProject.daniel.entity.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByUser_UserId(Long userId, Pageable pageable);
-
 }

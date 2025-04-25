@@ -26,14 +26,24 @@ public class PostController {
 	@Autowired
 	private PostService postService;
 
-	@GetMapping("/user/{uid}")
-    public Page<Post> listByUser(
-        @PathVariable Long uid,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
-        return postService.getPostsByUser(uid, page, size);
+    @PostMapping("/{id}/view")
+    public ResponseEntity<Void> view(@PathVariable Long id) {
+    	postService.incrementViewCount(id);
+        return ResponseEntity.noContent().build();
     }
-	
+
+    @PostMapping("/{id}/share")
+    public ResponseEntity<Void> share(@PathVariable Long id) {
+    	postService.incrementShareCount(id);
+        return ResponseEntity.noContent().build();
+    }
+
+	@GetMapping("/user/{uid}")
+	public Page<Post> listByUser(@PathVariable Long uid, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return postService.getPostsByUser(uid, page, size);
+	}
+
 	@GetMapping
 	public List<Post> getAll() {
 		return postService.getAll();
@@ -52,7 +62,7 @@ public class PostController {
 	public ResponseEntity<?> create(@RequestBody Post p) {
 		Post save = postService.create(p);
 		if (save != null) {
-			URI uri = URI.create("/api/posts/"+p.getPostId());
+			URI uri = URI.create("/api/posts/" + p.getPostId());
 			return ResponseEntity.created(uri).body(save);
 		}
 		return ResponseEntity.noContent().build();
@@ -60,11 +70,11 @@ public class PostController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> modify(@PathVariable Long id, @RequestBody Post p) {
-		if (id!=null) {
+		if (id != null) {
 			p.setPostId(id);
 			Post modify = postService.modify(p);
-			if (modify!=null) {
-	            URI uri = URI.create("/api/posts/"+modify.getPostId());
+			if (modify != null) {
+				URI uri = URI.create("/api/posts/" + modify.getPostId());
 				return ResponseEntity.created(uri).body(modify);
 			}
 		}

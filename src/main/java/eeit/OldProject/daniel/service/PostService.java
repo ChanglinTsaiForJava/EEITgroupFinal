@@ -25,6 +25,21 @@ public class PostService {
 
 	@Autowired
 	private UserRepository userRepo;
+	
+    // 觀看次數 +1
+    public void incrementViewCount(Long postId) {
+        postRepo.findById(postId).ifPresent(post -> {
+            post.setViews(post.getViews() == null ? 1L : post.getViews() + 1);
+            // 由於是托管實體，只要在事務內修改即可自動 flush
+        });
+    }
+
+    // 分享次數 +1
+    public void incrementShareCount(Long postId) {
+        postRepo.findById(postId).ifPresent(post -> {
+            post.setShare(post.getShare() == null ? 1L : post.getShare() + 1);
+        });
+    }
 
 	public Page<Post> getPostsByUser(Long userId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
