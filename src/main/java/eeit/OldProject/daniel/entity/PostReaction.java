@@ -43,19 +43,13 @@ public class PostReaction {
     @Column(name = "ModifiedAt")
     private LocalDateTime modifiedAt;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "PostId")
-    private Long postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
-    @JsonIgnoreProperties("reactions")
+    @JoinColumn(name = "UserId")
+    @JsonIgnoreProperties("postReactions")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostId")
     @JsonIgnoreProperties("reactions")
     private Post post;
 }

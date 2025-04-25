@@ -31,19 +31,14 @@ public class PostCategoryClassifier {
     @Column(name = "PostCategoryClassifierId")
     private Long postCategoryClassifierId;
 
-    @Column(name = "PostCategoryId")
-    private Long postCategoryId;
-
-    @Column(name = "PostId")
-    private Long postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostCategoryId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostCategoryId")
     @JsonIgnoreProperties("classifiers")
     private PostCategory postCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostId")
     @JsonIgnoreProperties("classifiers")
     private Post post;
 }
+

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import eeit.OldProject.steve.Entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,26 +24,30 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"post","tag"})
+@ToString(exclude = {"follower","followed"})
 @Entity
-@Table(name = "post_tag", schema = "final")
-public class PostTag {
+@Table(name = "user_follow", schema = "final")
+public class UserFollow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PostTagId")
-    private Long postTagId;
+    @Column(name = "UserFollowId")
+    private Long userFollowId;
 
-    @Column(name = "CreatedAt")
-    private LocalDateTime createdAt;
+    @Column(name = "IsFollowing")
+    private Boolean isFollowing;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId")
-    @JsonIgnoreProperties("postTags")
-    private Post post;
+    @Column(name = "FollowAt")
+    private LocalDateTime followAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TagId")
-    @JsonIgnoreProperties("postTags")
-    private Tag tag;
+    @JoinColumn(name = "FollowerId")
+    @JsonIgnoreProperties("following")
+    private User follower;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FollowedId")
+    @JsonIgnoreProperties("followers")
+    private User followed;
 }
+

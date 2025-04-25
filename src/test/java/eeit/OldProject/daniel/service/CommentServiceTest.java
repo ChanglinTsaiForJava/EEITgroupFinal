@@ -32,7 +32,7 @@ class CommentServiceTest {
     	Post post = new Post();
     	post.setContent("This is a post");
     	post.setCreatedAt(LocalDateTime.now());
-    	Post savedPost = postService.save(post);
+    	Post savedPost = postService.create(post);
     	
     	Comment comment = new Comment();
     	comment.setContent("This is a comment.");

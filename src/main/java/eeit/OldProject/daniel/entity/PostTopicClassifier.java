@@ -21,7 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"postCategory","post"})
+@ToString(exclude = {"postTopic","post"})
 @Entity
 @Table(name = "post_topic_classifier", schema = "final")
 public class PostTopicClassifier {
@@ -31,19 +31,13 @@ public class PostTopicClassifier {
     @Column(name = "PostTopicClassifierId")
     private Long postTopicClassifierId;
 
-    @Column(name = "PostTopicId")
-    private Long postTopicId;
-
-    @Column(name = "PostId")
-    private Long postId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostTopicId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostTopicId")
     @JsonIgnoreProperties("classifiers")
     private PostTopic postTopic;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostId")
     @JsonIgnoreProperties("classifiers")
     private Post post;
 }

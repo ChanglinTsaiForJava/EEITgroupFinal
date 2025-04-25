@@ -1,6 +1,5 @@
 package eeit.OldProject.daniel.repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +22,7 @@ class PostRepositoryTest {
 	void setup() {
 		Post p = new Post();
 		p.setTitle("預設貼文");
-		p.setCreatedAt(LocalDateTime.now());
+		p.setContent("預設內容");
 		defaultPost = postRepo.save(p);
 	}	
 	
@@ -39,12 +38,11 @@ class PostRepositoryTest {
 		System.out.println("exists=" + exists);
 	}
 	
-//	@Test
+	@Test
 	void testInsert() {
 		Post p = new Post();
 		p.setTitle("測試貼文");
 		p.setContent("Content...");
-		p.setCreatedAt(LocalDateTime.now());
 
 		Post saved = postRepo.save(p);
 		System.out.println("saved=" + saved);
@@ -55,7 +53,6 @@ class PostRepositoryTest {
 		Post p = new Post();
 		p.setTitle("修改貼文");
 		p.setContent("Content...");
-		p.setCreatedAt(LocalDateTime.now());
 		p.setPostId(defaultPost.getPostId());
 
 		Post updated = postRepo.save(p);
@@ -71,7 +68,7 @@ class PostRepositoryTest {
 
 //	@Test
 	void testFindById() {
-		Optional<Post> findById = postRepo.findById(defaultPost.getPostId());
+		Optional<Post> findById = postRepo.findById(36L);
 		Post get = findById.get();
 		System.out.println("get=" + get);
 	}
