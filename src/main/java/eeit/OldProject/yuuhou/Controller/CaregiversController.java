@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eeit.OldProject.yuuhou.Entity.CaregiversEntity;
+import eeit.OldProject.yuuhou.Entity.Caregiver;
 import eeit.OldProject.yuuhou.Service.CaregiversService;
 
 @RestController
@@ -29,23 +29,23 @@ public class CaregiversController {
     
     
     @GetMapping
-    public List<CaregiversEntity> getAll() {
+    public List<Caregiver> getAll() {
         return caregiversService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<CaregiversEntity> getById(@PathVariable Long id) {
+    public Optional<Caregiver> getById(@PathVariable Long id) {
         return caregiversService.findById(id);
     }
 
     @PostMapping
-    public CaregiversEntity create(@RequestBody CaregiversEntity caregiversEntity) {
-        return caregiversService.save(caregiversEntity);
+    public Caregiver create(@RequestBody Caregiver caregiver) {
+        return caregiversService.save(caregiver);
     }
 
     @PutMapping("/{id}")
-    public CaregiversEntity update(@PathVariable Long id, @RequestBody CaregiversEntity updatedCaregiver) {
-        Optional<CaregiversEntity> existing = caregiversService.findById(id);
+    public Caregiver update(@PathVariable Long id, @RequestBody Caregiver updatedCaregiver) {
+        Optional<Caregiver> existing = caregiversService.findById(id);
         if (existing.isPresent()) {
             updatedCaregiver.setCaregiverId(id); // 👈 確保使用舊 ID
             return caregiversService.save(updatedCaregiver);
