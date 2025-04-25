@@ -1,17 +1,15 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name = "product")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
@@ -21,22 +19,22 @@ public class Product {
     @Column(name = "ProductId")
     private Long productId;
 
-    @Column(name = "ProductName")
+    @Column(name = "ProductName", length = 100, nullable = false)
     private String productName;
 
-    @Column(name = "ProductDescription")
+    @Column(name = "ProductDescription", columnDefinition = "TEXT", nullable = true)
     private String productDescription;
 
-    @Column(name = "ProductPrice")
+    @Column(name = "ProductPrice", precision = 10, scale = 2, nullable = true)
     private BigDecimal productPrice;
 
-    @Column(name = "Stock")
+    @Column(name = "Stock", nullable = true)
     private Integer stock;
 
     @Column(name = "ProductCategoryId")
     private Long productCategoryId;
 
-    @Column(name = "CreatedAt")
+    @Column(name = "CreatedAt", nullable = true)
     private Date createdAt;
 
     //Relationships

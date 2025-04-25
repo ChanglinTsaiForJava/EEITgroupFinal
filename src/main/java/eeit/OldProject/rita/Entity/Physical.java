@@ -1,15 +1,12 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "physical")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Physical {
@@ -21,5 +18,8 @@ public class Physical {
 
     @Column(name = "PhysicalName")
     private String physicalName;
+
+    @Column(name = "PhysicalDescription", columnDefinition = "TEXT", nullable = true)
+    private String physicalDescription;
 }
 

@@ -1,28 +1,28 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "appointment_physical")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppointmentPhysical {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+
+
     @Column(name = "PhysicalId")
     private Long physicalId;
 
     @Column(name = "AppointmentId")
     private Long appointmentId;
 
-    @Column(name = "CustomDescription")
+    @Column(name = "CustomDescription", columnDefinition = "TEXT", nullable = true)
     private String customDescription;
 
     // Relationships

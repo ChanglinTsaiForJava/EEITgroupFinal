@@ -1,17 +1,15 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
 @Table(name = "appointment_time_multi")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppointmentTimeMulti {
@@ -24,40 +22,40 @@ public class AppointmentTimeMulti {
     @Column(name = "AppointmentId")
     private Long appointmentId;
 
-    @Column(name = "StartDate")
+    @Column(name = "StartDate", nullable = true)
     private LocalDate startDate;
 
-    @Column(name = "EndDate")
+    @Column(name = "EndDate", nullable = true)
     private LocalDate endDate;
 
-    @Column(name = "DailyStartTime")
+    @Column(name = "DailyStartTime", nullable = true)
     private LocalTime dailyStartTime;
 
-    @Column(name = "DailyEndTime")
+    @Column(name = "DailyEndTime", nullable = true)
     private LocalTime dailyEndTime;
 
-    @Column(name = "FlexibilityNote")
+    @Column(name = "FlexibilityNote", columnDefinition = "TEXT", nullable = true)
     private String flexibilityNote;
 
-    @Column(name = "Monday")
+    @Column(name = "Monday", nullable = true)
     private Boolean monday;
 
-    @Column(name = "Tuesday")
+    @Column(name = "Tuesday", nullable = true)
     private Boolean tuesday;
 
-    @Column(name = "Wednesday")
+    @Column(name = "Wednesday", nullable = true)
     private Boolean wednesday;
 
-    @Column(name = "Thursday")
+    @Column(name = "Thursday", nullable = true)
     private Boolean thursday;
 
-    @Column(name = "Friday")
+    @Column(name = "Friday", nullable = true)
     private Boolean friday;
 
-    @Column(name = "Saturday")
+    @Column(name = "Saturday", nullable = true)
     private Boolean saturday;
 
-    @Column(name = "Sunday")
+    @Column(name = "Sunday", nullable = true)
     private Boolean sunday;
 
     // Relationships

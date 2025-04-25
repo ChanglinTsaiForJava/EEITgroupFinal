@@ -2,17 +2,15 @@ package eeit.OldProject.rita.Entity;
 
 import eeit.OldProject.steve.Entity.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name = "orders")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orders {
@@ -25,14 +23,14 @@ public class Orders {
     @Column(name = "UserId")
     private Long userId;
 
-    @Column(name = "OrderDate")
+    @Column(name = "OrderDate", nullable = true)
     private Date orderDate;
 
-    @Column(name = "TotalAmount")
+    @Column(name = "TotalAmount", precision = 10, scale = 2, nullable = true)
     private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "Status")
+    @Column(name = "Status", nullable = true)
     private OrderStatus status;
 
     //Relationships

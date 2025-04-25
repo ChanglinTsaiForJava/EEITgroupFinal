@@ -1,19 +1,16 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 
 @Entity
-@Table(name = "caregiver_service")
-@Getter
-@Setter
+@Table(name = "caregiver_service_item")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CaregiverService {
+public class CaregiverServiceItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +27,6 @@ public class CaregiverService {
 
     @ManyToOne
     @JoinColumn(name = "ServiceId", insertable = false, updatable = false)
-    private Service service;
+    private ServiceItem serviceItem;
 }
 

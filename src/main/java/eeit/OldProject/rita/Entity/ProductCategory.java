@@ -1,15 +1,12 @@
 package eeit.OldProject.rita.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "product_category")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductCategory {
@@ -19,7 +16,7 @@ public class ProductCategory {
     @Column(name = "CategoryId")
     private Long categoryId;
 
-    @Column(name = "CategoryName")
+    @Column(name = "CategoryName", length = 50, nullable = false)
     private String categoryName;
 }
 
