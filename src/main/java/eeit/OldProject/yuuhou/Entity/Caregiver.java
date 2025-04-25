@@ -69,7 +69,7 @@ public class Caregiver {
     private String serviceArea;
 
     @Lob // 👉 @Lob 代表 large object（對應 TEXT 類型）
-    @Column(name="Description", columnDefinition = "TEXT")
+    @Column(name="Description",columnDefinition = "TEXT")
     private String description;
 
     @Column(name="Reminder")
@@ -90,7 +90,6 @@ public class Caregiver {
 
     @Column(nullable = false, name = "Created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
-
 
     // ENUM 狀態類別
     public enum Status {
