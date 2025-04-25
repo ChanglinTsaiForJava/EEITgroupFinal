@@ -1,9 +1,11 @@
 package eeit.OldProject.allen.Entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @NoArgsConstructor
@@ -17,18 +19,17 @@ public class News {
     @Column(name = "NewsId")
     private Integer newsId;
 
-    @Column(name = "Title", nullable = false, length = 255)
+    @Column(name = "Title", nullable = false)
     private String title;
 
-    @Column(name = "Thumbnail", length = 255)
+    @Column(name = "Thumbnail")
     private String thumbnail;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "CategoryId", nullable = false)
     private NewsCategory category;
 
-    @Column(name = "CreateBy", nullable = false, length = 100)
+    @Column(name = "CreateBy", nullable = false)
     private String createBy;
 
     @Column(name = "CreateAt")
@@ -37,14 +38,14 @@ public class News {
     @Column(name = "PublishAt")
     private LocalDateTime publishAt;
 
-    @Column(name = "ModifyBy", length = 100)
+    @Column(name = "ModifyBy")
     private String modifyBy;
 
     @Column(name = "ModifyAt")
     private LocalDateTime modifyAt;
 
     @Column(name = "Status")
-    private Integer status;
+    private Byte status;
 
     @Column(name = "Content", columnDefinition = "LONGTEXT")
     private String content;
@@ -52,6 +53,6 @@ public class News {
     @Column(name = "ViewCount")
     private Integer viewCount;
 
-    @Column(name = "Tags", length = 255)
+    @Column(name = "Tags")
     private String tags;
 }
