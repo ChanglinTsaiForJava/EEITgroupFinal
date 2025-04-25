@@ -22,7 +22,7 @@ public class AppointmentService {
     private final AppointmentTimeMultiRepository multiRepository;
     private final TimeCalculationService timeCalculationService;
     private final EmailTemplateService emailTemplateService;
-    private final NotificationService notificationService;
+//    private final NotificationService notificationService;
     private final CaregiversRepository caregiverRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
@@ -127,11 +127,11 @@ public class AppointmentService {
             String subject = "【Care+ 看護預約通知】您有一筆新的預約申請";
             String content = emailTemplateService.generateNewAppointmentNotifyContent(saved);
 
-            notificationService.sendEmail(
-                    saved.getCaregiver().getEmail(),
-                    subject,
-                    content
-            );
+//            notificationService.sendEmail(
+//                    saved.getCaregiver().getEmail(),
+//                    subject,
+//                    content
+//            );
         }
 
         return saved;
@@ -224,11 +224,11 @@ public class AppointmentService {
             String content = emailTemplateService.generateContractReminderContent(saved);
 
             // 呼叫 NotificationService 發送 Email
-            notificationService.sendEmail(
-                    saved.getUser().getEmailAddress(),              // 收件人
-                    "看護已接受您的預約，請確認合約並付款", // 主旨
-                    content                                          // 內文
-            );
+//            notificationService.sendEmail(
+//                    saved.getUser().getEmailAddress(),              // 收件人
+//                    "看護已接受您的預約，請確認合約並付款", // 主旨
+//                    content                                          // 內文
+//            );
 
         }
 
@@ -267,11 +267,11 @@ public class AppointmentService {
             String content = emailTemplateService.generateAppointmentPaidContent(saved, payment);
 
             // 寄出 email（收據 + 合約連結）
-            notificationService.sendEmail(
-                    saved.getUser().getEmailAddress(),            // 收件人
-                    "付款完成通知 - Care+ 預約服務",               // 主旨
-                    content                                       // 內文
-            );
+//            notificationService.sendEmail(
+//                    saved.getUser().getEmailAddress(),            // 收件人
+//                    "付款完成通知 - Care+ 預約服務",               // 主旨
+//                    content                                       // 內文
+//            );
         }
         return saved;
     }
