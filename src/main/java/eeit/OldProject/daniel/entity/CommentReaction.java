@@ -43,19 +43,14 @@ public class CommentReaction {
     @Column(name = "ModifiedAt")
     private LocalDateTime modifiedAt;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "CommentId")
-    private Long commentId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
-    @JsonIgnoreProperties("reactions")
+    @JoinColumn(name = "UserId")
+    @JsonIgnoreProperties("commentReactions")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CommentId", insertable = false, updatable = false)
+    @JoinColumn(name = "CommentId")
     @JsonIgnoreProperties("reactions")
     private Comment comment;
 }
+

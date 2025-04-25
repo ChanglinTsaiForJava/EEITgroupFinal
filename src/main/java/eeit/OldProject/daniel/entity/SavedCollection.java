@@ -43,11 +43,8 @@ public class SavedCollection {
     @Column(name = "CreatedAt")
     private LocalDateTime createdAt;
 
-    @Column(name = "UserId")
-    private Long userId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
+    @JoinColumn(name = "UserId")
     @JsonIgnoreProperties("collections")
     private User user;
 

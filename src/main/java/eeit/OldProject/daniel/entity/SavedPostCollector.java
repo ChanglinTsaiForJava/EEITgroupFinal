@@ -31,19 +31,13 @@ public class SavedPostCollector {
     @Column(name = "SavedPostCollectorId")
     private Long savedPostCollectorId;
 
-    @Column(name = "SavedPostId")
-    private Long savedPostId;
-
-    @Column(name = "SavedCollectionId")
-    private Long savedCollectionId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SavedPostId", insertable = false, updatable = false)
+    @JoinColumn(name = "SavedPostId")
     @JsonIgnoreProperties("collectors")
     private SavedPost savedPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SavedCollectionId", insertable = false, updatable = false)
+    @JoinColumn(name = "SavedCollectionId")
     @JsonIgnoreProperties("savedPosts")
     private SavedCollection savedCollection;
 }

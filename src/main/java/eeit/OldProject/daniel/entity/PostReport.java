@@ -49,35 +49,23 @@ public class PostReport {
     @Column(name = "ResolutionNote", length = 400)
     private String resolutionNote;
 
-    @Column(name = "UserId")
-    private Long userId;
-
-    @Column(name = "PostId")
-    private Long postId;
-
-    @Column(name = "ReportTypeId")
-    private Byte reportTypeId;
-
-    @Column(name = "ResolvedBy")
-    private Long resolvedBy;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", insertable = false, updatable = false)
+    @JoinColumn(name = "UserId")
     @JsonIgnoreProperties("postReports")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PostId", insertable = false, updatable = false)
+    @JoinColumn(name = "PostId")
     @JsonIgnoreProperties("postReports")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ReportTypeId", insertable = false, updatable = false)
+    @JoinColumn(name = "ReportTypeId")
     @JsonIgnoreProperties({"commentReports","postReports","replyReports"})
     private ReportType reportType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ResolvedBy", insertable = false, updatable = false)
+    @JoinColumn(name = "ResolvedBy")
     @JsonIgnoreProperties({"commentReports","postReports","replyReports"})
     private User resolver;
 }
