@@ -70,4 +70,27 @@ public class UserController {
 
         return ResponseEntity.ok("使用者圖片更新成功，圖片 URL: " + imageUrl);
     }
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<?> requestPasswordReset(@RequestParam String emailAddress) {
+        return userService.sendPasswordResetVerification(emailAddress);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam String emailAddress,
+                                           @RequestParam String verificationCode,
+                                           @RequestParam String newPassword) {
+        return userService.resetPasswordWithVerification(emailAddress, verificationCode, newPassword);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestParam String currentPassword,
+                                            @RequestParam String newPassword,
+                                            HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body("尚未登入");
+        }
+
+        return userService.changePassword(userId, currentPassword, newPassword);
+    }
 }

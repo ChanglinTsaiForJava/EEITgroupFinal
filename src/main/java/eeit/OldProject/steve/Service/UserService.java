@@ -1,6 +1,7 @@
 package eeit.OldProject.steve.Service;
 
 import eeit.OldProject.steve.Entity.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,6 +18,12 @@ public interface UserService {
     // 其他需要的方法可以在這裡定義
     User createUser(User user);
 
+
+    ResponseEntity<?> sendPasswordResetVerification(String emailAddress);
+
+    ResponseEntity<?> resetPasswordWithVerification(String emailAddress, String code, String newPassword);
+
+    ResponseEntity<?> changePassword(Long userId, String currentPassword, String newPassword);
 }
 
 
