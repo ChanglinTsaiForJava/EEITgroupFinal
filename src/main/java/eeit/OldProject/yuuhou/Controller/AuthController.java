@@ -54,24 +54,34 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.CREATED).body("註冊成功！");
 	}
 
-	// 登入功能
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-		Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(request.getEmail());
+	    String email = request.getEmail();
+	    String password = request.getPassword();
 
-		if (caregiverOpt.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("帳號錯誤！");
-		}
+	    // ✅ 先判斷是否為 admin（寫死帳號）
+	    if (email.equals("admin") && password.equals("admin123")) {
+	        String token = jwtUtil.generateToken("admin", "ADMIN");
+	        return ResponseEntity.ok().body(Collections.singletonMap("token", token));
+	    }
 
-		Caregiver caregiver = caregiverOpt.get();
 
-		if (!passwordEncoder.matches(request.getPassword(), caregiver.getPassword())) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密碼錯誤！");
-		}
+	    // ✅ 再處理照顧者邏輯（從 DB 查詢）
+	    Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
 
-		String token = jwtUtil.generateToken(caregiver.getEmail());
+	    if (caregiverOpt.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("帳號錯誤！");
+	    }
 
-		return ResponseEntity.ok().body(Collections.singletonMap("token", token));
+	    Caregiver caregiver = caregiverOpt.get();
+
+	    if (!passwordEncoder.matches(password, caregiver.getPassword())) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密碼錯誤！");
+	    }
+
+	    String token = jwtUtil.generateToken(caregiver.getEmail(), "CAREGIVER");
+
+	    return ResponseEntity.ok().body(Collections.singletonMap("token", token));
 	}
 
 }

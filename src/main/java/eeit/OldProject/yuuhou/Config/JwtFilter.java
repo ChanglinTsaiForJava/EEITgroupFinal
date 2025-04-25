@@ -2,9 +2,12 @@ package eeit.OldProject.yuuhou.Config;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -32,15 +35,23 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
+
             if (jwtUtil.validateToken(token)) {
                 String email = jwtUtil.getEmailFromToken(token);
+                String role = jwtUtil.getRoleFromToken(token); // ✅ 解析出 role，例如 "ADMIN"
 
+                // ✅ 建立具有角色的 GrantedAuthority
+                List<GrantedAuthority> authorities =
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role)); // Spring 要求前面加 "ROLE_"
+
+                // ✅ 建立包含角色的身份驗證
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+                        new UsernamePasswordAuthenticationToken(email, null, authorities);
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
 
+                // ✅ 放入 Spring Security context 中
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
