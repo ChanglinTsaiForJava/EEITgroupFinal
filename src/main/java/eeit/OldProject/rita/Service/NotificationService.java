@@ -1,19 +1,17 @@
 package eeit.OldProject.rita.Service;
 
-import lombok.RequiredArgsConstructor;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationServiceRita {
+public class NotificationService {
 
     private final JavaMailSender mailSender;
 
-    public NotificationServiceRita(JavaMailSender mailSender) {
+    public NotificationService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 

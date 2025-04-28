@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eeit.OldProject.yuni.Entity.Notification;
+import eeit.OldProject.rita.Service.NotificationService;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,26 +34,27 @@ import lombok.NoArgsConstructor;
 @Table(name = "caregivers") // 👉 指定對應資料表名稱
 public class Caregiver {
 
-	  @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<CaregiverComment> comments = new ArrayList<>();
-
-	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<CaregiverStatistics> statistics = new ArrayList<>();
-
-	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<CaregiverLicense> licenses = new ArrayList<>();
-
-	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<ServiceRecord> serviceRecords = new ArrayList<>();
-
-	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<PaymentRecord> paymentRecords = new ArrayList<>();
-
-	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<Notification> notifications = new ArrayList<>();
-
-	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<LoginLog> loginLogs = new ArrayList<>();
+//	  @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<CaregiverComment> comments = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<CaregiverStatistics> statistics = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<CaregiverLicense> licenses = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<ServiceRecord> serviceRecords = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<PaymentRecord> paymentRecords = new ArrayList<>();
+//
+//        Rita ???
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<NotificationService> notifications = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<LoginLog> loginLogs = new ArrayList<>();
 	
 	
     @Id // 👉 主鍵
