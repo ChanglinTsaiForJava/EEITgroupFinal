@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .requestMatchers("/category/**").permitAll()
                 .requestMatchers("/api/courses/**").permitAll()
                 .requestMatchers("/api/chapters/**").permitAll()
-                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/**").permitAll()
 
                 .anyRequest().authenticated()
             .and()
