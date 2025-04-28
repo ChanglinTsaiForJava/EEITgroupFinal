@@ -6,8 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import eeit.OldProject.allen.Dto.NewsPublicSearchRequest;
+import eeit.OldProject.allen.Dto.NewsSearchRequest;
 import eeit.OldProject.allen.Entity.News;
 import eeit.OldProject.allen.Repository.NewsRepository;
 
@@ -20,8 +24,8 @@ public class NewsServiceImpl implements NewsService {
 	// 查詢單筆
 	@Override
 	public News getNewsById(Integer id) {
-	    return newsRepository.findById(id)
-	        .orElseThrow(() -> new RuntimeException("找不到此新聞 ID: " + id));
+		return newsRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此新聞 ID: " + id));
 	}
 
 	// 查詢所有
@@ -35,7 +39,7 @@ public class NewsServiceImpl implements NewsService {
 	public News createNews(News news) {
 		if (news.getStatus() == null) {
 			news.setStatus((byte) 0); // 預設為草稿
-			news.setCreateAt(LocalDateTime.now()); //預設時間為當下
+			news.setCreateAt(LocalDateTime.now()); // 預設時間為當下
 		}
 		return newsRepository.save(news);
 	}
@@ -67,7 +71,7 @@ public class NewsServiceImpl implements NewsService {
 			// 儲存並回傳更新後的資料
 			return newsRepository.save(existing);
 		} else {
-			throw new RuntimeException("找不到此新聞 id:" + id);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此新聞 ID: " + id);
 		}
 	}
 
@@ -77,28 +81,54 @@ public class NewsServiceImpl implements NewsService {
 		if (newsRepository.existsById(id)) {
 			newsRepository.deleteById(id);
 		} else {
-			throw new RuntimeException("找不到此新聞 id:" + id);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此新聞 ID: " + id);
 		}
 	}
 
 	// --------------------------------------------
 
-	//搜尋+排序功能
+	// 後台搜尋+排序功能
 	@Override
-	public Page<News> searchFlexiblePaged(String keyword, Integer categoryId, Integer status,
-	                                      LocalDateTime dateFrom, LocalDateTime dateTo, Pageable pageable) {
-	    return newsRepository.searchFlexiblePagedWithDateRange(
-	        keyword, categoryId, status, dateFrom, dateTo, pageable);
+	public Page<News> searchFlexiblePaged(NewsSearchRequest searchRequest, Pageable pageable) {
+		String keyword = searchRequest.getKeyword();
+	    Integer categoryId = searchRequest.getCategoryId();
+	    Integer status = searchRequest.getStatus();
+	    LocalDateTime dateFrom = searchRequest.getDateFrom();
+	    LocalDateTime dateTo = searchRequest.getDateTo();
+	    // ➡️ 如果status是-1，就轉成null（代表不篩選）
+	    if (status != null && status == -1) {
+	        status = null;
+	    }
+		return newsRepository.searchFlexiblePagedWithDateRange(keyword, categoryId, status, dateFrom, dateTo, pageable);
 	}
+
+	//前台搜尋
+	@Override
+	public Page<News> searchPublicNewsPaged(NewsPublicSearchRequest searchRequest, Pageable pageable) {
+	    String keyword = searchRequest.getKeyword();
+	    Integer categoryId = searchRequest.getCategoryId();
+	    LocalDateTime dateFrom = searchRequest.getDateFrom();
+	    LocalDateTime dateTo = searchRequest.getDateTo();
+
+	    Integer status = 1; // ➡️ 固定只查已發布
+
+	    return newsRepository.searchFlexiblePagedWithDateRange(
+	        keyword, categoryId, status, dateFrom, dateTo, pageable
+	    );
+	}
+	
+	
+	
 	
 	// 發布新聞
 	@Override
 	public News publishNews(Integer id) {
 		News news = getNewsById(id); // ✅ 統一錯誤處理與查詢
-		
-		if (news.getStatus() == 1) return news;
+
+		if (news.getStatus() == 1)
+			return news;
 		news.setStatus((byte) 1);
-		
+
 		if (news.getPublishAt() == null) {
 			news.setPublishAt(LocalDateTime.now());
 		}
@@ -120,6 +150,5 @@ public class NewsServiceImpl implements NewsService {
 		news.setViewCount(news.getViewCount() == null ? 1 : news.getViewCount() + 1);
 		return newsRepository.save(news);
 	}
-	
-	
+
 }

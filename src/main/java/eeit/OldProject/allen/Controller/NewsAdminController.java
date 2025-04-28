@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eeit.OldProject.allen.Dto.NewsSearchRequest;
 import eeit.OldProject.allen.Entity.News;
 import eeit.OldProject.allen.Service.NewsService;
 
@@ -62,15 +63,11 @@ public class NewsAdminController {
 	}
 
 	// 🔍 彈性搜尋（分類、關鍵字、狀態、時間 + 排序）
-	@GetMapping("/search")
-	public Page<News> searchFlexible(@RequestParam(required = false) String keyword,
-			@RequestParam(required = false) Integer categoryId,
-			@RequestParam(required = false, defaultValue = "-1") Integer status,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
+	@PostMapping("/search")
+	public Page<News> searchFlexible(
+			@RequestBody NewsSearchRequest searchRequest,
 			Pageable pageable) {
-		return newsService.searchFlexiblePaged(keyword, categoryId, status == -1 ? null : status, dateFrom, dateTo,
-				pageable);
+		return newsService.searchFlexiblePaged(searchRequest, pageable);
 	}
 
 	// 發布新聞

@@ -16,7 +16,7 @@ import eeit.OldProject.allen.Entity.NewsCategory;
 import eeit.OldProject.allen.Service.NewsCategoryService;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/news/category")
 public class NewsCategoryController {
 	
 	@Autowired
@@ -46,9 +46,9 @@ public class NewsCategoryController {
         return newsCategoryService.updateNewsCategory(id, updatedCategory);
     }
     
-    //刪除一筆分類
+    //安全刪除一筆分類
     @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable Integer id) {
-        newsCategoryService.deleteNewsCategoryById(id);
+    public void safeDeleteCategory(@PathVariable Integer id) {
+        newsCategoryService.safeDeleteNewsCategoryById(id);
     }
 }

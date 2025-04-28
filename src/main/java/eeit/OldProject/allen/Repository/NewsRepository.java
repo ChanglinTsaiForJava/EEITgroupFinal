@@ -41,4 +41,7 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
 		    @Param("dateTo") LocalDateTime dateTo,
 		    Pageable pageable
 		);
+	
+	//某分類有幾筆新聞
+	long countByCategoryCategoryId(Integer categoryId);
 }
