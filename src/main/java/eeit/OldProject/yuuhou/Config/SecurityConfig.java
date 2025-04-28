@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/caregiver/**").hasRole("CAREGIVER")
                 .requestMatchers("/api/caregivers").permitAll()
                 .requestMatchers("/news/**").permitAll()
+                .requestMatchers("/user/**").permitAll()
                 .requestMatchers("/category/**").permitAll()
                 .anyRequest().authenticated()
             .and()
