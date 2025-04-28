@@ -39,6 +39,11 @@ public class RegisterController {
             return ResponseEntity.badRequest().body("帳號已存在");
         }
 
+        // 🔥 加這段：檢查 Email（大小寫不敏感）
+        if (userRepository.findByEmailAddressIgnoreCase(requestDTO.getEmailAddress()).isPresent()) {
+            return ResponseEntity.badRequest().body("信箱已存在");
+        }
+
         // 建立一個 User 實體（尚未存入 DB）
         User user = new User();
         user.setUserAccount(requestDTO.getUserAccount());
