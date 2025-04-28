@@ -22,7 +22,7 @@ public class AppointmentService {
     private final AppointmentTimeMultiRepository multiRepository;
     private final TimeCalculationService timeCalculationService;
     private final EmailTemplateService emailTemplateService;
-    private final NotificationServiceRita notificationService;
+    private final NotificationService notificationService;
     private final CaregiversRepository caregiverRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
