@@ -17,20 +17,24 @@ public class EmailTemplateService {
 
     public String generateNewAppointmentNotifyContent(Appointment appointment) {
         return """
-            [Care+ 看護服務] 新預約通知
-
-            親愛的 %s 您好，
-
-            您收到一筆新的照護服務預約申請，請登入後台查看詳細需求並回覆是否接受。
-
-            🔖 預約編號：%d
-            👤 顧客：%s
-            💰 金額：NT$ %s
-
-            👉 查看預約詳情：
-            https://careplus.tw/caregiver/dashboard
-
-            若有任何問題，請洽客服：support@careplus.tw
+                 <html>
+                        <body>
+                            <h2>[Care+ 看護服務] 新預約通知</h2>
+                            <p>親愛的 %s 您好，</p>
+                            <p>您收到一筆新的照護服務預約申請，請登入後台查看詳細需求並回覆是否接受。</p>
+                
+                            <ul>
+                                <li><strong>預約編號：</strong> %d</li>
+                                <li><strong>顧客：</strong> %s</li>
+                                <li><strong>金額：</strong> NT$ %s</li>
+                            </ul>
+                
+                            <p><a href="https://careplus.tw/caregiver/dashboard">👉 查看預約詳情</a></p>
+                
+                            <p>若有任何問題，請洽客服：support@careplus.tw</p>
+                        </body>
+                        </html>
+          
             """.formatted(
                 appointment.getCaregiver().getCaregiverName(),
                 appointment.getAppointmentId(),
@@ -66,24 +70,30 @@ public class EmailTemplateService {
         }
 
         return """
-                    [Care+ 看護服務] 預約付款成功通知
+                <html>
+                        <body>
+                            <h2>[Care+ 看護服務] 預約付款成功通知</h2>
                 
-                    親愛的 %s 您好，
+                            <p>親愛的 %s 您好，</p>
                 
-                    感謝您使用 Care+ 看護預約服務，您的付款已成功完成，以下是您的交易明細：
+                            <p>感謝您使用 Care+ 看護預約服務，您的付款已成功完成，以下是您的交易明細：</p>
                 
-                    預約編號：%d
-                    看護：%s
-                    服務時間：%s
-                    地點：%s
-                    地址：%s
-                    金額：NT$ %s
+                            <ul>
+                                <li><strong>預約編號：</strong> %d</li>
+                                <li><strong>看護：</strong> %s</li>
+                                <li><strong>服務時間：</strong> %s</li>
+                                <li><strong>地點：</strong> %s</li>
+                                <li><strong>地址：</strong> %s</li>
+                                <li><strong>金額：</strong> NT$ %s</li>
+                            </ul>
                 
-                    PDF 合約下載： [PDF 合約連結]
-                    收據下載： [付款成功收據連結]
+                            <p>PDF 合約下載： [PDF 合約連結]</p>
+                            <p>收據下載： [付款成功收據連結]</p>
                 
-                    若有任何問題，歡迎聯絡客服。
-                    support@careplus.tw
+                            <p>若有任何問題，歡迎聯絡客服：support@careplus.tw</p>
+                        </body>
+                        </html>
+            
                 """.formatted(
                 appointment.getUser().getUserName(),
                 appointment.getAppointmentId(),
@@ -106,19 +116,25 @@ public class EmailTemplateService {
                 : appointment.getHomeAddress();
 
         return """
-                [Care+ 看護服務] 看護已接受您的預約！
+                 <html>
+                        <body>
+                            <h2>[Care+ 看護服務] 看護已接受您的預約！</h2>
                 
-                親愛的 %s 您好，
+                            <p>親愛的 %s 您好，</p>
                 
-                您的預約已由看護「%s」接受，請盡快確認合約內容並完成付款。
+                            <p>您的預約已由看護「%s」接受，請盡快確認合約內容並完成付款。</p>
                 
-                預約編號：%d
-                服務地點：%s - %s
+                            <ul>
+                                <li><strong>預約編號：</strong> %d</li>
+                                <li><strong>服務地點：</strong> %s - %s</li>
+                            </ul>
                 
-                👉 請至合約頁面確認細節與付款：
-                https://careplus.tw/appointment/%d/contract
+                            <p><a href="https://careplus.tw/appointment/%d/contract">👉 點我確認合約與付款</a></p>
                 
-                若有任何問題，歡迎聯絡客服：support@careplus.tw
+                            <p>若有任何問題，歡迎聯絡客服：support@careplus.tw</p>
+                        </body>
+                        </html>
+                
                 """.formatted(
                 appointment.getUser().getUserName(),
                 appointment.getCaregiver().getCaregiverName(),

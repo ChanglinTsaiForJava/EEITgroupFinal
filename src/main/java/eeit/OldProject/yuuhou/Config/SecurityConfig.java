@@ -47,7 +47,12 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/caregiver/**").hasRole("CAREGIVER")
                 .requestMatchers("/api/caregivers").permitAll()
-                .requestMatchers("/**").permitAll()
+                .requestMatchers("/news/**").permitAll()
+                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/category/**").permitAll()
+                .requestMatchers("/api/courses/**").permitAll()
+                .requestMatchers("/api/chapters/**").permitAll()
+
                 .anyRequest().authenticated()
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

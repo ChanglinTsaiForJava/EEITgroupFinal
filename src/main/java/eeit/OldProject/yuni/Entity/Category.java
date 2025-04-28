@@ -9,5 +9,17 @@ public enum Category {
     resource,
     endoflife,
     skills,
+    testingforpostman,
     selfcare;
+
+
+    public static boolean exists(String input) {
+        for (Category category : Category.values()) {
+            if (category.name().equalsIgnoreCase(input)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
+

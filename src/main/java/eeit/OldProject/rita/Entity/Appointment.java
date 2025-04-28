@@ -1,5 +1,6 @@
 package eeit.OldProject.rita.Entity;
 
+import eeit.OldProject.steve.Entity.Patient;
 import eeit.OldProject.steve.Entity.User;
 import eeit.OldProject.yuuhou.Entity.Caregiver;
 import jakarta.persistence.*;
@@ -24,6 +25,9 @@ public class Appointment {
 
     @Column(name = "CaregiverId")
     private Long caregiverId;
+
+    @Column(name = "PatientId")
+    private Integer patientId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TimeType",nullable = true)
@@ -84,6 +88,10 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "CaregiverId", insertable = false, updatable = false)
     private Caregiver caregiver;
+
+    @ManyToOne
+    @JoinColumn(name = "PatientId", insertable = false, updatable = false)
+    private Patient patient;
 
     public static enum AppointmentStatus {
         Pending,
