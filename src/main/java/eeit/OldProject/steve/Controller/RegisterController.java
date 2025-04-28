@@ -47,7 +47,7 @@ public class RegisterController {
         user.setEmailAddress(requestDTO.getEmailAddress());
         user.setPhoneNumber(requestDTO.getPhoneNumber());
         user.setAddress(requestDTO.getAddress());
-
+        //set timer
         String code = String.valueOf((int)(Math.random() * 900000) + 100000);
         PendingUser pendingUser = new PendingUser(user, code, LocalDateTime.now().plusMinutes(15));
         verificationStorage.save(user.getEmailAddress(), pendingUser);
