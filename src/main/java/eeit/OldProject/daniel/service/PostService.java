@@ -83,6 +83,8 @@ public class PostService {
 				post.setCreatedAt(saved.getCreatedAt());
 				post.setUser(saved.getUser());
 				post.setComments(saved.getComments());
+				post.setViews(saved.getViews());
+				post.setShare(saved.getShare());
 				return postRepo.save(post);
 			}
 		}

@@ -82,6 +82,8 @@ public class Post {
       LocalDateTime now = LocalDateTime.now();
       this.createdAt = now;
       this.modifiedAt = now;
+      this.views = 0L;
+      this.share = 0L;
     }
 
     @PreUpdate
