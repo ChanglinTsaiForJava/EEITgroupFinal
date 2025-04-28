@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ServiceRepository extends JpaRepository<ServiceItem, Long> {
+public interface ServiceItemRepository extends JpaRepository<ServiceItem, Long> {
+
 }

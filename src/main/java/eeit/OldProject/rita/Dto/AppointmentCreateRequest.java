@@ -1,4 +1,4 @@
-package eeit.OldProject.rita.dto;
+package eeit.OldProject.rita.Dto;
 
 import eeit.OldProject.rita.Entity.*;
 import lombok.Data;

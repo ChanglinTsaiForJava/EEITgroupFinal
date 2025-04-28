@@ -3,8 +3,12 @@ package eeit.OldProject.yuuhou.Entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import eeit.OldProject.rita.Service.NotificationService;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,6 +34,29 @@ import lombok.NoArgsConstructor;
 @Table(name = "caregivers") // 👉 指定對應資料表名稱
 public class Caregiver {
 
+//	  @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<CaregiverComment> comments = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<CaregiverStatistics> statistics = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<CaregiverLicense> licenses = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<ServiceRecord> serviceRecords = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<PaymentRecord> paymentRecords = new ArrayList<>();
+//
+//        Rita ???
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<NotificationService> notifications = new ArrayList<>();
+//
+//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<LoginLog> loginLogs = new ArrayList<>();
+	
+	
     @Id // 👉 主鍵
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 👉 對應 AUTO_INCREMENT
     @Column(name="CaregiverId")
@@ -65,8 +93,11 @@ public class Caregiver {
     @Column(nullable = false,name="YearOfExperience")
     private Integer yearOfExperience = 0;
 
-    @Column(nullable = false, length = 100,name="ServiceArea")
-    private String serviceArea;
+    @Column(nullable = false, length = 100,name="ServiceCity")
+    private String serviceCity;
+
+    @Column(nullable = false, length = 100,name="ServiceDistrict")
+    private String serviceDistrict;
 
     @Lob // 👉 @Lob 代表 large object（對應 TEXT 類型）
     @Column(name="Description",columnDefinition = "TEXT")
@@ -74,6 +105,8 @@ public class Caregiver {
 
     @Column(name="Reminder")
     private LocalDateTime reminder;
+
+
 
     @Column(nullable = false, precision = 10, scale = 2,name="HourlyRate")
     private BigDecimal hourlyRate = BigDecimal.ZERO;
@@ -96,4 +129,5 @@ public class Caregiver {
         ACTIVE,   // 啟用中
         INACTIVE  // 停用
     }
+    
 }

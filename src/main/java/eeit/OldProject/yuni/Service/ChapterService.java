@@ -41,19 +41,19 @@ public class ChapterService {
 
 	public Chapter updateChapter(Integer id, Chapter chapter) {
 		if (!chapterRepository.existsById(id)) {
-			System.out.println("ID " + id + " 不存在，無法更新");
+//			System.out.println("ID " + id + " 不存在，無法更新");
 			return null;
 		}
 
 		chapter.setChapterId(id);
 		Chapter updatedChapter = chapterRepository.save(chapter);
 
-		System.out.println("更新章節成功");
-		System.out.println("章節 ID：" + updatedChapter.getChapterId());
-		System.out.println("新標題：" + updatedChapter.getTitle());
-		System.out.println("新位置：" + updatedChapter.getPosition());
-		System.out.println("內容型態：" + updatedChapter.getContentType());
-		System.out.println("============================================");
+//		System.out.println("更新章節成功");
+//		System.out.println("章節 ID：" + updatedChapter.getChapterId());
+//		System.out.println("新標題：" + updatedChapter.getTitle());
+//		System.out.println("新位置：" + updatedChapter.getPosition());
+//		System.out.println("內容型態：" + updatedChapter.getContentType());
+//		System.out.println("============================================");
 
 		return updatedChapter;
 	}

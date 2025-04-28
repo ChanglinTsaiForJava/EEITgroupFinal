@@ -51,34 +51,33 @@ public class PostController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getById(@PathVariable Long id) {
-		Post findById = postService.getById(id);
-		if (findById != null) {
-			return ResponseEntity.ok(findById);
+		Post getById = postService.getById(id);
+		if (getById != null) {
+			return ResponseEntity.ok(getById);
 		}
 		return ResponseEntity.notFound().build();
 	}
 
 	@PostMapping
-	public ResponseEntity<?> create(@RequestBody Post p) {
-		Post save = postService.create(p);
-		if (save != null) {
-			URI uri = URI.create("/api/posts/" + p.getPostId());
-			return ResponseEntity.created(uri).body(save);
+	public ResponseEntity<?> create(@RequestBody Post post) {
+		Post create = postService.create(post);
+		if (create != null) {
+			URI uri = URI.create("/api/posts/" + post.getPostId());
+			return ResponseEntity.created(uri).body(create);
 		}
 		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> modify(@PathVariable Long id, @RequestBody Post p) {
+	public ResponseEntity<?> modify(@PathVariable Long id, @RequestBody Post post) {
 		if (id != null) {
-			p.setPostId(id);
-			Post modify = postService.modify(p);
+			post.setPostId(id);
+			Post modify = postService.modify(post);
 			if (modify != null) {
-				URI uri = URI.create("/api/posts/" + modify.getPostId());
-				return ResponseEntity.created(uri).body(modify);
+				return ResponseEntity.ok(modify);
 			}
 		}
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.notFound().build();
 	}
 
 	@DeleteMapping("/{id}")

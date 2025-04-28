@@ -39,7 +39,7 @@ class CommentServiceTest {
     	comment.setCreatedAt(LocalDateTime.now());
     	comment.setPost(savedPost);
     	
-    	Comment savedComment = commentService.save(comment);
+    	Comment savedComment = commentService.create(comment);
     	System.out.println("Saved Comment: " + savedComment);
     	
         List<Comment> comments = commentService.findByPostId(savedComment.getPost().getPostId());

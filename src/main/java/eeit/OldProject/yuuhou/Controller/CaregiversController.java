@@ -58,4 +58,6 @@ public class CaregiversController {
     public void delete(@PathVariable Long id) {
         caregiversService.deleteById(id);
     }
+
+
 }

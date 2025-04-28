@@ -129,7 +129,7 @@ public class Course {
 		this.price = price;
 	}
 
-//	@JsonIgnore
+	@JsonIgnore
 	public byte[] getCoverImage() {
 		return coverImage;
 	}

@@ -13,6 +13,7 @@ public class AppointmentDisease {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
     private Long Id;
 
     @Column(name = "DiseaseId")

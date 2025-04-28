@@ -60,7 +60,7 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "PaymentReferenceType", nullable = false)
-    private ReferenceType paymentReferenceType;
+    public PaymentReferenceType paymentReferenceType;
 
     @Column(name = "PointsEarned", nullable = true)
     private Integer pointsEarned;
@@ -75,11 +75,5 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "UserId", insertable = false, updatable = false)
     private User user;
-}
-
-enum PaymentStatus {
-    Pending,
-    Paid,
-    Failed
 }
 
