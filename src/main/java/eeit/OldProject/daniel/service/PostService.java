@@ -76,12 +76,13 @@ public class PostService {
 	}
 
 	public Post modify(Post post) {
-		if (post != null && post.getPostId() != null && post.getUser() != null && post.getUser().getUserId() != null) {
+		if (post != null && post.getPostId() != null) {
 			Optional<Post> postFindById = postRepo.findById(post.getPostId());
-			Optional<User> userFindById = userRepo.findById(post.getUser().getUserId());
-			if (postFindById.isPresent() && userFindById.isPresent()) {
+			if (postFindById.isPresent()) {
 				Post saved = postFindById.get();
 				post.setCreatedAt(saved.getCreatedAt());
+				post.setUser(saved.getUser());
+				post.setComments(saved.getComments());
 				return postRepo.save(post);
 			}
 		}
