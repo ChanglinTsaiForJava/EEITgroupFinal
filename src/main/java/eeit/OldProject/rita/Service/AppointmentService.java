@@ -140,6 +140,7 @@ public class AppointmentService {
         return saved;
     }
 
+
     /**
      * 計算總時數並返回格式化的時間
      **/
@@ -157,6 +158,7 @@ public class AppointmentService {
         // 寄信邏輯這邊可以整合 JavaMailSender 或其他寄信工具
         System.out.println("寄出 email: \n" + content);
     }
+
 
 
 
