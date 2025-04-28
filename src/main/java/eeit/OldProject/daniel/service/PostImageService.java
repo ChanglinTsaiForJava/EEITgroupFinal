@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eeit.OldProject.daniel.entity.Post;
 import eeit.OldProject.daniel.entity.PostImage;
 import eeit.OldProject.daniel.repository.PostImageRepository;
 
 @Service
+@Transactional
 public class PostImageService {
-	
+
 	@Autowired
 	private PostImageRepository imageRepo;
 
@@ -30,5 +32,15 @@ public class PostImageService {
 			}
 		});
 		return imageRepo.save(img);
+	}
+
+	public boolean deleteImage(Long imageId) {
+		if (imageId != null) {
+			if (imageRepo.existsById(imageId)) {
+				imageRepo.deleteById(imageId);
+				return true;
+			}
+		}
+		return false;
 	}
 }
