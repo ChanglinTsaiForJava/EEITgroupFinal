@@ -65,8 +65,11 @@ public class Caregiver {
     @Column(nullable = false,name="YearOfExperience")
     private Integer yearOfExperience = 0;
 
-    @Column(nullable = false, length = 100,name="ServiceArea")
-    private String serviceArea;
+    @Column(nullable = false, length = 100,name="ServiceCity")
+    private String serviceCity;
+
+    @Column(nullable = false, length = 100,name="ServiceDistrict")
+    private String serviceDistrict;
 
     @Lob // 👉 @Lob 代表 large object（對應 TEXT 類型）
     @Column(name="Description",columnDefinition = "TEXT")
@@ -74,6 +77,8 @@ public class Caregiver {
 
     @Column(name="Reminder")
     private LocalDateTime reminder;
+
+
 
     @Column(nullable = false, precision = 10, scale = 2,name="HourlyRate")
     private BigDecimal hourlyRate = BigDecimal.ZERO;

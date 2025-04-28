@@ -1,7 +1,10 @@
 package eeit.OldProject.rita.Service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,15 +16,21 @@ public class NotificationServiceRita {
         this.mailSender = mailSender;
     }
 
-    public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(to);
-        mail.setSubject(subject);
-        mail.setText(body);
-        mail.setFrom("your_email@example.com"); // 記得改信箱
+    public void sendEmail(String to, String subject, String htmlBody) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        mailSender.send(mail);
-        System.out.println("📬 已寄出 Email 給：" + to);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(htmlBody, true);
+            helper.setFrom("changlin.stevetsai@gmail.com");
 
+            mailSender.send(message);
+            System.out.println("📬 已寄出 HTML Email 給：" + to);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("寄送 Email 失敗", e);
+        }
     }
 }
