@@ -79,18 +79,13 @@
 			<scope>test</scope>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-security</artifactId>-->
-<!--		</dependency>-->
 
+		<!--YuuHou:為了加入import io.jsonwebtoken而加入的Jwt相依套件-->
+		<!-- JSON Web Token (JWT) library -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
-		<!--為了加入import io.jsonwebtoken而加入的Jwt相依套件-->
-		<!-- JSON Web Token (JWT) library -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -108,7 +103,7 @@
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
-		<!--為了加入import io.jsonwebtoken而加入的Jwt相依套件-->
+		<!--YuuHou:為了加入import io.jsonwebtoken而加入的Jwt相依套件-->
 
 
 		<dependency>

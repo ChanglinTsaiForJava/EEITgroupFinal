@@ -18,4 +18,7 @@ public interface CaregiversService {
 
     Optional<Caregiver> findByEmail(String email);
     
+    List<Caregiver> searchByServiceArea(String serviceCity, String serviceDistrict);
+
+    
 }
