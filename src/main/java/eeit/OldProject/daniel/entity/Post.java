@@ -77,6 +77,10 @@ public class Post {
     @JsonIgnoreProperties("post")
     private List<PostImage> images;
     
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("post")
+    private List<PostReaction> reactions;
+    
     @PrePersist
     protected void onCreate() {
       LocalDateTime now = LocalDateTime.now();
