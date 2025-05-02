@@ -6,6 +6,7 @@ import java.util.Optional;
 import eeit.OldProject.yuni.DTO.ChapterDto;
 import eeit.OldProject.yuni.DTO.PrevNextChapterDto;
 import eeit.OldProject.yuni.Entity.Course;
+import eeit.OldProject.yuni.Repository.ChapterRepository;
 import eeit.OldProject.yuni.Repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,9 @@ public class ChapterController {
 
 	@Autowired
 	private CourseRepository courseRepository;
+
+	@Autowired
+	ChapterRepository chapterRepository;
 
 //	@GetMapping
 //	public List<Chapter> getAllChapters() {
@@ -100,15 +104,24 @@ public class ChapterController {
 //	}
 
 
-	@GetMapping("/course/{courseId}")
+//	@GetMapping("/course/{courseId}")
+//	public ResponseEntity<?> getChaptersByCourseId(@PathVariable Integer courseId) {
+//		List<Chapter> chapters = chapterService.getChaptersByCourseId(courseId);
+//		if (chapters.isEmpty()) {
+//			return ResponseEntity.status(404).body("課程 ID " + courseId + " 下無章節資料");
+//		} else {
+//			return ResponseEntity.ok(chapters);
+//		}
+//	}
+
+	@GetMapping("/chapters/course/{courseId}")
 	public ResponseEntity<?> getChaptersByCourseId(@PathVariable Integer courseId) {
-		List<Chapter> chapters = chapterService.getChaptersByCourseId(courseId);
-		if (chapters.isEmpty()) {
-			return ResponseEntity.status(404).body("課程 ID " + courseId + " 下無章節資料");
-		} else {
-			return ResponseEntity.ok(chapters);
-		}
+		List<Chapter> chapters = chapterRepository.findByCourse_CourseIdOrderByPositionAsc(courseId);
+		List<ChapterDto> result = chapters.stream().map(ChapterDto::new).toList();
+		return ResponseEntity.ok(result);
 	}
+
+
 
 //	@PostMapping("/admin")
 //	public Chapter createChapter(@RequestBody Chapter chapter) {

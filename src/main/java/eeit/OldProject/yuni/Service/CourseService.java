@@ -24,8 +24,12 @@ public class CourseService {
         return courseRepository.findById(id);
     }
 
+//    public List<Course> searchCoursesByKeyword(String keyword) {
+//        return courseRepository.searchByKeyword(keyword);
+//    }
+
     public List<Course> searchCoursesByKeyword(String keyword) {
-        return courseRepository.searchByKeyword(keyword);
+        return courseRepository.searchByKeyword("%" + keyword + "%");
     }
 
     public List<Course> getCoursesByCategory(Category category) {
