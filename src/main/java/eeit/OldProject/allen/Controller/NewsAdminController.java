@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -73,9 +74,12 @@ public class NewsAdminController {
 	// 🔍 彈性搜尋（分類、關鍵字、狀態、時間 + 排序）
 	@PostMapping("/search")
 	public Page<News> searchFlexible(
-			@RequestBody NewsSearchRequest searchRequest,
-			Pageable pageable) {
-		return newsService.searchFlexiblePaged(searchRequest, pageable);
+	    @RequestBody NewsSearchRequest searchRequest,
+	    @RequestParam int page,
+	    @RequestParam int size
+	) {
+	    Pageable pageable = PageRequest.of(page, size, Sort.by("publishAt").descending());
+	    return newsService.searchFlexiblePaged(searchRequest, pageable);
 	}
 
 	// 發布新聞
@@ -131,11 +135,13 @@ public class NewsAdminController {
 			file.transferTo(new File(filePath));
 			
 			//回傳圖片URL(localhost)
-			String imageUrl = "http://localhost:8082/uploads/news_thumbnails/" + datePath + filename;
-			
+			String relativePath = "/uploads/news_thumbnails/" + datePath + filename;
+			String fullUrl = "http://localhost:8082" + relativePath;
+
 			Map<String, String> result = new HashMap<>();
-	        result.put("url", imageUrl);
-	        return result;
+			result.put("url", fullUrl);           // ✅ 前端預覽用
+			result.put("path", relativePath);     // ✅ 寫入 DB 用（你要改這個）
+			return result;
 			
 		} catch (Exception e) {	
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "圖片上傳失敗", e);
