@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,6 +32,7 @@ import eeit.OldProject.allen.Service.NewsService;
 
 @RestController
 @RequestMapping("/news/admin")
+@CrossOrigin(origins = "http://localhost:5173")
 public class NewsAdminController {
 
 	@Autowired
@@ -129,7 +131,7 @@ public class NewsAdminController {
 			file.transferTo(new File(filePath));
 			
 			//回傳圖片URL(localhost)
-			String imageUrl = "http://localhost:8082/uploads/news_thumbnails/" + filename;
+			String imageUrl = "http://localhost:8082/uploads/news_thumbnails/" + datePath + filename;
 			
 			Map<String, String> result = new HashMap<>();
 	        result.put("url", imageUrl);
