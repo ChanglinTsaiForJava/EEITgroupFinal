@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eeit.OldProject.daniel.entity.Post;
+import eeit.OldProject.daniel.entity.post.Post;
 import eeit.OldProject.daniel.service.PostService;
 
 @RestController

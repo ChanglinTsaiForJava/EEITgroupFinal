@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eeit.OldProject.daniel.entity.Post;
+import eeit.OldProject.daniel.entity.post.Post;
 import eeit.OldProject.daniel.repository.PostRepository;
 import eeit.OldProject.steve.Entity.User;
 import eeit.OldProject.steve.Repository.UserRepository;

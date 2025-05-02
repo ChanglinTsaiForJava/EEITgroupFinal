@@ -1,10 +1,12 @@
-package eeit.OldProject.daniel.entity;
+package eeit.OldProject.daniel.entity.reply;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import eeit.OldProject.daniel.entity.comment.Comment;
+import eeit.OldProject.daniel.entity.useless.ReplyReport;
 import eeit.OldProject.steve.Entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

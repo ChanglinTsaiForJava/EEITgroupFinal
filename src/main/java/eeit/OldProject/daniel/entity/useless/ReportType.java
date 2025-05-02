@@ -1,4 +1,4 @@
-package eeit.OldProject.daniel.entity;
+package eeit.OldProject.daniel.entity.useless;
 
 import java.util.List;
 

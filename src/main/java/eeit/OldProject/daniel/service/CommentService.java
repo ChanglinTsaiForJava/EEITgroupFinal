@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eeit.OldProject.daniel.entity.Comment;
-import eeit.OldProject.daniel.entity.Post;
+import eeit.OldProject.daniel.entity.comment.Comment;
+import eeit.OldProject.daniel.entity.post.Post;
 import eeit.OldProject.daniel.repository.CommentRepository;
 import eeit.OldProject.daniel.repository.PostRepository;
 import eeit.OldProject.steve.Entity.User;

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import eeit.OldProject.daniel.entity.Comment;
-import eeit.OldProject.daniel.entity.CommentReaction;
+import eeit.OldProject.daniel.entity.comment.Comment;
+import eeit.OldProject.daniel.entity.comment.CommentReaction;
 import eeit.OldProject.steve.Entity.User;
 import eeit.OldProject.steve.Repository.UserRepository;
 

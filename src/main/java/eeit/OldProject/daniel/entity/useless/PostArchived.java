@@ -1,9 +1,10 @@
-package eeit.OldProject.daniel.entity;
+package eeit.OldProject.daniel.entity.useless;
 
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import eeit.OldProject.daniel.entity.post.Post;
 import eeit.OldProject.steve.Entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

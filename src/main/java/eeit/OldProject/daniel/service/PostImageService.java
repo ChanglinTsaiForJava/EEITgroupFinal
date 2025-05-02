@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eeit.OldProject.daniel.entity.Post;
-import eeit.OldProject.daniel.entity.PostImage;
+import eeit.OldProject.daniel.entity.post.Post;
+import eeit.OldProject.daniel.entity.post.PostImage;
 import eeit.OldProject.daniel.repository.PostImageRepository;
 
 @Service

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eeit.OldProject.daniel.entity.PostCategory;
-import eeit.OldProject.daniel.entity.PostCategoryClassifier;
+import eeit.OldProject.daniel.entity.post.PostCategory;
+import eeit.OldProject.daniel.entity.post.PostCategoryClassifier;
 import eeit.OldProject.daniel.service.PostCategoryService;
 
 @RestController

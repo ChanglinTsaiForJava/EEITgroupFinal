@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eeit.OldProject.daniel.entity.Comment;
-import eeit.OldProject.daniel.entity.CommentReaction;
-import eeit.OldProject.daniel.entity.Post;
-import eeit.OldProject.daniel.entity.PostReaction;
-import eeit.OldProject.daniel.entity.Reply;
-import eeit.OldProject.daniel.entity.ReplyReaction;
+import eeit.OldProject.daniel.entity.comment.Comment;
+import eeit.OldProject.daniel.entity.comment.CommentReaction;
+import eeit.OldProject.daniel.entity.post.Post;
+import eeit.OldProject.daniel.entity.post.PostReaction;
+import eeit.OldProject.daniel.entity.reply.Reply;
+import eeit.OldProject.daniel.entity.reply.ReplyReaction;
 import eeit.OldProject.daniel.repository.CommentReactionRepository;
 import eeit.OldProject.daniel.repository.PostReactionRepository;
 import eeit.OldProject.daniel.repository.ReplyReactionRepository;

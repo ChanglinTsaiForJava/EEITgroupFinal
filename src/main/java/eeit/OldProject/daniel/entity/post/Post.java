@@ -1,10 +1,11 @@
-package eeit.OldProject.daniel.entity;
+package eeit.OldProject.daniel.entity.post;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import eeit.OldProject.daniel.entity.comment.Comment;
 import eeit.OldProject.steve.Entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -80,6 +81,10 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("post")
     private List<PostReaction> reactions;
+    
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("post")
+    private List<PostCategoryClassifier> postCategoryClassifiers;
     
     @PrePersist
     protected void onCreate() {

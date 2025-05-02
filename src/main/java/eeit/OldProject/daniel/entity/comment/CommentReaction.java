@@ -1,4 +1,4 @@
-package eeit.OldProject.daniel.entity;
+package eeit.OldProject.daniel.entity.comment;
 
 import java.time.LocalDateTime;
 

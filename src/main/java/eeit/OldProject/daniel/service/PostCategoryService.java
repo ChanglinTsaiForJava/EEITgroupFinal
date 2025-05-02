@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eeit.OldProject.daniel.entity.Post;
-import eeit.OldProject.daniel.entity.PostCategory;
-import eeit.OldProject.daniel.entity.PostCategoryClassifier;
+import eeit.OldProject.daniel.entity.post.Post;
+import eeit.OldProject.daniel.entity.post.PostCategory;
+import eeit.OldProject.daniel.entity.post.PostCategoryClassifier;
 import eeit.OldProject.daniel.repository.PostCategoryClassifierRepository;
 import eeit.OldProject.daniel.repository.PostCategoryRepository;
 
