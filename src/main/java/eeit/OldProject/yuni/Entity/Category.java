@@ -21,5 +21,14 @@ public enum Category {
         }
         return false;
     }
+
+    public static Category getByNameIgnoreCase(String input) {
+        for (Category category : Category.values()) {
+            if (category.name().equalsIgnoreCase(input)) {
+                return category;
+            }
+        }
+        throw new IllegalArgumentException("無對應的分類：" + input);
+    }
 }
 

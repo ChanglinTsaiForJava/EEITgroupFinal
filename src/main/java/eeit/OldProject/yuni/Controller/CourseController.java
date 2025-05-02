@@ -81,19 +81,35 @@ public class CourseController {
 //    }
 //}
 
+//    @GetMapping("/category/{category}")
+//    public ResponseEntity<?> getCoursesByCategory(@PathVariable String category) {
+//        if (!Category.exists(category)) {
+//            return ResponseEntity.status(400).body("查無此類別");
+//        }
+//        Category categoryEnum = Category.valueOf(category.toLowerCase());
+//        List<Course> courses = courseService.getCoursesByCategory(categoryEnum);
+//        if (courses.isEmpty()) {
+//            return ResponseEntity.status(404).body("查無此類別（" + category+")之課程");
+//        } else {
+//            return ResponseEntity.ok(courses);
+//        }
+//
+//    }
+
     @GetMapping("/category/{category}")
     public ResponseEntity<?> getCoursesByCategory(@PathVariable String category) {
         if (!Category.exists(category)) {
             return ResponseEntity.status(400).body("查無此類別");
         }
-        Category categoryEnum = Category.valueOf(category.toLowerCase());
+
+        Category categoryEnum = Category.getByNameIgnoreCase(category);
         List<Course> courses = courseService.getCoursesByCategory(categoryEnum);
+
         if (courses.isEmpty()) {
-            return ResponseEntity.status(404).body("查無此類別（" + category+")之課程");
+            return ResponseEntity.status(404).body("查無此類別（" + category + "）之課程");
         } else {
             return ResponseEntity.ok(courses);
         }
-
     }
 
 

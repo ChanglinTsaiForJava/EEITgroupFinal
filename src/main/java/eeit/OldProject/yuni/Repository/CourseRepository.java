@@ -14,8 +14,13 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     // 模糊search
-    @Query("SELECT c FROM Course c WHERE c.title LIKE %:keyword% OR c.description LIKE %:keyword%")
+//    @Query("SELECT c FROM Course c WHERE c.title LIKE %:keyword% OR c.description LIKE %:keyword%")
+//    List<Course> searchByKeyword(@Param("keyword") String keyword);
+    @Query("SELECT c FROM Course c WHERE c.title LIKE :keyword")
     List<Course> searchByKeyword(@Param("keyword") String keyword);
+
+//    OR c.description LIKE :keyword
+
 
 
     // 分類搜尋(enum)
