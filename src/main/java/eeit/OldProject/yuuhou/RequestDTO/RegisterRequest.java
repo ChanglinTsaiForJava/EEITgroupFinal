@@ -6,7 +6,7 @@ import java.sql.Date;
 import lombok.Data;
 
 @Data
-public class RegisterReques{
+public class RegisterRequest{
     private String caregiverName;
     private String gender;
     private Date birthday;
@@ -16,7 +16,8 @@ public class RegisterReques{
     private String nationality;
     private String languages;
     private Integer yearOfExperience;
-    private String serviceArea;
+    private String serviceCity;
+    private String serviceDistrict; 
     private String description;
     private String photoPath;
     private BigDecimal hourlyRate;

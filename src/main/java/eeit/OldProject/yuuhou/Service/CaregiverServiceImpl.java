@@ -44,5 +44,14 @@ public class CaregiverServiceImpl implements CaregiversService {
     public Optional<Caregiver> findByEmail(String email) {
         return repository.findByEmail(email);
     }
+    
+    @Override
+    public List<Caregiver> searchByServiceArea(String serviceCity, String serviceDistrict) {
+        return repository.findByServiceCityContainingAndServiceDistrictContaining(
+                serviceCity != null ? serviceCity : "",
+                serviceDistrict != null ? serviceDistrict : ""
+        );
+    }
+
 }
 

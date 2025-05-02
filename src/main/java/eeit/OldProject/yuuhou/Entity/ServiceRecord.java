@@ -17,8 +17,13 @@ public class ServiceRecord {
     @Column(name = "AppointmentId", nullable = false)
     private Long appointmentId;
 
-    @Column(name = "CaregiverId", nullable = false)
-    private Long caregiverId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CaregiverId", referencedColumnName = "CareGiverId")
+    private Caregiver caregiver;
+    
+    
+//    @Column(name = "CaregiverId", nullable = false)
+//    private Long caregiverId;
 
     @Column(name = "ActualStartTime", nullable = false)
     private LocalDateTime actualStartTime;
