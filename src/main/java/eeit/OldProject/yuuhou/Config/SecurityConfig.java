@@ -36,17 +36,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors() // ✅ 開啟 CORS 支援
+            .and()
             .csrf().disable()
             .exceptionHandling()
                 .authenticationEntryPoint(entryPoint)
             .and()
             .authorizeHttpRequests()
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // ✅ 處理預檢請求
                 .requestMatchers(
-                    "/api/auth/**",    // 登入/註冊/忘記密碼 API 都開
-                    "/static/**",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
+                    "/api/auth/**", "/static/**", "/css/**", "/js/**", "/images/**"
                 ).permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/caregiver/**").hasRole("CAREGIVER")
@@ -56,10 +55,12 @@ public class SecurityConfig {
                 .requestMatchers("/category/**").permitAll()
                 .requestMatchers("/api/courses/**").permitAll()
                 .requestMatchers("/api/chapters/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 }

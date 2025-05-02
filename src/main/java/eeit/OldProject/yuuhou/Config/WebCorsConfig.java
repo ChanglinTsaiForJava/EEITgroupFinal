@@ -16,6 +16,7 @@ public class WebCorsConfig {
                         .allowedOrigins("http://localhost:5173")
                         .allowedMethods("*")
                         .allowedHeaders("*")
+                        .exposedHeaders("*")       
                         .allowCredentials(true); // 如果你用到 Cookie 或 Authorization header
             }
         };

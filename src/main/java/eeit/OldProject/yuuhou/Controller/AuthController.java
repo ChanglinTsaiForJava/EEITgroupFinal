@@ -6,6 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.Authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -228,6 +236,37 @@ public class AuthController {
 
         return ResponseEntity.ok("✅ 密碼重設成功！可以使用新密碼登入了！");
     }
+    
+    @PostMapping("/upload-photo")
+    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file,
+                                         Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
+
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
+        }
+
+        Caregiver caregiver = caregiverOpt.get();
+
+        try {
+            // 存檔案到 static/images 資料夾（先確認有此資料夾）
+            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
+            Path path = Paths.get("src/main/resources/static/yuuhou/images/" + filename);
+            Files.createDirectories(path.getParent()); // 若目錄不存在則建立
+            Files.write(path, file.getBytes());
+
+            // 設定路徑到資料庫
+            caregiver.setPhotoPath("/yuuhou/images/" + filename);
+            caregiversService.save(caregiver);
+
+            return ResponseEntity.ok(Collections.singletonMap("photoPath", caregiver.getPhotoPath()));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("上傳失敗");
+        }
+    }
+
+    
 
     
     

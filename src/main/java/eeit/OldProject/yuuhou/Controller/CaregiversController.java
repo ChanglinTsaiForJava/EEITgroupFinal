@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
 
 import eeit.OldProject.yuuhou.Entity.Caregiver;
 import eeit.OldProject.yuuhou.Service.CaregiversService;
@@ -31,6 +35,40 @@ public class CaregiversController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
+    @PostMapping("/upload-photo")
+    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) {
+        // 取得目前登入者 Email
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        // 找到登入者的照顧者資料
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到照顧者");
+        }
+
+        Caregiver caregiver = caregiverOpt.get();
+
+        try {
+            // 🔧 儲存圖片的資料夾
+            String folder = "src/main/resources/static/yuuhou/images/";
+            String filename = "caregiver_" + caregiver.getCaregiverId() + "_" + file.getOriginalFilename();
+            File dest = new File(folder + filename);
+            file.transferTo(dest);
+
+            // 📌 存入資料庫：例如 /yuuhou/images/caregiver_1_頭像.jpg
+            caregiver.setPhotoPath("/yuuhou/images/" + filename);
+            caregiversService.save(caregiver);
+
+            return ResponseEntity.ok("✅ 上傳成功！");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ 上傳失敗！");
+        }
+    }
+
+    
     // ✅ 取得所有照顧者（目前預設開放，之後可以考慮限制）
     @GetMapping
     public List<Caregiver> getAll() {
