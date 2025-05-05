@@ -1,4 +1,4 @@
-package eeit.OldProject.daniel.repository;
+package eeit.OldProject.daniel.repository.comment;
 
 import java.util.List;
 

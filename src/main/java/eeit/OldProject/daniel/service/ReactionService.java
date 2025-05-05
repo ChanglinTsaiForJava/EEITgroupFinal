@@ -10,9 +10,9 @@ import eeit.OldProject.daniel.entity.post.Post;
 import eeit.OldProject.daniel.entity.post.PostReaction;
 import eeit.OldProject.daniel.entity.reply.Reply;
 import eeit.OldProject.daniel.entity.reply.ReplyReaction;
-import eeit.OldProject.daniel.repository.CommentReactionRepository;
-import eeit.OldProject.daniel.repository.PostReactionRepository;
-import eeit.OldProject.daniel.repository.ReplyReactionRepository;
+import eeit.OldProject.daniel.repository.comment.CommentReactionRepository;
+import eeit.OldProject.daniel.repository.post.PostReactionRepository;
+import eeit.OldProject.daniel.repository.reply.ReplyReactionRepository;
 import eeit.OldProject.steve.Entity.User;
 
 @Service

@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eeit.OldProject.daniel.entity.comment.Comment;
 import eeit.OldProject.daniel.entity.post.Post;
-import eeit.OldProject.daniel.repository.CommentRepository;
-import eeit.OldProject.daniel.repository.PostRepository;
+import eeit.OldProject.daniel.repository.comment.CommentRepository;
+import eeit.OldProject.daniel.repository.post.PostRepository;
 import eeit.OldProject.steve.Entity.User;
 import eeit.OldProject.steve.Repository.UserRepository;
 

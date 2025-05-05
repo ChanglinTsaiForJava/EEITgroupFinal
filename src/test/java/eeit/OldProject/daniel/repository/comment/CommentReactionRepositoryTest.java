@@ -1,4 +1,4 @@
-package eeit.OldProject.daniel.repository;
+package eeit.OldProject.daniel.repository.comment;
 
 import java.time.LocalDateTime;
 
@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import eeit.OldProject.daniel.entity.comment.Comment;
 import eeit.OldProject.daniel.entity.comment.CommentReaction;
+import eeit.OldProject.daniel.repository.comment.CommentReactionRepository;
+import eeit.OldProject.daniel.repository.comment.CommentRepository;
 import eeit.OldProject.steve.Entity.User;
 import eeit.OldProject.steve.Repository.UserRepository;
 

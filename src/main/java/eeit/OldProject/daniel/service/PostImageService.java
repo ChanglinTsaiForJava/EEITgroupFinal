@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eeit.OldProject.daniel.entity.post.Post;
 import eeit.OldProject.daniel.entity.post.PostImage;
-import eeit.OldProject.daniel.repository.PostImageRepository;
+import eeit.OldProject.daniel.repository.post.PostImageRepository;
 
 @Service
 @Transactional
