@@ -1,5 +1,6 @@
 package eeit.OldProject.steve.Entity;
 
+import eeit.OldProject.yuni.Entity.Course;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,10 @@ public class Favorite_course {
 
     @Column(name = "CourseId")
     private Long courseId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CourseId", referencedColumnName = "CourseId", insertable = false, updatable = false)
+    private Course course;
 }
 
 
