@@ -59,8 +59,8 @@ public class SecurityConfig {
 //                .requestMatchers("/**").permitAll()
 
                 .anyRequest().authenticated()
-            .and()
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .and()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
