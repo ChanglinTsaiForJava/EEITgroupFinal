@@ -34,6 +34,7 @@ public interface ProgressRepository extends JpaRepository<Progress, Integer> {
     List<Course> findDistinctCoursesByUserId(@Param("userId") Long userId);
 
 
+
 }
 
 

@@ -247,4 +247,22 @@ public class ProgressController {
     }
 
 
+    @DeleteMapping("/user/{userId}/course/{courseId}")
+    public ResponseEntity<?> deleteProgressByUserAndCourse(@PathVariable Long userId, @PathVariable Integer courseId) {
+        if (!userRepository.existsById(userId)) {
+            return ResponseEntity.status(404).body("查無此用戶");
+        }
+        if (!courseRepository.existsById(courseId)) {
+            return ResponseEntity.status(404).body("查無此課程");
+        }
+
+        List<Progress> progresses = progressRepository.findByUserId_UserIdAndCourseId_CourseId(userId, courseId);
+        if (progresses.isEmpty()) {
+            return ResponseEntity.status(404).body("找不到此使用者與課程的進度資料");
+        }
+
+        progressRepository.deleteAll(progresses);
+        return ResponseEntity.ok("已成功移除課程");
+    }
+
 }
