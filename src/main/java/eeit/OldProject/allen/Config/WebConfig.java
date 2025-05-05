@@ -15,13 +15,13 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/uploads/**").addResourceLocations("file:uploads/");
 	}
 
-	// CORS 設定（允許前端跨來源存取）
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**") // 所有 API
-				.allowedOrigins("http://localhost:5173") // 前端開發網址
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH").allowedHeaders("*").allowCredentials(true); // 若有登入驗證可保留
-																														// cookie
-	}
+	// CORS 設定（允許前端跨來源存取）update!!
+//	@Override
+//	public void addCorsMappings(CorsRegistry registry) {
+//		registry.addMapping("/**") // 所有 API
+//				.allowedOrigins("http://localhost:5173") // 前端開發網址
+//				.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH").allowedHeaders("*").allowCredentials(true); // 若有登入驗證可保留
+//																														// cookie
+//	}
 
 }
