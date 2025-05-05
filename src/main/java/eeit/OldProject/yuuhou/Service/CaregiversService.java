@@ -20,5 +20,4 @@ public interface CaregiversService {
     
     List<Caregiver> searchByServiceArea(String serviceCity, String serviceDistrict);
 
-    
 }
