@@ -15,4 +15,5 @@ public class SpringBootConfig implements WebMvcConfigurer {
 				.allowedHeaders("*")
 				.allowCredentials(true);
 	}
+	//life sucks
 }
