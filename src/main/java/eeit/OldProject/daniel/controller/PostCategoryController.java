@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eeit.OldProject.daniel.entity.PostCategory;
-import eeit.OldProject.daniel.entity.PostCategoryClassifier;
+import eeit.OldProject.daniel.dto.PostCategoryAssignBatchDto;
+import eeit.OldProject.daniel.entity.post.category.PostCategory;
+import eeit.OldProject.daniel.entity.post.category.PostCategoryClassifier;
 import eeit.OldProject.daniel.service.PostCategoryService;
 
 @RestController
@@ -34,6 +35,14 @@ public class PostCategoryController {
         return ResponseEntity.ok(svc.createCategory(c));
     }
 
+    @PostMapping("/assign-batch")
+    public ResponseEntity<List<PostCategoryClassifier>> batchAssign(
+    		@RequestBody PostCategoryAssignBatchDto dto) {
+    	Long postId = dto.getPostId();
+    	List<Long> categoryIds = dto.getCategoryIds();
+    	return ResponseEntity.ok(svc.assignCategories(postId, categoryIds));
+    }
+    
     @PostMapping("/assign")
     public ResponseEntity<PostCategoryClassifier> assign(
             @RequestParam Long postId,
