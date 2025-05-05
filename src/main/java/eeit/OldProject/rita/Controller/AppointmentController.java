@@ -186,17 +186,22 @@ public class AppointmentController {
         } else {
             return ResponseEntity.badRequest().build(); // 如果時間都沒有填寫，返回錯誤
         }
-        // 處理圖片路徑
+     // 處理圖片路徑
         caregivers.forEach(caregiver -> {
             if (caregiver.getPhotoPath() != null && !caregiver.getPhotoPath().isEmpty()) {
-                // 假設圖片存儲在伺服器的 images/caregivers 資料夾中
-                caregiver.setPhotoPath("http://your-server-url/images/caregivers/" + caregiver.getPhotoPath());
+                // 检查图片路径是否已包含 S3 域名，避免重复拼接
+                if (!caregiver.getPhotoPath().startsWith("https://finalimagesbucket.s3.amazonaws.com/")) {
+                    caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/" + caregiver.getPhotoPath().replaceAll("^/+", ""));
+                }
             } else {
-                // 如果沒有圖片，使用預設圖片
-                caregiver.setPhotoPath("http://your-server-url/images/caregivers/default-placeholder.jpg");
+                // 如果没有图片，使用默认图片
+                caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/default-placeholder.jpg");
             }
         });
+
         return ResponseEntity.ok(caregivers);
+
+
     }
 
 
