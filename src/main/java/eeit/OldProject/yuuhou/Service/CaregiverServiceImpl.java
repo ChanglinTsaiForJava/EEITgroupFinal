@@ -7,38 +7,33 @@ import eeit.OldProject.yuuhou.Entity.Caregiver;
 import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
 @Service
 public class CaregiverServiceImpl implements CaregiversService {
-    @Autowired
-    private CaregiversRepository repository;
-    @Override
-    public List<Caregiver> findAll() {
-        return repository.findAll();
-    }
-
-    @Override
-    public Optional<Caregiver> findById(Long id) {
-        return repository.findById(id);
-    }
-
-    @Override
-    public Caregiver save(Caregiver caregiver) {
-        return repository.save(caregiver);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        repository.deleteById(id);
-    }
-
-    @Override
-    public Optional<Caregiver> findByEmail(String email) {
-        return repository.findByEmail(email);
-    }
-    @Override
-    public List<Caregiver> searchByServiceArea(String serviceCity, String serviceDistrict) {
-        return repository.findByServiceCityContainingAndServiceDistrictContaining(
-                serviceCity != null ? serviceCity : "",
-                serviceDistrict != null ? serviceDistrict : ""
-        );
-    }
+   @Autowired
+   private CaregiversRepository repository;
+   @Override
+   public List<Caregiver> findAll() {
+       return repository.findAll();
+   }
+   @Override
+   public Optional<Caregiver> findById(Long id) {
+       return repository.findById(id);
+   }
+   @Override
+   public Caregiver save(Caregiver caregiver) {
+       return repository.save(caregiver);
+   }
+   @Override
+   public void deleteById(Long id) {
+       repository.deleteById(id);
+   }
+   @Override
+   public Optional<Caregiver> findByEmail(String email) {
+       return repository.findByEmail(email);
+   }
+   @Override
+   public List<Caregiver> searchByServiceArea(String serviceCity, String serviceDistrict) {
+       return repository.findByServiceCityContainingAndServiceDistrictContaining(
+               serviceCity != null ? serviceCity : "",
+               serviceDistrict != null ? serviceDistrict : ""
+       );
+   }
 }
-
