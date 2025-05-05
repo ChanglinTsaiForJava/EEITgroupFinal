@@ -1,7 +1,7 @@
-package eeit.OldProject.daniel.repository;
+package eeit.OldProject.daniel.repository.post.category;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import eeit.OldProject.daniel.entity.post.PostCategory;
+import eeit.OldProject.daniel.entity.post.category.PostCategory;
 
 public interface PostCategoryRepository extends JpaRepository<PostCategory, Long> {}

@@ -1,6 +1,7 @@
-package eeit.OldProject.daniel.entity;
+package eeit.OldProject.daniel.entity.post.tag;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,6 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,7 +42,20 @@ public class Tag {
     @Column(name = "CreatedAt")
     private LocalDateTime createdAt;
 
+    @Builder.Default
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("tag")
-    private List<PostTag> postTags;
+    private List<PostTag> postTags = new ArrayList<>();;
+    
+    @PrePersist
+    protected void onCreate() {
+      LocalDateTime now = LocalDateTime.now();
+      this.createdAt = now;
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+    	LocalDateTime now = LocalDateTime.now();
+    	this.createdAt = now;
+    }
 }

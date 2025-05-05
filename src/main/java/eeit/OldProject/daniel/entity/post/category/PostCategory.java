@@ -1,4 +1,4 @@
-package eeit.OldProject.daniel.entity.post;
+package eeit.OldProject.daniel.entity.post.category;
 
 import java.util.List;
 
