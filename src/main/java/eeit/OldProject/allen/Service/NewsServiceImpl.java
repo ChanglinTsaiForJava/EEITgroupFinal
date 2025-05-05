@@ -39,8 +39,11 @@ public class NewsServiceImpl implements NewsService {
 	public News createNews(News news) {
 		if (news.getStatus() == null) {
 			news.setStatus((byte) 0); // 預設為草稿
-			news.setCreateAt(LocalDateTime.now()); // 預設時間為當下
 		}
+		
+		news.setCreateAt(LocalDateTime.now()); // 預設時間為當下
+		news.setCreateBy("admin"); //預設為admin
+		
 		return newsRepository.save(news);
 	}
 

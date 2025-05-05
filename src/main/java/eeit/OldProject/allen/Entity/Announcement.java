@@ -1,8 +1,9 @@
 package eeit.OldProject.allen.Entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -18,27 +19,23 @@ public class Announcement {
     @Column(name = "AnnouncementID")
     private Integer announcementId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "Title", nullable = false)
+    private String title;
+
+    @ManyToOne
     @JoinColumn(name = "CategoryID", nullable = false)
     private AnnouncementCategory category;
 
-    @Column(name = "Title", nullable = false, length = 100)
-    private String title;
-
-    @Column(name = "Content", columnDefinition = "LONGTEXT")
-    private String content;
-
-    @Column(name = "CreateBy", nullable = false, length = 100)
+    @Column(name = "CreateBy", nullable = false)
     private String createBy;
 
-    @CreationTimestamp
-    @Column(name = "CreateAt", updatable = false)
+    @Column(name = "CreateAt")
     private LocalDateTime createAt;
 
     @Column(name = "PublishAt")
     private LocalDateTime publishAt;
 
-    @Column(name = "ModifyBy", nullable = false, length = 100)
+    @Column(name = "ModifyBy")
     private String modifyBy;
 
     @Column(name = "ModifyAt")
@@ -52,4 +49,7 @@ public class Announcement {
 
     @Column(name = "PinTop")
     private Integer pinTop;
+
+    @Column(name = "Content")
+    private String content;
 }
