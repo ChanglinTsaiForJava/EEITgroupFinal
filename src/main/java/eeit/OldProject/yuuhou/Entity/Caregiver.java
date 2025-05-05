@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eeit.OldProject.rita.Service.NotificationService;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,27 +33,34 @@ import lombok.NoArgsConstructor;
 @Table(name = "caregivers") // 👉 指定對應資料表名稱
 public class Caregiver {
 
-//	  @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-//	    private List<CaregiverComment> comments = new ArrayList<>();
-//
-//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-//	    private List<CaregiverStatistics> statistics = new ArrayList<>();
-//
-//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-//	    private List<CaregiverLicense> licenses = new ArrayList<>();
-//
-//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-//	    private List<ServiceRecord> serviceRecords = new ArrayList<>();
-//
-//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-//	    private List<PaymentRecord> paymentRecords = new ArrayList<>();
-//
+	@Builder.Default
+	  @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<CaregiverComment> comments = new ArrayList<>();
+
+	@Builder.Default
+	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<CaregiverLicense> licenses = new ArrayList<>();
+	  
+	@Builder.Default
+	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<CaregiverStatistics> statistics = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<LoginLog> loginLogs = new ArrayList<>();
+	
+	@Builder.Default
+	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<PaymentRecord> paymentRecords = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ServiceRecord> serviceRecords = new ArrayList<>();
+	
 //        Rita ???
 //	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
 //	    private List<NotificationService> notifications = new ArrayList<>();
-//
-//	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-//	    private List<LoginLog> loginLogs = new ArrayList<>();
+
 	
 	
     @Id // 👉 主鍵
@@ -120,9 +126,13 @@ public class Caregiver {
     @Enumerated(EnumType.STRING) // 👉 ENUM 類型，使用字串對應資料庫值
     @Column(nullable = false, length = 10,name="Status")
     private Status status = Status.ACTIVE;
+    
+    @Column(nullable = false)
+    private boolean isVerified = false;
 
     @Column(nullable = false, name = "Created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+    
 
     // ENUM 狀態類別
     public enum Status {

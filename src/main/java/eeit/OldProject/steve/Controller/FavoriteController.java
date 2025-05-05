@@ -21,7 +21,7 @@ public class FavoriteController {
 
     // 新增收藏課程
     @PostMapping("/addCourse")
-    public ResponseEntity<?> addFavoriteCourse(@RequestParam Long courseId, HttpSession session) {
+    public ResponseEntity<?> addFavoriteCourse(@RequestParam Integer courseId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
         try {
@@ -87,7 +87,7 @@ public class FavoriteController {
 
     // 刪除收藏課程
     @DeleteMapping("/deleteCourse")
-    public ResponseEntity<?> deleteFavoriteCourse(@RequestParam Long courseId, HttpSession session) {
+    public ResponseEntity<?> deleteFavoriteCourse(@RequestParam Integer courseId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body("尚未登入");
         favoriteService.deleteFavoriteCourse(userId, courseId);

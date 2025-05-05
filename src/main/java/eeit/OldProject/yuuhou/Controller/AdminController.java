@@ -6,14 +6,18 @@ package eeit.OldProject.yuuhou.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eeit.OldProject.yuuhou.Entity.Caregiver;
@@ -37,9 +41,31 @@ public class AdminController {
 
     // ✅ 刪除照顧者（封鎖、違規等用途）
     @DeleteMapping("/caregivers/{id}")
-    public ResponseEntity<String> deleteCaregiver(@PathVariable Long id) {
-    	caregiversService.deleteById(id);
-        return ResponseEntity.ok("照顧者已成功刪除 ID: " + id);
+    public ResponseEntity<?> deleteCaregiver(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("❌ 你不是超級使用者，無法刪除照顧者！");
+        }
+        caregiversService.deleteById(id);
+        return ResponseEntity.ok("✅ 照顧者已成功刪除，ID: " + id);
+    }
+
+    // ✅ 🔥【新加的】搜尋照顧者
+    @GetMapping("/caregivers/search")
+    public ResponseEntity<?> searchCaregivers(
+            @RequestParam(required = false) String serviceCity,
+            @RequestParam(required = false) String serviceDistrict) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("❌ 你不是超級使用者，無法使用搜尋功能！");
+        }
+
+        List<Caregiver> result = caregiversService.searchByServiceArea(serviceCity, serviceDistrict);
+        return ResponseEntity.ok(result);
     }
 
     // ✅ 發送公告（這邊只是展示，實際通知可整合 Email 或推播）
