@@ -47,37 +47,40 @@ public class NewsServiceImpl implements NewsService {
 		return newsRepository.save(news);
 	}
 
-	// 修改一筆
 	@Override
 	public News updateNews(Integer id, News updateNews) {
-		// 查詢資料ById
-		Optional<News> newsOptional = newsRepository.findById(id);
-		// Optional.map():如果有值才做處理(isPresnet()判斷)
-		if (newsOptional.isPresent()) {
-			// 從查詢結果中拿出那一筆存在的新聞
-			News existing = newsOptional.get();
+	    Optional<News> newsOptional = newsRepository.findById(id);
 
-			// 接下來我要對它進行欄位更新
-			// updateNews:前端傳來的資料，代表「你希望更新成什麼內容」
-			// getTitle():從前端資料中取出標題(String)，當作新標題
-			// existing:原本資料庫查詢到的新聞物件
-			// setTitle():把新標題存到原本的新聞物件上
-			existing.setTitle(updateNews.getTitle());
-			existing.setThumbnail(updateNews.getThumbnail());
-			existing.setCategory(updateNews.getCategory());
-			existing.setPublishAt(updateNews.getPublishAt());
-			existing.setModifyBy(updateNews.getModifyBy());
-			existing.setModifyAt(LocalDateTime.now()); // 系統自動更新時間
-			existing.setStatus(updateNews.getStatus());
-			existing.setContent(updateNews.getContent());
-			existing.setTags(updateNews.getTags());
-			// 儲存並回傳更新後的資料
-			return newsRepository.save(existing);
-		} else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此新聞 ID: " + id);
-		}
+	    if (newsOptional.isEmpty()) {
+	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此新聞 ID: " + id);
+	    }
+
+	    News existing = newsOptional.get();
+
+	    // ✅ 更新一般欄位
+	    existing.setTitle(updateNews.getTitle());
+	    existing.setThumbnail(updateNews.getThumbnail());
+	    existing.setCategory(updateNews.getCategory());
+	    existing.setModifyBy(updateNews.getModifyBy());
+	    existing.setModifyAt(LocalDateTime.now()); // 系統更新時間
+	    existing.setContent(updateNews.getContent());
+	    existing.setTags(updateNews.getTags());
+
+	    // ✅ 只在前端有傳值時才更新 publishAt，避免覆蓋成 null
+	    if (updateNews.getPublishAt() != null) {
+	        existing.setPublishAt(updateNews.getPublishAt());
+	    }
+
+	    // ✅ 狀態處理：若前端沒傳 status 就預設為草稿
+	    if (updateNews.getStatus() == null) {
+	        existing.setStatus((byte) 0);
+	    } else {
+	        existing.setStatus(updateNews.getStatus());
+	    }
+
+	    return newsRepository.save(existing);
 	}
-
+	
 	// 刪除一筆
 	@Override
 	public void deleteById(Integer id) {
@@ -128,13 +131,20 @@ public class NewsServiceImpl implements NewsService {
 	public News publishNews(Integer id) {
 		News news = getNewsById(id); // ✅ 統一錯誤處理與查詢
 
+		//若是已發布狀態就不用修改
 		if (news.getStatus() == 1)
 			return news;
+		
 		news.setStatus((byte) 1);
 
-		if (news.getPublishAt() == null) {
-			news.setPublishAt(LocalDateTime.now());
-		}
+		 // ✅ 僅在第一次發布時設定 publishAt
+	    if (news.getPublishAt() == null) {
+	        news.setPublishAt(LocalDateTime.now());
+	    }
+	    
+	    // ✅ 每次發布都更新 modifyAt
+	    news.setModifyAt(LocalDateTime.now());
+	    
 		return newsRepository.save(news);
 	}
 
