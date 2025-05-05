@@ -1,4 +1,5 @@
 package eeit.OldProject.yuni.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eeit.OldProject.steve.Entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,16 +25,19 @@ public class Progress {
 //    private Long userId;
     @ManyToOne
     @JoinColumn(name = "UserId", referencedColumnName = "UserId")
+//	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User userId;
 
 //    private Integer courseId;
     @ManyToOne
     @JoinColumn(name = "CourseId", referencedColumnName = "CourseId")
+//	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Course courseId;
 
 //    private Integer chapterId;
     @ManyToOne
     @JoinColumn(name = "ChapterId", referencedColumnName = "ChapterId")
+//	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Chapter chapterId;
 
 	public Progress() {

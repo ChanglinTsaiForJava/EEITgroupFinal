@@ -54,8 +54,11 @@ public class User {
     @Column(name = "ProfileId")
     private Long profileId;
 
-    @Column(name = "ProfilePicture")
-    private String profilePicture;
+//    @Column(name = "ProfilePicture")
+//    private String profilePicture;
+    @Lob
+    @Column(name = "ProfilePicture", columnDefinition = "LONGBLOB")
+    private byte[] profilePicture;
 
     @Column(length = 1000, name = "Bio")
     private String bio;

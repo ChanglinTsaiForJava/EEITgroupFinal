@@ -11,15 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import eeit.OldProject.yuni.Entity.Category;
 import eeit.OldProject.yuni.Entity.Course;
@@ -81,19 +73,35 @@ public class CourseController {
 //    }
 //}
 
+//    @GetMapping("/category/{category}")
+//    public ResponseEntity<?> getCoursesByCategory(@PathVariable String category) {
+//        if (!Category.exists(category)) {
+//            return ResponseEntity.status(400).body("查無此類別");
+//        }
+//        Category categoryEnum = Category.valueOf(category.toLowerCase());
+//        List<Course> courses = courseService.getCoursesByCategory(categoryEnum);
+//        if (courses.isEmpty()) {
+//            return ResponseEntity.status(404).body("查無此類別（" + category+")之課程");
+//        } else {
+//            return ResponseEntity.ok(courses);
+//        }
+//
+//    }
+
     @GetMapping("/category/{category}")
     public ResponseEntity<?> getCoursesByCategory(@PathVariable String category) {
         if (!Category.exists(category)) {
             return ResponseEntity.status(400).body("查無此類別");
         }
-        Category categoryEnum = Category.valueOf(category.toLowerCase());
+
+        Category categoryEnum = Category.getByNameIgnoreCase(category);
         List<Course> courses = courseService.getCoursesByCategory(categoryEnum);
+
         if (courses.isEmpty()) {
-            return ResponseEntity.status(404).body("查無此類別（" + category+")之課程");
+            return ResponseEntity.status(404).body("查無此類別（" + category + "）之課程");
         } else {
             return ResponseEntity.ok(courses);
         }
-
     }
 
 
@@ -188,6 +196,7 @@ public class CourseController {
 //            if (is != null) {
 //                return is.readAllBytes();
 //            }
+
 
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> getCourseImage(@PathVariable Integer id) throws IOException {

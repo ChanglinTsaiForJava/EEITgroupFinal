@@ -26,8 +26,7 @@ public class FavoriteService {
     private Favorite_productRepository favoriteProductRepository;
 
     // 新增收藏課程
-    public Favorite_course addFavoriteCourse(Long userId, Long courseId) {
-        // 檢查是否已經收藏
+    public Favorite_course addFavoriteCourse(Long userId, Integer courseId) {
         if (favoriteCourseRepository.findByUserIdAndCourseId(userId, courseId).isPresent()) {
             throw new IllegalStateException("該課程已經加入收藏");
         }
@@ -82,7 +81,8 @@ public class FavoriteService {
     }
 
     // 刪除收藏課程
-    public void deleteFavoriteCourse(Long userId, Long courseId) {
+    // 刪除收藏課程
+    public void deleteFavoriteCourse(Long userId, Integer courseId) {
         Favorite_course favorite = favoriteCourseRepository.findByUserIdAndCourseId(userId, courseId)
                 .orElseThrow(() -> new RuntimeException("收藏的課程未找到"));
         favoriteCourseRepository.delete(favorite);

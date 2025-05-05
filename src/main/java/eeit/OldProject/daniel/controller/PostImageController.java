@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import eeit.OldProject.daniel.entity.PostImage;
+import eeit.OldProject.daniel.entity.post.PostImage;
 import eeit.OldProject.daniel.service.PostImageService;
 
 @RestController

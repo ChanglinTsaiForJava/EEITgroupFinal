@@ -1,21 +1,33 @@
 package eeit.OldProject.rita.Controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import eeit.OldProject.rita.Dto.AppointmentFullRequest;
 import eeit.OldProject.rita.Entity.Appointment;
 import eeit.OldProject.rita.Service.AppointmentQueryService;
 import eeit.OldProject.rita.Service.AppointmentService;
 import eeit.OldProject.rita.Service.AppointmentWorkflowService;
 import eeit.OldProject.rita.Service.CaregiverQueryService;
-import eeit.OldProject.rita.Dto.AppointmentFullRequest;
 import eeit.OldProject.yuuhou.Entity.Caregiver;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/appointment") // 所有路徑都以 /api/appointment 開頭
@@ -117,30 +129,76 @@ public class AppointmentController {
     @GetMapping("/caregiver/available")
     public ResponseEntity<List<Caregiver>> searchAvailableCaregivers(
             @RequestParam String serviceCity,
-            @RequestParam String serviceDistrict,
-            @RequestParam String desiredStartTime, // ISO格式: yyyy-MM-ddTHH:mm:ss
-            @RequestParam String desiredEndTime,    // ISO格式: yyyy-MM-ddTHH:mm:ss
-            @RequestParam(required = false) String gender,          // 性別（可選）
-            @RequestParam(required = false) String nationality,     // 國籍（可選）
-            @RequestParam(required = false) String languages,       // 語言（可選）
-            @RequestParam(required = false) BigDecimal hourlyRateMin,   // 最低時薪 (可選)
-            @RequestParam(required = false) BigDecimal hourlyRateMax    // 最高時薪（可選）
+            @RequestParam(required = false) String serviceDistrict,
+
+            // Continuous 模式用
+            @RequestParam(required = false) String desiredStartTime,
+            @RequestParam(required = false) String desiredEndTime,
+
+            // 移除 Multi 模式的 repeatDays
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String nationality,
+            @RequestParam(required = false) String languages,
+            @RequestParam(required = false) BigDecimal hourlyRateMin,
+            @RequestParam(required = false) BigDecimal hourlyRateMax
     ) {
 
-        List<Caregiver> caregivers = caregiverQueryService.findAvailableCaregivers(
-                serviceCity,
-                serviceDistrict,
-                LocalDateTime.parse(desiredStartTime),
-                LocalDateTime.parse(desiredEndTime),
-                gender,
-                nationality,
-                languages,
-                hourlyRateMin,
-                hourlyRateMax
+        // 打印出接收到的時間參數
+        System.out.println("Start time: " + desiredStartTime);
+        System.out.println("End time: " + desiredEndTime);
 
-        );
+        List<Caregiver> caregivers;
+
+        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        // 檢查 desiredStartTime 和 desiredEndTime 是否為空
+        if (desiredStartTime != null && !desiredStartTime.isEmpty() && desiredEndTime != null && !desiredEndTime.isEmpty()) {
+            try {
+                LocalDateTime start = LocalDateTime.parse(desiredStartTime, dtFormatter);
+                LocalDateTime end = LocalDateTime.parse(desiredEndTime, dtFormatter);
+
+                caregivers = caregiverQueryService.findAvailableCaregivers(
+                        serviceCity, serviceDistrict, start, end,
+                        null, null, null,
+                        gender, nationality, languages, hourlyRateMin, hourlyRateMax
+                );
+            } catch (DateTimeParseException e) {
+                System.err.println("Error parsing datetime: " + e.getMessage());
+                return ResponseEntity.badRequest().body(null); // 返回錯誤，表示時間解析錯誤
+            }
+        } else if (startDate != null && endDate != null) {
+            try {
+                LocalDate start = LocalDate.parse(startDate);
+                LocalDate end = LocalDate.parse(endDate);
+
+                caregivers = caregiverQueryService.findAvailableCaregivers(
+                        serviceCity, serviceDistrict, null, null,
+                        start, end, null,  // 移除 repeatDays
+                        gender, nationality, languages, hourlyRateMin, hourlyRateMax
+                );
+            } catch (DateTimeParseException e) {
+                System.err.println("Error parsing date: " + e.getMessage());
+                return ResponseEntity.badRequest().body(null); // 返回錯誤，表示日期解析錯誤
+            }
+        } else {
+            return ResponseEntity.badRequest().build(); // 如果時間都沒有填寫，返回錯誤
+        }
+        // 處理圖片路徑
+        caregivers.forEach(caregiver -> {
+            if (caregiver.getPhotoPath() != null && !caregiver.getPhotoPath().isEmpty()) {
+                // 假設圖片存儲在伺服器的 images/caregivers 資料夾中
+                caregiver.setPhotoPath("http://your-server-url/images/caregivers/" + caregiver.getPhotoPath());
+            } else {
+                // 如果沒有圖片，使用預設圖片
+                caregiver.setPhotoPath("http://your-server-url/images/caregivers/default-placeholder.jpg");
+            }
+        });
         return ResponseEntity.ok(caregivers);
     }
+
 
 
 }

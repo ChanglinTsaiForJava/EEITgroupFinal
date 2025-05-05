@@ -17,15 +17,21 @@ public class CourseService {
     private CourseRepository courseRepository;
 
     public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+        List<Course> list = courseRepository.findAll();
+        System.out.println("取出的課程資料：" + list);
+        return list;
     }
 
     public Optional<Course> getCourseById(Integer id) {
         return courseRepository.findById(id);
     }
 
+//    public List<Course> searchCoursesByKeyword(String keyword) {
+//        return courseRepository.searchByKeyword(keyword);
+//    }
+
     public List<Course> searchCoursesByKeyword(String keyword) {
-        return courseRepository.searchByKeyword(keyword);
+        return courseRepository.searchByKeyword("%" + keyword + "%");
     }
 
     public List<Course> getCoursesByCategory(Category category) {

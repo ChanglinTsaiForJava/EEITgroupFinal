@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eeit.OldProject.daniel.entity.Comment;
+import eeit.OldProject.daniel.entity.comment.Comment;
 import eeit.OldProject.daniel.service.CommentService;
 
 @RestController
