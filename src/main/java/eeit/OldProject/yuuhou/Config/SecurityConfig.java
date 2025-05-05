@@ -50,6 +50,7 @@ public class SecurityConfig {
             .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
             .requestMatchers("/api/caregivers/photo").hasRole("CAREGIVER")
             .requestMatchers("/api/caregivers/search").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/api/caregivers/me").hasRole("CAREGIVER")
             .requestMatchers("/admin/**").hasRole("ADMIN")
             .requestMatchers("/caregiver/**").hasRole("CAREGIVER")
             .requestMatchers("/user/**").hasAnyRole("USER", "CAREGIVER", "ADMIN")

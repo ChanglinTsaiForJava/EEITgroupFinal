@@ -187,4 +187,40 @@ public class CaregiversController {
         return ResponseEntity.ok("✅ 照顧者已成功刪除，ID: " + id);
     }
 
+    @PutMapping("/me")
+    public ResponseEntity<?> updateMyProfile(@RequestBody Caregiver updatedCaregiver) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(currentUserEmail);
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ 找不到登入的照顧者帳號！");
+        }
+
+        Caregiver existing = caregiverOpt.get();
+
+        // 若 email 有更改，確認沒人使用
+        if (!existing.getEmail().equals(updatedCaregiver.getEmail())) {
+            Optional<Caregiver> emailCheck = caregiversService.findByEmail(updatedCaregiver.getEmail());
+            if (emailCheck.isPresent()) {
+                return ResponseEntity.badRequest().body("❌ 這個 Email 已經被使用了！");
+            }
+        }
+
+        // 處理密碼欄位
+        if (updatedCaregiver.getPassword() == null || updatedCaregiver.getPassword().isEmpty()) {
+            updatedCaregiver.setPassword(existing.getPassword());
+        } else {
+            updatedCaregiver.setPassword(passwordEncoder.encode(updatedCaregiver.getPassword()));
+        }
+
+        // 保留舊的 ID
+        updatedCaregiver.setCaregiverId(existing.getCaregiverId());
+        caregiversService.save(updatedCaregiver);
+
+        return ResponseEntity.ok("✅ 你的個人資料已更新！");
+    }
+
+    
+    
 }
