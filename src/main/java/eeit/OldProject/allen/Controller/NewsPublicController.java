@@ -1,14 +1,13 @@
 package eeit.OldProject.allen.Controller;
 
-import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import eeit.OldProject.allen.Dto.NewsPublicSearchRequest;
 import eeit.OldProject.allen.Entity.News;
@@ -24,6 +23,7 @@ import eeit.OldProject.allen.Service.NewsService;
 
 @RestController
 @RequestMapping("/news/public")
+@CrossOrigin(origins = "http://localhost:5173")
 public class NewsPublicController {
 
     @Autowired
@@ -61,8 +61,10 @@ public class NewsPublicController {
     @PostMapping("/search")
     public Page<News> searchPublishedNews(
         @RequestBody NewsPublicSearchRequest searchRequest,
-        Pageable pageable
+        @RequestParam int page,
+        @RequestParam int size
     ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("publishAt").descending());
         return newsService.searchPublicNewsPaged(searchRequest, pageable);
     }
       
