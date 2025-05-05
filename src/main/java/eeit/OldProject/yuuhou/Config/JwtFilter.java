@@ -1,18 +1,16 @@
 package eeit.OldProject.yuuhou.Config;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import eeit.OldProject.yuuhou.Service.CustomUserDetailsService;
 import eeit.OldProject.yuuhou.Util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +22,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -38,20 +39,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(token)) {
                 String email = jwtUtil.getEmailFromToken(token);
-                String role = jwtUtil.getRoleFromToken(token); // ✅ 解析出 role，例如 "ADMIN"
 
-                // ✅ 建立具有角色的 GrantedAuthority
-                List<GrantedAuthority> authorities =
-                        List.of(new SimpleGrantedAuthority("ROLE_" + role)); // Spring 要求前面加 "ROLE_"
+                // ✅ 透過 UserDetailsService 查出完整使用者物件
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                // ✅ 建立包含角色的身份驗證
+                // ✅ 建立包含角色的身份驗證物件
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(email, null, authorities);
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // ✅ 放入 Spring Security context 中
+                // ✅ 放進 Spring Security 的上下文
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

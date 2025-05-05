@@ -237,7 +237,7 @@ public class AuthController {
         return ResponseEntity.ok("✅ 密碼重設成功！可以使用新密碼登入了！");
     }
     
-    @PostMapping("/upload-photo")
+    @PostMapping("/api/caregivers/photo")
     public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file,
                                          Authentication authentication) {
         String email = authentication.getName();
