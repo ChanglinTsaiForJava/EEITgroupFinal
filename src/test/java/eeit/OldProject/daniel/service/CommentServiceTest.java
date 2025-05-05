@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import eeit.OldProject.daniel.entity.comment.Comment;
 import eeit.OldProject.daniel.entity.post.Post;
-import eeit.OldProject.daniel.repository.CommentRepository;
+import eeit.OldProject.daniel.repository.comment.CommentRepository;
 
 @SpringBootTest
 class CommentServiceTest {

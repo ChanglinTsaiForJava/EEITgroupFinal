@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eeit.OldProject.daniel.dto.PostFilter;
+import eeit.OldProject.daniel.dto.PostRequest;
 import eeit.OldProject.daniel.entity.post.Post;
 import eeit.OldProject.daniel.service.PostService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -26,17 +29,22 @@ public class PostController {
 	@Autowired
 	private PostService postService;
 
-    @PostMapping("/{id}/view")
-    public ResponseEntity<Void> view(@PathVariable Long id) {
-    	postService.incrementViewCount(id);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping("/search")
+	public ResponseEntity<List<Post>> search(@RequestBody PostFilter filter) {
+		return ResponseEntity.ok(postService.findPosts(filter));
+	}
 
-    @PostMapping("/{id}/share")
-    public ResponseEntity<Void> share(@PathVariable Long id) {
-    	postService.incrementShareCount(id);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping("/{id}/view")
+	public ResponseEntity<Void> view(@PathVariable Long id) {
+		postService.incrementViewCount(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/{id}/share")
+	public ResponseEntity<Void> share(@PathVariable Long id) {
+		postService.incrementShareCount(id);
+		return ResponseEntity.noContent().build();
+	}
 
 	@GetMapping("/user/{uid}")
 	public Page<Post> listByUser(@PathVariable Long uid, @RequestParam(defaultValue = "0") int page,
@@ -59,25 +67,15 @@ public class PostController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> create(@RequestBody Post post) {
-		Post create = postService.create(post);
-		if (create != null) {
-			URI uri = URI.create("/api/posts/" + post.getPostId());
-			return ResponseEntity.created(uri).body(create);
-		}
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<?> create(@RequestBody PostRequest postRequest) {
+		Post created = postService.createOrUpdate(postRequest, null);
+		return ResponseEntity.created(URI.create("/api/posts/" + created.getPostId())).body(created);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> modify(@PathVariable Long id, @RequestBody Post post) {
-		if (id != null) {
-			post.setPostId(id);
-			Post modify = postService.modify(post);
-			if (modify != null) {
-				return ResponseEntity.ok(modify);
-			}
-		}
-		return ResponseEntity.notFound().build();
+	public ResponseEntity<?> modify(@PathVariable Long id, @Valid @RequestBody PostRequest postRequest) {
+		Post modify = postService.createOrUpdate(postRequest, id);
+		return ResponseEntity.ok(modify);
 	}
 
 	@DeleteMapping("/{id}")
@@ -87,4 +85,26 @@ public class PostController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+//	@PostMapping
+//	public ResponseEntity<?> create(@RequestBody Post post) {
+//		Post create = postService.create(post);
+//		if (create != null) {
+//			URI uri = URI.create("/api/posts/" + post.getPostId());
+//			return ResponseEntity.created(uri).body(create);
+//		}
+//		return ResponseEntity.noContent().build();
+//	}
+//	
+//	@PutMapping("/{id}")
+//	public ResponseEntity<?> modify(@PathVariable Long id, @RequestBody Post post) {
+//		if (id != null) {
+//			post.setPostId(id);
+//			Post modify = postService.modify(post);
+//			if (modify != null) {
+//				return ResponseEntity.ok(modify);
+//			}
+//		}
+//		return ResponseEntity.notFound().build();
+//	}
+//	
 }
