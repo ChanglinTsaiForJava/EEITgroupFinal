@@ -25,10 +25,10 @@ public class Favorite_course {
     private Long userId;
 
     @Column(name = "CourseId")
-    private Long courseId;
+    private Integer courseId; // ✅ 改為 Integer
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "CourseId", referencedColumnName = "CourseId", insertable = false, updatable = false)
+    @JoinColumn(name = "CourseId", referencedColumnName = "courseId", insertable = false, updatable = false)
     private Course course;
 }
 

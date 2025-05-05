@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface Favorite_courseRepository extends JpaRepository<Favorite_course, Long> {
     // 根據使用者和課程ID查詢收藏
-    Optional<Favorite_course> findByUserIdAndCourseId(Long userId, Long courseId);
+    Optional<Favorite_course> findByUserIdAndCourseId(Long userId, Integer courseId);;
 
     // 根據使用者ID查詢所有收藏課程
     List<Favorite_course> findByUserId(Long userId);
