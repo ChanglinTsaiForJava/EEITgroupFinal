@@ -108,6 +108,9 @@ public class PostInterfaceImpl implements PostInterface{
 		if (filter.getSort()!=null) {
 			Path<?> path = post.get(filter.getSort());
 			criteriaQuery.orderBy("desc".equalsIgnoreCase(filter.getDir()) ? criteriaBuilder.desc(path) : criteriaBuilder.asc(path));
+		} else {
+			Path<?> defaultPath = post.get("createdAt");
+			criteriaQuery.orderBy(criteriaBuilder.desc(defaultPath));
 		}
 		
 		TypedQuery<Post> typedQuery = entityManager.createQuery(criteriaQuery);
