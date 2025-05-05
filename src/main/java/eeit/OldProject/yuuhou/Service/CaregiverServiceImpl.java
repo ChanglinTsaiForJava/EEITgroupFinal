@@ -1,9 +1,5 @@
 package eeit.OldProject.yuuhou.Service;
 
-
-
-
-
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +15,6 @@ public class CaregiverServiceImpl implements CaregiversService {
     @Autowired
     private CaregiversRepository repository;
 
-    
     @Override
     public List<Caregiver> findAll() {
         return repository.findAll();
@@ -44,7 +39,7 @@ public class CaregiverServiceImpl implements CaregiversService {
     public Optional<Caregiver> findByEmail(String email) {
         return repository.findByEmail(email);
     }
-    
+
     @Override
     public List<Caregiver> searchByServiceArea(String serviceCity, String serviceDistrict) {
         return repository.findByServiceCityContainingAndServiceDistrictContaining(
@@ -52,6 +47,4 @@ public class CaregiverServiceImpl implements CaregiversService {
                 serviceDistrict != null ? serviceDistrict : ""
         );
     }
-
 }
-
