@@ -1,5 +1,6 @@
 package eeit.OldProject.steve.Entity;
 
+import eeit.OldProject.yuuhou.Entity.Caregiver;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,4 +28,8 @@ public class Favorite_employee {
 
     @Column(name = "CaregiverId")
     private Long caregiverId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CaregiverId", insertable = false, updatable = false)
+    private Caregiver caregiver;
 }
