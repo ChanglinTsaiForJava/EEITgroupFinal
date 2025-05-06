@@ -13,6 +13,7 @@ public class SpringBootConfig implements WebMvcConfigurer {
 				.allowedOrigins("http://localhost:5173") // 前端 localhost:5173
 				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") //
 				.allowedHeaders("*")
+				.exposedHeaders("*")
 				.allowCredentials(true);
 	}
 }

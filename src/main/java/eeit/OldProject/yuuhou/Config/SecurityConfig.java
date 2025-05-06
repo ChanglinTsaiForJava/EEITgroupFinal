@@ -1,6 +1,4 @@
 package eeit.OldProject.yuuhou.Config;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,25 +10,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 import eeit.OldProject.yuuhou.Service.CustomUserDetailsService;
-
 
 @Configuration
 public class SecurityConfig {
 
-
     @Autowired
     private JwtFilter jwtFilter;
-
 
     @Autowired
     private JwtAuthenticationEntryPoint entryPoint;
 
-
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
 
     @Autowired
     private PasswordEncoder passwordEncoder; 
@@ -73,7 +65,6 @@ public class SecurityConfig {
 
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }
