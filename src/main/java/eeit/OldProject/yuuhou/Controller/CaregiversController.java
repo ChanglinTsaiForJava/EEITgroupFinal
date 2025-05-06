@@ -1,9 +1,9 @@
 package eeit.OldProject.yuuhou.Controller;
-import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import eeit.OldProject.yuuhou.Entity.Caregiver;
 import eeit.OldProject.yuuhou.Service.CaregiversService;
 @RestController
@@ -29,28 +31,65 @@ public class CaregiversController {
     private CaregiversService caregiversService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @PostMapping("/upload-photo")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    @PostMapping("/photo")
+//    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file, Authentication authentication) {
+//        String email = authentication.getName();
+//        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
+//
+//        if (caregiverOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
+//        }
+//
+//        Caregiver caregiver = caregiverOpt.get();
+//
+//        try {
+//            caregiver.setPhoto(file.getBytes()); // ✅ 存成 byte[]
+//            caregiversService.save(caregiver);
+//            return ResponseEntity.ok("✅ 上傳成功");
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ 圖片儲存失敗");
+//        }
+//    }
+    @PostMapping("/photo")
+    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file, Authentication authentication) {
         String email = authentication.getName();
         Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
+
         if (caregiverOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到照顧者");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
         }
+
         Caregiver caregiver = caregiverOpt.get();
+
         try {
-            String folder = "src/main/resources/static/yuuhou/images/";
-            String filename = "caregiver_" + caregiver.getCaregiverId() + "_" + file.getOriginalFilename();
-            File dest = new File(folder + filename);
-            file.transferTo(dest);
-            caregiver.setPhotoPath("/yuuhou/images/" + filename);
+            caregiver.setPhoto(file.getBytes()); // ✅ 存成 byte[]
             caregiversService.save(caregiver);
-            return ResponseEntity.ok("✅ 上傳成功！");
+            return ResponseEntity.ok("✅ 上傳成功");
         } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ 上傳失敗！");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ 圖片儲存失敗");
         }
     }
+    @GetMapping("/photo")
+    public ResponseEntity<?> getPhoto(Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
+
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
+        }
+
+        Caregiver caregiver = caregiverOpt.get();
+        byte[] photoData = caregiver.getPhoto();
+        if (photoData == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("沒有圖片資料");
+        }
+
+        String base64 = java.util.Base64.getEncoder().encodeToString(photoData);
+        return ResponseEntity.ok(base64);
+    }
+
+    
+    
     // ✅ 搜尋功能（依照登入身分決定資料揭露）
     @GetMapping("/search")
     public ResponseEntity<?> searchCaregivers(@RequestParam(required = false) String serviceCity,
@@ -58,27 +97,37 @@ public class CaregiversController {
         List<Caregiver> results = caregiversService.searchByServiceArea(serviceCity, serviceDistrict);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        
         if (isAdmin) {
             return ResponseEntity.ok(results); // Admin 可看所有欄位
         }
-        // 其他人只能看部分欄位（手動映射出來）
-        List<?> safeResults = results.stream().map(c -> {
-            return new Object() {
-                public final Long id = c.getCaregiverId();
-                public final String caregiverName = c.getCaregiverName();
-                public final String gender = c.getGender();
-                public final String nationality = c.getNationality();
-                public final int yearOfExperience = c.getYearOfExperience();
-                public final String serviceCity = c.getServiceCity();
-                public final String serviceDistrict = c.getServiceDistrict();
-                public final BigDecimal hourlyRate = c.getHourlyRate();
-                public final BigDecimal halfDayRate = c.getHalfDayRate();
-                public final BigDecimal fullDayRate = c.getFullDayRate();
-                public final String photoPath = c.getPhotoPath();
-            };
+
+        List<Map<String, Object>> safeResults = results.stream().map(c -> {
+            String base64Photo = null;
+            if (c.getPhoto() != null) {
+                base64Photo = "data:image/jpeg;base64," +
+                    java.util.Base64.getEncoder().encodeToString(c.getPhoto());
+            }
+
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", c.getCaregiverId());
+            map.put("caregiverName", c.getCaregiverName());
+            map.put("gender", c.getGender());
+            map.put("nationality", c.getNationality());
+            map.put("yearOfExperience", c.getYearOfExperience());
+            map.put("serviceCity", c.getServiceCity());
+            map.put("serviceDistrict", c.getServiceDistrict());
+            map.put("hourlyRate", c.getHourlyRate());
+            map.put("halfDayRate", c.getHalfDayRate());
+            map.put("fullDayRate", c.getFullDayRate());
+            map.put("photoBase64", base64Photo); // ✅ 正確轉成 base64 字串
+
+            return map;
         }).toList();
+
         return ResponseEntity.ok(safeResults);
     }
+
     @GetMapping
     public List<Caregiver> getAll() {
         return caregiversService.findAll();
@@ -181,7 +230,50 @@ public class CaregiversController {
 
         return ResponseEntity.ok("✅ 你的個人資料已更新！");
     }
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
 
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(currentUserEmail);
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ 找不到登入的照顧者帳號！");
+        }
+
+        Caregiver caregiver = caregiverOpt.get();
+        return ResponseEntity.ok(caregiver);
+    }
+
+//    @PostMapping("/api/caregivers/photo")
+//    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file,
+//                                         Authentication authentication) {
+//        String email = authentication.getName();
+//        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
+//
+//        if (caregiverOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
+//        }
+//
+//        Caregiver caregiver = caregiverOpt.get();
+//
+//        try {
+//            // 存檔案到 static/images 資料夾（先確認有此資料夾）
+//            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
+//            Path path = Paths.get("src/main/resources/static/yuuhou/images/" + filename);
+//            Files.createDirectories(path.getParent()); // 若目錄不存在則建立
+//            Files.write(path, file.getBytes());
+//
+//            // 設定路徑到資料庫
+//            caregiver.setPhotoPath("/yuuhou/images/" + filename);
+//            caregiversService.save(caregiver);
+//
+//            return ResponseEntity.ok(Collections.singletonMap("photoPath", caregiver.getPhotoPath()));
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("上傳失敗");
+//        }
+//    }
+//    
+    
     
     
 }

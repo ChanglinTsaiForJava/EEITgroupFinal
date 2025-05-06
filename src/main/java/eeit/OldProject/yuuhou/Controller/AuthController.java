@@ -41,8 +41,8 @@ public class AuthController {
     @Autowired
     private CaregiversService caregiversService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -76,7 +76,7 @@ public class AuthController {
                 .gender(request.getGender())
                 .birthday(request.getBirthday())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(request.getPassword())
                 .phone(request.getPhone())
                 .nationality(request.getNationality())
                 .languages(request.getLanguages())
@@ -84,7 +84,6 @@ public class AuthController {
                 .serviceCity(request.getServiceCity())
                 .serviceDistrict(request.getServiceDistrict())
                 .description(request.getDescription())
-                .photoPath(request.getPhotoPath())
                 .hourlyRate(request.getHourlyRate())
                 .halfDayRate(request.getHalfDayRate())
                 .fullDayRate(request.getFullDayRate())
@@ -92,6 +91,14 @@ public class AuthController {
                 .createdAt(LocalDateTime.now())
                 .isVerified(false) // ✅ 設成未驗證
                 .build();
+        if (request.getBase64Photo() != null && !request.getBase64Photo().isEmpty()) {
+            try {
+                caregiver.setPhoto(java.util.Base64.getDecoder().decode(request.getBase64Photo()));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("圖片格式錯誤，無法解析 Base64！");
+            }
+        }
+
 
         caregiversService.save(caregiver);
 
@@ -141,9 +148,10 @@ public class AuthController {
         }
 
         // ✅ 4. 比對密碼
-        if (!passwordEncoder.matches(password, caregiver.getPassword())) {
+        if (!password.equals(caregiver.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密碼錯誤！");
         }
+
 
         // ✅ 5. 都OK，回傳 CAREGIVER 身份的token
         String token = jwtUtil.generateToken(caregiver.getEmail(), "CAREGIVER");
@@ -228,7 +236,8 @@ public class AuthController {
         }
 
         Caregiver caregiver = caregiverOpt.get();
-        caregiver.setPassword(passwordEncoder.encode(newPassword));
+        caregiver.setPassword(newPassword);
+
         caregiversService.save(caregiver);
 
         // 用完後移除 token
@@ -237,34 +246,34 @@ public class AuthController {
         return ResponseEntity.ok("✅ 密碼重設成功！可以使用新密碼登入了！");
     }
     
-    @PostMapping("/api/caregivers/photo")
-    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file,
-                                         Authentication authentication) {
-        String email = authentication.getName();
-        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
-
-        if (caregiverOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
-        }
-
-        Caregiver caregiver = caregiverOpt.get();
-
-        try {
-            // 存檔案到 static/images 資料夾（先確認有此資料夾）
-            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
-            Path path = Paths.get("src/main/resources/static/yuuhou/images/" + filename);
-            Files.createDirectories(path.getParent()); // 若目錄不存在則建立
-            Files.write(path, file.getBytes());
-
-            // 設定路徑到資料庫
-            caregiver.setPhotoPath("/yuuhou/images/" + filename);
-            caregiversService.save(caregiver);
-
-            return ResponseEntity.ok(Collections.singletonMap("photoPath", caregiver.getPhotoPath()));
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("上傳失敗");
-        }
-    }
+//    @PostMapping("/api/caregivers/photo")
+//    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file,
+//                                         Authentication authentication) {
+//        String email = authentication.getName();
+//        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
+//
+//        if (caregiverOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
+//        }
+//
+//        Caregiver caregiver = caregiverOpt.get();
+//
+//        try {
+//            // 存檔案到 static/images 資料夾（先確認有此資料夾）
+//            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
+//            Path path = Paths.get("src/main/resources/static/yuuhou/images/" + filename);
+//            Files.createDirectories(path.getParent()); // 若目錄不存在則建立
+//            Files.write(path, file.getBytes());
+//
+//            // 設定路徑到資料庫
+//            caregiver.setPhotoPath("/yuuhou/images/" + filename);
+//            caregiversService.save(caregiver);
+//
+//            return ResponseEntity.ok(Collections.singletonMap("photoPath", caregiver.getPhotoPath()));
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("上傳失敗");
+//        }
+//    }
 
     
 
