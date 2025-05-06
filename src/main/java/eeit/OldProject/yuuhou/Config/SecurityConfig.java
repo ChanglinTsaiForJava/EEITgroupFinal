@@ -62,7 +62,7 @@ public class SecurityConfig {
             .requestMatchers("/caregiver/**").hasRole("CAREGIVER")
             .requestMatchers("/user/**").hasAnyRole("USER", "CAREGIVER", "ADMIN")
             .requestMatchers("/api/caregivers/register", "/api/caregivers/login").permitAll()
-            .requestMatchers("/news/**", "/category/**", "/api/courses/**", "/api/chapters/**").permitAll()
+            .requestMatchers("/news/**", "/uploads/**", "/category/**", "/api/courses/**", "/api/chapters/**").permitAll()
             .requestMatchers("/api/**").permitAll()
 
             
