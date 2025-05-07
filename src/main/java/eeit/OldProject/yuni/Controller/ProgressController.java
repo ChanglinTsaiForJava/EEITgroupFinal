@@ -198,7 +198,7 @@ public class ProgressController {
     }
 
     // 判斷課全部完成
-    @GetMapping("/user/{userId}/course/{courseId}/comIdpleted")
+    @GetMapping("/user/{userId}/course/{courseId}/completed")
     public ResponseEntity<?> checkCourseCompletion(@PathVariable Long userId, @PathVariable Integer courseId) {
         boolean completed = progressService.isCourseCompleted(userId, courseId);
         return ResponseEntity.ok(completed);
@@ -309,6 +309,17 @@ public class ProgressController {
 
         progressRepository.saveAll(progresses);
         return ResponseEntity.ok("已將所有章節標記為完成");
+    }
+
+    // 查詢使用者已完成的課程清單（回傳 courseId）
+    @GetMapping("/user/{userId}/completed-courses")
+    public ResponseEntity<?> getCompletedCourseIds(@PathVariable Long userId) {
+        if (!userRepository.existsById(userId)) {
+            return ResponseEntity.status(404).body("查無此用戶");
+        }
+
+        List<Integer> completedCourseIds = progressRepository.findCompletedCoursesByUserId(userId);
+        return ResponseEntity.ok(completedCourseIds);
     }
 
 

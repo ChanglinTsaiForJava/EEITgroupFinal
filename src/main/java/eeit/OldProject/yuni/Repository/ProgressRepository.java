@@ -33,6 +33,10 @@ public interface ProgressRepository extends JpaRepository<Progress, Integer> {
     @Query("SELECT DISTINCT p.courseId FROM Progress p WHERE p.userId.userId = :userId")
     List<Course> findDistinctCoursesByUserId(@Param("userId") Long userId);
 
+    @Query("SELECT DISTINCT p.courseId.courseId FROM Progress p WHERE p.userId.userId = :userId AND p.status = 'completed'")
+    List<Integer> findCompletedCoursesByUserId(@Param("userId") Long userId);
+
+
 
 
 }

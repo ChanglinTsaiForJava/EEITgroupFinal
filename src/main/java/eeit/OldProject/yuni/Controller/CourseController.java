@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eeit.OldProject.yuni.Entity.Chapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import eeit.OldProject.yuni.Entity.Category;
 import eeit.OldProject.yuni.Entity.Course;
 import eeit.OldProject.yuni.Service.CourseService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -106,13 +108,49 @@ public class CourseController {
 
 
 
-    @PostMapping("/admin")
-    public ResponseEntity<?> createCourse(@RequestBody Course course) {
-        if(course==null || course.getTitle()==null || course.getTitle().isEmpty()){
-        return ResponseEntity.status(400).body("課程標題不可為空白");
+//    @PostMapping("/admin")
+//    public ResponseEntity<?> createCourse(@RequestBody Course course) {
+//        if(course==null || course.getTitle()==null || course.getTitle().isEmpty()){
+//        return ResponseEntity.status(400).body("課程標題不可為空白");
+//        }
+//        Course created = courseService.createCourse(course);
+//        return ResponseEntity.ok(created);
+//    }
+
+//    @PostMapping(value = "/admin", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> createCourseWithImage(
+//            @RequestPart("course") Course course,
+//            @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
+//        if (imageFile != null && !imageFile.isEmpty()) {
+//            course.setCoverImage(imageFile.getBytes());
+//        }
+//        Course created = courseService.createCourse(course);
+//        return ResponseEntity.ok(created);
+//    }
+
+    @PostMapping(value = "/admin", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createCourseWithImage(
+            @RequestPart("course") String courseJson,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+        try {
+            System.out.println("收到 courseJson：");
+            System.out.println(courseJson);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            Course course = objectMapper.readValue(courseJson, Course.class);
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                course.setCoverImage(imageFile.getBytes());
+            }
+
+            Course created = courseService.createCourse(course);
+            return ResponseEntity.ok(created);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // 印出錯誤堆疊
+            return ResponseEntity.status(500).body("JSON 解析或建立課程時發生錯誤：" + e.getMessage());
         }
-        Course created = courseService.createCourse(course);
-        return ResponseEntity.ok(created);
     }
 
 //    @PutMapping("/admin/{id}")
