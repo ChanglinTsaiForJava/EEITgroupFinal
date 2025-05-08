@@ -1,20 +1,23 @@
     package eeit.OldProject.rita.Service;
 
-    import eeit.OldProject.rita.Entity.Appointment;
-    import eeit.OldProject.rita.Entity.Payment;
-    import eeit.OldProject.rita.Entity.PaymentReferenceType;
-    import eeit.OldProject.rita.Entity.PaymentStatus;
-    import eeit.OldProject.rita.Repository.AppointmentRepository;
-    import eeit.OldProject.rita.Repository.PaymentRepository;
-    import eeit.OldProject.steve.Repository.UserRepository;
-    import eeit.OldProject.rita.Service.NotificationService;
-    import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
-    import jakarta.transaction.Transactional;
-    import lombok.RequiredArgsConstructor;
-    import org.springframework.data.crossstore.ChangeSetPersister;
-    import org.springframework.stereotype.Service;
+    import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.UUID;
 
-    import java.util.Date;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.stereotype.Service;
+
+import eeit.OldProject.rita.Entity.Appointment;
+import eeit.OldProject.rita.Entity.Payment;
+import eeit.OldProject.rita.Entity.PaymentReferenceType;
+import eeit.OldProject.rita.Entity.PaymentStatus;
+import eeit.OldProject.rita.Repository.AppointmentRepository;
+import eeit.OldProject.rita.Repository.PaymentRepository;
+import eeit.OldProject.steve.Repository.UserRepository;
+import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
     @Service
     @RequiredArgsConstructor
@@ -82,10 +85,13 @@
             }
             return savedAppointment;
         }
-        /** ✨ 小工具：產生綠界交易編號 **/
+     // 將 generateMerchantTradeNo() 方法寫在這裡
         private String generateMerchantTradeNo() {
-            return "C" + System.currentTimeMillis();
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+            String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+            return "ECPAY" + timestamp + uuid;
         }
+       
 
 
 
@@ -135,6 +141,7 @@
                         "付款完成通知 - Care+ 預約服務",               // 主旨
                         content                                       // 內文
                 );
+                
             }
             return saved;
         }

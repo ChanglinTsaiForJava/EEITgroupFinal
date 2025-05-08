@@ -1,4 +1,4 @@
-package eeit.OldProject.rita.ecpay.payment.integration;
+package ecpay.payment.integration;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -10,41 +10,42 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
-import ch.qos.logback.classic.LoggerContext;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.ATMRequestObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutALL;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutATM;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutApplePay;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutBARCODE;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutCVS;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutDevide;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutOneTime;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutPeriod;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.AioCheckOutWebATM;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.CVSOrBARCODERequestObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.CreateServerOrderObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.DoActionObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.FundingReconDetailObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.InvoiceObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.QueryCreditCardPeriodInfoObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.QueryTradeInfoObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.QueryTradeObj;
-import eeit.OldProject.rita.ecpay.payment.integration.domain.TradeNoAioObj;
-import eeit.OldProject.rita.ecpay.payment.integration.ecpayOperator.EcpayFunction;
-import eeit.OldProject.rita.ecpay.payment.integration.errorMsg.ErrorMessage;
-import eeit.OldProject.rita.ecpay.payment.integration.exception.EcpayException;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyAioCheckOut;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyCreateServerOrder;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyDoAction;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyFundingReconDetail;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyQueryCreditTrade;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyQueryTrade;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyQueryTradeInfo;
-import eeit.OldProject.rita.ecpay.payment.integration.verification.VerifyTradeNoAio;
-import jakarta.servlet.http.HttpServletRequest;
+import ecpay.payment.integration.domain.ATMRequestObj;
+import ecpay.payment.integration.domain.AioCheckOutALL;
+import ecpay.payment.integration.domain.AioCheckOutApplePay;
+import ecpay.payment.integration.domain.AioCheckOutATM;
+import ecpay.payment.integration.domain.AioCheckOutBARCODE;
+import ecpay.payment.integration.domain.AioCheckOutCVS;
+import ecpay.payment.integration.domain.AioCheckOutDevide;
+import ecpay.payment.integration.domain.AioCheckOutOneTime;
+import ecpay.payment.integration.domain.AioCheckOutPeriod;
+import ecpay.payment.integration.domain.AioCheckOutWebATM;
+import ecpay.payment.integration.domain.CVSOrBARCODERequestObj;
+import ecpay.payment.integration.domain.CreateServerOrderObj;
+import ecpay.payment.integration.domain.DoActionObj;
+import ecpay.payment.integration.domain.FundingReconDetailObj;
+import ecpay.payment.integration.domain.InvoiceObj;
+import ecpay.payment.integration.domain.QueryCreditCardPeriodInfoObj;
+import ecpay.payment.integration.domain.QueryTradeInfoObj;
+import ecpay.payment.integration.domain.QueryTradeObj;
+import ecpay.payment.integration.domain.TradeNoAioObj;
+import ecpay.payment.integration.ecpayOperator.EcpayFunction;
+import ecpay.payment.integration.errorMsg.ErrorMessage;
+import ecpay.payment.integration.exception.EcpayException;
+import ecpay.payment.integration.verification.VerifyAioCheckOut;
+import ecpay.payment.integration.verification.VerifyCreateServerOrder;
+import ecpay.payment.integration.verification.VerifyDoAction;
+import ecpay.payment.integration.verification.VerifyFundingReconDetail;
+import ecpay.payment.integration.verification.VerifyQueryCreditTrade;
+import ecpay.payment.integration.verification.VerifyQueryTrade;
+import ecpay.payment.integration.verification.VerifyQueryTradeInfo;
+import ecpay.payment.integration.verification.VerifyTradeNoAio;
 
 /**
  * 全功能無履約保證類別
@@ -52,9 +53,9 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  */
 public class AllInOne extends AllInOneBase{
-
+	
 	public static final Logger log = LogManager.getLogger(AllInOne.class);
-
+	
 	/**
 	 * AllInOne Constructor
 	 * 參數帶入log4j.properties的路徑，若帶入空字串則預設不產生log
@@ -64,27 +65,27 @@ public class AllInOne extends AllInOneBase{
 		super();
 		if(log4jPropertiesPath != "" && log4jPropertiesPath != null){
 			String propertiesFile = log4jPropertiesPath + "/log4j.xml";
-
+			
 			if(log4jPropertiesPath.substring(log4jPropertiesPath.length()-1) == "/")
 				propertiesFile = propertiesFile + "log4j.properties";
 			else
 				propertiesFile = propertiesFile + "/log4j.properties";
-
+			
 			try {
 				LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
 				File conFile = new File(propertiesFile);
-//				logContext.setConfigLocation(conFile.toURI());
-//				logContext.reconfigure();
+				logContext.setConfigLocation(conFile.toURI());
+				logContext.reconfigure();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
-
+	
 	/**
 	 * 檢查Hashtable中的檢查碼是否正確(確保資料未被竄改)
 	 * @param Hashtable params
-	 * @return boolean
+	 * @return boolean 
 	 */
 	public boolean compareCheckMacValue(Hashtable<String, String> params){
 		String checkMacValue = "";
@@ -102,7 +103,7 @@ public class AllInOne extends AllInOneBase{
 			return false;
 		}
 	}
-
+	
 	/**
 	 * Apple Pay信用卡授權作業
 	 * @param CreateServerOrderobj
@@ -139,7 +140,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 下載信用卡撥款對帳資料檔的方法
 	 * @param fundingReconDetailObj
@@ -194,7 +195,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 查詢信用卡單筆明細記錄的方法
 	 * @param queryTradeObj
@@ -221,7 +222,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 下載賣家會員對帳媒體檔的方法
 	 * @param tradeNoAioObj
@@ -269,7 +270,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 信用卡關帳/退刷/取消/放棄的方法
 	 * @param doActionObj
@@ -301,7 +302,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 查詢訂單資料的方法
 	 * @param queryTradeInfoObj
@@ -334,7 +335,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 信用卡定期定額訂單查詢
 	 * @param queryCreditCardPeriodInfoObj
@@ -362,7 +363,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 產生訂單Html form的方法
 	 * @param aioCheckOutObj
@@ -381,7 +382,7 @@ public class AllInOne extends AllInOneBase{
 				((AioCheckOutALL) obj).setMerchantID(MerchantID);
 			}
 			((AioCheckOutALL) obj).setInvoiceMark(invoice == null? "N" : "Y");
-			if(ignorePayment.length > 0){
+			if(ignorePayment.length > 0){ 
 				ignoreParam = Arrays.toString(ignorePayment);
 				ignoreParam = ignoreParam.replaceAll(", ", "#");
 				ignoreParam = ignoreParam.substring(1, ignoreParam.length()-1);
@@ -494,7 +495,7 @@ public class AllInOne extends AllInOneBase{
 		}
 		return out.toString();
 	}
-
+	
 	/**
 	 * ATM、CVS或BARCODE的取號結果通知方法。接收傳送至PaymentInfoURL的資料。回傳物件分為ATMRequestObj, CVSOrBARCODERequestObj二種，請用適當的物件承接以免出錯
 	 * @param req
@@ -542,7 +543,7 @@ public class AllInOne extends AllInOneBase{
 			return obj;
 		}
 	}
-
+	
 	/**
 	 * 產生HTML code
 	 * @param aio object

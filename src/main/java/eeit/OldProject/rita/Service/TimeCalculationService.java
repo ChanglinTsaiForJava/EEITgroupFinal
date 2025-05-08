@@ -1,61 +1,87 @@
 package eeit.OldProject.rita.Service;
 
-import eeit.OldProject.rita.Entity.AppointmentTimeContinuous;
-import eeit.OldProject.rita.Entity.AppointmentTimeMulti;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import eeit.OldProject.yuuhou.Entity.Caregiver;
+import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
 
+//✅ 改進後的 TimeCalculationService.java
 @Service
 public class TimeCalculationService {
 
-    // 計算 AppointmentTimeContinuous 的時數（以小時為單位）
-    public double calculateDurationInHours(Date startTime, Date endTime) {
-        if (startTime != null && endTime != null) {
-            long durationInMillis = endTime.getTime() - startTime.getTime();
-            return durationInMillis / (1000.0 * 60.0 * 60.0);  // 返回以小時為單位的時數
-        }
-        return 0;
-    }
+	@Autowired
+	private CaregiversRepository caregiversRepository;
 
-    // 用於計算 AppointmentTimeMulti 的時數（以小時為單位）
-    public double calculateMultiTimeDurationInHours(AppointmentTimeMulti time) {
-        if (time.getStartDate() != null && time.getEndDate() != null && time.getDailyStartTime() != null && time.getDailyEndTime() != null) {
-            // 計算每一天的時數
-            long startTimeInMillis = time.getDailyStartTime().toNanoOfDay();
-            long endTimeInMillis = time.getDailyEndTime().toNanoOfDay();
-            double dailyDuration = (endTimeInMillis - startTimeInMillis) / (1000.0 * 60.0 * 60.0);  // 每天的時數
+	// 計算連續時間
+	public BigDecimal calculateContinuousAmount(Long caregiverId, String startTime, String endTime) {
+		Caregiver caregiver = caregiversRepository.findById(caregiverId)
+				.orElseThrow(() -> new IllegalArgumentException("找不到看護，ID：" + caregiverId));
 
-            long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(time.getStartDate(), time.getEndDate());
-            return daysBetween * dailyDuration;
-        }
-        return 0;
-    }
+		LocalDateTime start = LocalDateTime.parse(startTime);
+		LocalDateTime end = LocalDateTime.parse(endTime);
 
-    // 計算總時數並以 "天 小時" 格式返回
-    public String calculateTotalTime(List<AppointmentTimeContinuous> continuousTimes, List<AppointmentTimeMulti> multiTimes) {
-        double totalDurationInHours = 0;
+		// 計算總小時數
+		long minutes = Duration.between(start, end).toMinutes();
+		BigDecimal hours = BigDecimal.valueOf(minutes).divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
 
-        // 計算 AppointmentTimeContinuous 的時數
-        if (continuousTimes != null) {
-            totalDurationInHours += continuousTimes.stream()
-                    .mapToDouble(time -> calculateDurationInHours(time.getStartTime(), time.getEndTime()))
-                    .sum();
-        }
+		// 計算費用
+		if (hours.compareTo(BigDecimal.valueOf(4)) <= 0) {
+			return hours.multiply(caregiver.getHourlyRate());
+		} else if (hours.compareTo(BigDecimal.valueOf(8)) <= 0) {
+			return caregiver.getHalfDayRate();
+		} else {
+			return caregiver.getFullDayRate();
+		}
+	}
 
-        // 計算 AppointmentTimeMulti 的時數
-        if (multiTimes != null) {
-            totalDurationInHours += multiTimes.stream()
-                    .mapToDouble(this::calculateMultiTimeDurationInHours)
-                    .sum();
-        }
+	// 計算多時段時間
+	public BigDecimal calculateMultiAmount(Long caregiverId, String startDate, String endDate,
+			List<Map<String, String>> timeSlots) {
+		Caregiver caregiver = caregiversRepository.findById(caregiverId)
+				.orElseThrow(() -> new IllegalArgumentException("找不到看護，ID：" + caregiverId));
 
-        // 計算總天數和小時數
-        int days = (int) totalDurationInHours / 24;  // 1天 = 24小時
-        int hours = (int) totalDurationInHours % 24; // 剩餘的時間是小時數
+		LocalDate start = LocalDate.parse(startDate);
+		LocalDate end = LocalDate.parse(endDate);
+		BigDecimal totalAmount = BigDecimal.ZERO;
 
-        return days + "天 " + hours + "小時";  // 格式化輸出
-    }
+		// ** 加入星期過濾 **
+		while (!start.isAfter(end)) {
+			for (Map<String, String> slot : timeSlots) {
+				String slotStartTime = slot.get("startTime");
+				String slotEndTime = slot.get("endTime");
+
+				// 確保時間格式正確
+				if (slotStartTime == null || slotEndTime == null) {
+					throw new IllegalArgumentException("時間槽缺少開始或結束時間");
+				}
+
+				// 計算單日時段費用
+				LocalDateTime slotStart = LocalDateTime.parse(start + "T" + slotStartTime);
+				LocalDateTime slotEnd = LocalDateTime.parse(start + "T" + slotEndTime);
+				long minutes = Duration.between(slotStart, slotEnd).toMinutes();
+				BigDecimal hours = BigDecimal.valueOf(minutes).divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+
+				// 計算費用
+				if (hours.compareTo(BigDecimal.valueOf(4)) <= 0) {
+					totalAmount = totalAmount.add(hours.multiply(caregiver.getHourlyRate()));
+				} else if (hours.compareTo(BigDecimal.valueOf(8)) <= 0) {
+					totalAmount = totalAmount.add(caregiver.getHalfDayRate());
+				} else {
+					totalAmount = totalAmount.add(caregiver.getFullDayRate());
+				}
+			}
+			start = start.plusDays(1);
+		}
+
+		return totalAmount;
+	}
 }
-
