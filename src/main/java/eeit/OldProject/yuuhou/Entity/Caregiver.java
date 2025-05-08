@@ -72,7 +72,7 @@ public class Caregiver {
     private String caregiverName;
 
     @Lob
-    @Column(name = "photo")
+    @Column(name = "photo", columnDefinition = "LONGBLOB")
     private byte[] photo;
     
 //    @Column(nullable = false, length = 255,name="PhotoPath")
@@ -143,5 +143,11 @@ public class Caregiver {
         ACTIVE,   // 啟用中
         INACTIVE  // 停用
     }
-    
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
 }

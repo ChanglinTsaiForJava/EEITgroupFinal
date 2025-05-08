@@ -5,11 +5,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,33 +24,30 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import eeit.OldProject.yuuhou.Entity.Caregiver;
+import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
 import eeit.OldProject.yuuhou.Service.CaregiversService;
 @RestController
 @RequestMapping("/api/caregivers")
 public class CaregiversController {
     @Autowired
     private CaregiversService caregiversService;
+    
+    
+    
     @Autowired
-    private PasswordEncoder passwordEncoder;
-//    @PostMapping("/photo")
-//    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file, Authentication authentication) {
-//        String email = authentication.getName();
-//        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
-//
-//        if (caregiverOpt.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
-//        }
-//
-//        Caregiver caregiver = caregiverOpt.get();
-//
-//        try {
-//            caregiver.setPhoto(file.getBytes()); // ✅ 存成 byte[]
-//            caregiversService.save(caregiver);
-//            return ResponseEntity.ok("✅ 上傳成功");
-//        } catch (IOException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ 圖片儲存失敗");
-//        }
-//    }
+    private CaregiversRepository caregiversRepository ;
+
+    // ✅ 提供頭貼 API
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+ // ✅ 確保圖片正確儲存到資料庫
     @PostMapping("/photo")
     public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file, Authentication authentication) {
         String email = authentication.getName();
@@ -62,13 +60,24 @@ public class CaregiversController {
         Caregiver caregiver = caregiverOpt.get();
 
         try {
-            caregiver.setPhoto(file.getBytes()); // ✅ 存成 byte[]
+            byte[] photoBytes = file.getBytes();
+            caregiver.setPhoto(photoBytes);
             caregiversService.save(caregiver);
-            return ResponseEntity.ok("✅ 上傳成功");
+
+            // ✅ **修改**: 回傳正確的 JSON 格式
+            String base64Photo = "data:image/jpeg;base64," + java.util.Base64.getEncoder().encodeToString(photoBytes);
+
+            // ✅ **確保回傳正確的 Content-Type**
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(Map.of("photo", base64Photo));
+
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ 圖片儲存失敗");
         }
     }
+
+
     @GetMapping("/photo")
     public ResponseEntity<?> getPhoto(Authentication authentication) {
         String email = authentication.getName();
@@ -179,8 +188,9 @@ public class CaregiversController {
         if (updatedCaregiver.getPassword() == null || updatedCaregiver.getPassword().isEmpty()) {
             updatedCaregiver.setPassword(existing.getPassword());
         } else {
-            updatedCaregiver.setPassword(passwordEncoder.encode(updatedCaregiver.getPassword()));
+            updatedCaregiver.setPassword(updatedCaregiver.getPassword()); // ✅ 直接使用明碼
         }
+
         updatedCaregiver.setCaregiverId(id);
         caregiversService.save(updatedCaregiver);
         return ResponseEntity.ok("✅ 修改成功！");
@@ -209,27 +219,30 @@ public class CaregiversController {
 
         Caregiver existing = caregiverOpt.get();
 
-        // 若 email 有更改，確認沒人使用
-        if (!existing.getEmail().equals(updatedCaregiver.getEmail())) {
-            Optional<Caregiver> emailCheck = caregiversService.findByEmail(updatedCaregiver.getEmail());
-            if (emailCheck.isPresent()) {
-                return ResponseEntity.badRequest().body("❌ 這個 Email 已經被使用了！");
-            }
-        }
+        // ✅ 保留 Email，不允許更改
+        updatedCaregiver.setEmail(existing.getEmail());
 
-        // 處理密碼欄位
+        // ✅ 保留原密碼，如果前端沒有提供
         if (updatedCaregiver.getPassword() == null || updatedCaregiver.getPassword().isEmpty()) {
             updatedCaregiver.setPassword(existing.getPassword());
-        } else {
-            updatedCaregiver.setPassword(passwordEncoder.encode(updatedCaregiver.getPassword()));
         }
 
-        // 保留舊的 ID
+        // ✅ 保留原有照片
+        if (updatedCaregiver.getPhoto() == null || updatedCaregiver.getPhoto().length == 0) {
+            updatedCaregiver.setPhoto(existing.getPhoto());
+        }
+
+        // ✅ 保留其他不能改變的欄位
         updatedCaregiver.setCaregiverId(existing.getCaregiverId());
+        updatedCaregiver.setCreatedAt(existing.getCreatedAt());
+        updatedCaregiver.setVerified(existing.isVerified());
+
+        // ✅ 更新資料
         caregiversService.save(updatedCaregiver);
 
         return ResponseEntity.ok("✅ 你的個人資料已更新！");
     }
+
     @GetMapping("/me")
     public ResponseEntity<?> getMyProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -241,38 +254,30 @@ public class CaregiversController {
         }
 
         Caregiver caregiver = caregiverOpt.get();
-        return ResponseEntity.ok(caregiver);
+        
+        // ✅ 將 byte[] 轉成 base64
+        String base64Photo = null;
+        if (caregiver.getPhoto() != null && caregiver.getPhoto().length > 0) {
+            base64Photo = "data:image/jpeg;base64," + java.util.Base64.getEncoder().encodeToString(caregiver.getPhoto());
+        }
+
+        // ✅ 回傳包含照片的 JSON
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("caregiverId", caregiver.getCaregiverId());
+        response.put("caregiverName", caregiver.getCaregiverName());
+        response.put("gender", caregiver.getGender());
+        response.put("birthday", caregiver.getBirthday());
+        response.put("phone", caregiver.getPhone());
+        response.put("nationality", caregiver.getNationality());
+        response.put("yearOfExperience", caregiver.getYearOfExperience());
+        response.put("description", caregiver.getDescription());
+        response.put("photo", base64Photo); // ✅ 加入照片
+
+        return ResponseEntity.ok(response);
     }
 
-//    @PostMapping("/api/caregivers/photo")
-//    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file,
-//                                         Authentication authentication) {
-//        String email = authentication.getName();
-//        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
-//
-//        if (caregiverOpt.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
-//        }
-//
-//        Caregiver caregiver = caregiverOpt.get();
-//
-//        try {
-//            // 存檔案到 static/images 資料夾（先確認有此資料夾）
-//            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
-//            Path path = Paths.get("src/main/resources/static/yuuhou/images/" + filename);
-//            Files.createDirectories(path.getParent()); // 若目錄不存在則建立
-//            Files.write(path, file.getBytes());
-//
-//            // 設定路徑到資料庫
-//            caregiver.setPhotoPath("/yuuhou/images/" + filename);
-//            caregiversService.save(caregiver);
-//
-//            return ResponseEntity.ok(Collections.singletonMap("photoPath", caregiver.getPhotoPath()));
-//        } catch (IOException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("上傳失敗");
-//        }
-//    }
-//    
+    
+    
     
     
     
