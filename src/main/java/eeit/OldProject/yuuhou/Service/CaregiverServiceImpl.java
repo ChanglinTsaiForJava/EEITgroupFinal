@@ -40,5 +40,11 @@ public class CaregiverServiceImpl implements CaregiversService {
                 serviceDistrict != null ? serviceDistrict : ""
         );
     }
+    
+// // Rita新增
+//    @Override
+//    public Optional<Caregiver> findByIdWithLicenses(Long id) {
+//        return repository.findByIdWithLicenses(id);
+//    }
 }
 
