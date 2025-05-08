@@ -61,7 +61,7 @@ public class NewsServiceImpl implements NewsService {
 	    existing.setTitle(updateNews.getTitle());
 	    existing.setThumbnail(updateNews.getThumbnail());
 	    existing.setCategory(updateNews.getCategory());
-	    existing.setModifyBy(updateNews.getModifyBy());
+	    existing.setModifyBy("admin"); //預設為admin
 	    existing.setModifyAt(LocalDateTime.now()); // 系統更新時間
 	    existing.setContent(updateNews.getContent());
 	    existing.setTags(updateNews.getTags());
