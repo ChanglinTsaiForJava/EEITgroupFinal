@@ -85,12 +85,13 @@ import lombok.RequiredArgsConstructor;
             }
             return savedAppointment;
         }
-     // 將 generateMerchantTradeNo() 方法寫在這裡
         private String generateMerchantTradeNo() {
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
-            String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
-            return "ECPAY" + timestamp + uuid;
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+            String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 6);
+            return "ECP" + timestamp + uuid;
         }
+
+
        
 
 
