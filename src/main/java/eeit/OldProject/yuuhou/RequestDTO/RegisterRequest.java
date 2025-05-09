@@ -19,8 +19,16 @@ public class RegisterRequest{
     private String serviceCity;
     private String serviceDistrict; 
     private String description;
-    private String photoPath;
     private BigDecimal hourlyRate;
     private BigDecimal halfDayRate;
     private BigDecimal fullDayRate;
+    private String base64Photo;
+
+    public String getBase64Photo() {
+        return base64Photo;
+    }
+
+    public void setBase64Photo(String base64Photo) {
+        this.base64Photo = base64Photo;
+    }
 }

@@ -37,27 +37,29 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
+            // ✅ 先確認 token 是否有效
             if (jwtUtil.validateToken(token)) {
                 String email = jwtUtil.getEmailFromToken(token);
 
-                // ✅ 透過 UserDetailsService 查出完整使用者物件
+                // ✅ 確認使用者是否存在
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                if (userDetails != null) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
 
-                // ✅ 建立包含角色的身份驗證物件
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request));
 
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // ✅ 放進 Spring Security 的上下文
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    // ✅ 放入 SecurityContext
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
 }

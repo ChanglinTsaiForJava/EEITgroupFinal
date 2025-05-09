@@ -33,6 +33,11 @@ public class RegisterController {
     @Autowired
     private JavaMailSender mailSender;
 
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmailExists(@RequestParam String email) {
+        boolean exists = userRepository.findByEmailAddressIgnoreCase(email).isPresent();
+        return ResponseEntity.ok(exists); // true = 已存在, false = 可用
+    }
     @PostMapping("/register/send")
     public ResponseEntity<?> sendVerificationEmail(@RequestBody @Valid RegisterRequestDTO requestDTO) {
         if (userRepository.existsByUserAccount(requestDTO.getUserAccount())) {

@@ -39,11 +39,12 @@ public class PostController {
 		postService.incrementViewCount(id);
 		return ResponseEntity.noContent().build();
 	}
-
+	
 	@PostMapping("/{id}/share")
-	public ResponseEntity<Void> share(@PathVariable Long id) {
-		postService.incrementShareCount(id);
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<Long> share(@PathVariable Long id) {
+	    Long updatedCount = postService.incrementShareCount(id);
+	    return ResponseEntity
+	            .ok(updatedCount);    // HTTP 200 + 回傳新的分享數
 	}
 
 	@GetMapping("/user/{uid}")

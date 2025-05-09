@@ -16,7 +16,7 @@ public class Favorite_course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FavCourseId")
-    private Long favCourseId;
+    private int favCourseId;
 
     @Column(name = "ArchivedDate")
     private LocalDateTime archivedDate;

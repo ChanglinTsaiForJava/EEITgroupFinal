@@ -2,17 +2,19 @@ package eeit.OldProject.yuuhou.Service;
 
 
 
-import eeit.OldProject.yuuhou.Entity.Caregiver;
-import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import eeit.OldProject.yuuhou.Entity.Caregiver;
+import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -41,8 +43,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return User.builder()
                 .username(caregiver.getEmail())
-                .password(caregiver.getPassword()) // 記得要加密！
-                .roles("CAREGIVER")
+                .password(caregiver.getPassword())
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_CAREGIVER"))) // ✅ 關鍵！
                 .build();
     }
 }

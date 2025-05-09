@@ -106,10 +106,15 @@ public class PostService {
 	}
 
 	// 分享次數 +1
-	public void incrementShareCount(Long postId) {
-		postRepo.findById(postId).ifPresent(post -> {
-			post.setShare(post.getShare() == null ? 1L : post.getShare() + 1);
-		});
+	public Long incrementShareCount(Long postId) {
+	    return postRepo.findById(postId)
+	        .map(post -> {
+	            Long newCount = post.getShare() == null ? 1L : post.getShare() + 1;
+	            post.setShare(newCount);
+	            postRepo.save(post);              // 記得存回資料庫
+	            return newCount;
+	        })
+	        .orElseThrow(() -> new EntityNotFoundException("Post not found"));
 	}
 
 	public Page<Post> getPostsByUser(Long userId, int page, int size) {

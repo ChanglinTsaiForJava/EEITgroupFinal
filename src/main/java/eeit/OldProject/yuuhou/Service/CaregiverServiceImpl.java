@@ -47,4 +47,3 @@ public class CaregiverServiceImpl implements CaregiversService {
 //        return repository.findByIdWithLicenses(id);
 //    }
 }
-
