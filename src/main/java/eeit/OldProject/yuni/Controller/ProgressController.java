@@ -2,6 +2,7 @@ package eeit.OldProject.yuni.Controller;
 
 import eeit.OldProject.steve.Entity.User;
 import eeit.OldProject.steve.Repository.UserRepository;
+import eeit.OldProject.yuni.DTO.UpdateProgressDto;
 import eeit.OldProject.yuni.DTO.UserCourseEnrollDto;
 import eeit.OldProject.yuni.Entity.Chapter;
 import eeit.OldProject.yuni.Entity.Course;
@@ -146,15 +147,38 @@ public class ProgressController {
 
 
     // 更新觀看進度 + 完成狀態
+//    @PatchMapping("/chapter/{chapterId}/progress")
+//    public ResponseEntity<?> updateProgress(@PathVariable Integer chapterId,
+//                                            @RequestParam Long userId,
+//                                            @RequestParam(required = false) Float lastWatched,
+//                                            @RequestParam(required = false) Boolean isCompleted) {
+//        Optional<Progress> progressOpt = progressService.getProgressByUserAndChapter(userId, chapterId);
+//        if (progressOpt.isPresent()) {
+//            Progress updated = progressService.markChapterProgress(progressOpt.get(), lastWatched, isCompleted);
+//            return ResponseEntity.ok(updated);
+//        } else {
+//            return ResponseEntity.status(404).body("找不到進度記錄，請先建立！");
+//        }
+//    }
+
+
     @PatchMapping("/chapter/{chapterId}/progress")
     public ResponseEntity<?> updateProgress(@PathVariable Integer chapterId,
-                                            @RequestParam Long userId,
-                                            @RequestParam(required = false) Float lastWatched,
-                                            @RequestParam(required = false) Boolean isCompleted) {
-        Optional<Progress> progressOpt = progressService.getProgressByUserAndChapter(userId, chapterId);
+                                            @RequestBody UpdateProgressDto dto) {
+        Optional<Progress> progressOpt = progressService.getProgressByUserAndChapter(dto.getUserId(), chapterId);
         if (progressOpt.isPresent()) {
-            Progress updated = progressService.markChapterProgress(progressOpt.get(), lastWatched, isCompleted);
-            return ResponseEntity.ok(updated);
+            Progress progress = progressOpt.get();
+            if (dto.getLastWatched() != null) {
+                progress.setLastWatched(dto.getLastWatched());
+            }
+            if (dto.getIsCompleted() != null) {
+                progress.setIsCompleted(dto.getIsCompleted());
+            }
+            if (dto.getStatus() != null) {
+                progress.setStatus(dto.getStatus());
+            }
+            progressRepository.save(progress);
+            return ResponseEntity.ok(progress);
         } else {
             return ResponseEntity.status(404).body("找不到進度記錄，請先建立！");
         }
@@ -174,7 +198,7 @@ public class ProgressController {
     }
 
     // 判斷課全部完成
-    @GetMapping("/user/{userId}/course/{courseId}/comIdpleted")
+    @GetMapping("/user/{userId}/course/{courseId}/completed")
     public ResponseEntity<?> checkCourseCompletion(@PathVariable Long userId, @PathVariable Integer courseId) {
         boolean completed = progressService.isCourseCompleted(userId, courseId);
         return ResponseEntity.ok(completed);
@@ -264,5 +288,39 @@ public class ProgressController {
         progressRepository.deleteAll(progresses);
         return ResponseEntity.ok("已成功移除課程");
     }
+
+    @PatchMapping("/user/{userId}/course/{courseId}/complete-all")
+    public ResponseEntity<?> completeAllChaptersInCourse(@PathVariable Long userId,
+                                                         @PathVariable Integer courseId) {
+        if (!userRepository.existsById(userId) || !courseRepository.existsById(courseId)) {
+            return ResponseEntity.status(404).body("查無此用戶或課程");
+        }
+
+        List<Progress> progresses = progressRepository.findByUserId_UserIdAndCourseId_CourseId(userId, courseId);
+        if (progresses.isEmpty()) {
+            return ResponseEntity.status(404).body("找不到任何章節進度，無法完成課程");
+        }
+
+        for (Progress p : progresses) {
+            p.setIsCompleted(true);
+            p.setStatus(Status.completed);
+            p.setCompletionDate(java.time.LocalDateTime.now());
+        }
+
+        progressRepository.saveAll(progresses);
+        return ResponseEntity.ok("已將所有章節標記為完成");
+    }
+
+    // 查詢使用者已完成的課程清單（回傳 courseId）
+    @GetMapping("/user/{userId}/completed-courses")
+    public ResponseEntity<?> getCompletedCourseIds(@PathVariable Long userId) {
+        if (!userRepository.existsById(userId)) {
+            return ResponseEntity.status(404).body("查無此用戶");
+        }
+
+        List<Integer> completedCourseIds = progressRepository.findCompletedCoursesByUserId(userId);
+        return ResponseEntity.ok(completedCourseIds);
+    }
+
 
 }
