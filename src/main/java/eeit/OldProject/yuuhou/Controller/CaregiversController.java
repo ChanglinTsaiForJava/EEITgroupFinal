@@ -39,14 +39,7 @@ public class CaregiversController {
 
     // ✅ 提供頭貼 API
  
-    
-    
-    
-    
-    
-    
-    
-    
+   
  // ✅ 確保圖片正確儲存到資料庫
     @PostMapping("/photo")
     public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file, Authentication authentication) {
@@ -271,6 +264,7 @@ public class CaregiversController {
         response.put("nationality", caregiver.getNationality());
         response.put("yearOfExperience", caregiver.getYearOfExperience());
         response.put("description", caregiver.getDescription());
+        response.put("languages", caregiver.getLanguages());
         response.put("photo", base64Photo); // ✅ 加入照片
 
         return ResponseEntity.ok(response);
