@@ -64,7 +64,7 @@ public class PostInterfaceImpl implements PostInterface{
 		}
 		
 		// created <= ?
-		if (filter.getStartTime()!=null) {
+		if (filter.getEndTime()!=null) {
 			predicates.add(criteriaBuilder.lessThanOrEqualTo(post.get("createdAt"), filter.getEndTime()));
 		}
 		
