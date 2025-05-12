@@ -3,7 +3,6 @@ package eeit.OldProject.daniel.repository.post;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.sql.ast.tree.expression.Distinct;
 import org.springframework.stereotype.Repository;
 
 import eeit.OldProject.daniel.dto.PostFilter;
