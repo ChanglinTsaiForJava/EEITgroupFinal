@@ -196,7 +196,7 @@ public class AuthController {
         verificationTokens.put(token, email);
 
         // 建立重設密碼的連結
-        String resetUrl = "http://localhost:5173/reset?token=" + token; // 這是給前端用的連結
+        String resetUrl = "http://localhost:5173/reset/yuuhou?token=" + token; // 這是給前端用的連結
 
         // 寄出 email	
         sendResetPasswordEmail(email, resetUrl);
