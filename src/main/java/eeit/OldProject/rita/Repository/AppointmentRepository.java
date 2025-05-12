@@ -20,4 +20,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * 看護端查詢「我有哪些預約還沒處理 / 已付款 / 已完成」
      * SELECT * FROM appointment WHERE caregiver_id = ? AND status = ?
      */
+    
+    List<Appointment> findByAppointmentId(Long appointmentId);
 }

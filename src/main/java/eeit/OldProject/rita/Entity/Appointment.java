@@ -78,6 +78,7 @@ public class Appointment {
     // 合約確認欄位
     @Column(name = "contractConfirmed", nullable = false)
     private boolean contractConfirmed = false;
+    
 
 
     // Relationships

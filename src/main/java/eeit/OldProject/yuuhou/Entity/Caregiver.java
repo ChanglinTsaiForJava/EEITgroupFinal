@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +22,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +42,7 @@ public class Caregiver {
 
 	@Builder.Default
 	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	 @JsonManagedReference
 	    private List<CaregiverLicense> licenses = new ArrayList<>();
 	  
 	@Builder.Default
@@ -75,8 +79,8 @@ public class Caregiver {
     @Column(name = "photo", columnDefinition = "LONGBLOB")
     private byte[] photo;
     
-//    @Column(nullable = false, length = 255,name="PhotoPath")
-//    private String photoPath;
+    @Column(nullable = true, length = 255,name="PhotoPath")
+    private String photoPath;
 
     @Column(nullable = false, length = 20,name="Gender")
     private String gender;
@@ -137,6 +141,8 @@ public class Caregiver {
     @Column(nullable = false, name = "Created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
     
+    @Transient
+    private BigDecimal totalPrice; //rita
 
     // ENUM 狀態類別
     public enum Status {

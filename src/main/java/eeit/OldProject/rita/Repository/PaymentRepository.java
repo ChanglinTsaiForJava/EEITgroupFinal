@@ -1,5 +1,6 @@
 package eeit.OldProject.rita.Repository;
 
+import eeit.OldProject.rita.Entity.Appointment;
 import eeit.OldProject.rita.Entity.Payment;
 import eeit.OldProject.rita.Entity.PaymentReferenceType;
 import org.springframework.data.jpa.repository.JpaRepository;

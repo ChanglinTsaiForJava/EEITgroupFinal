@@ -1,15 +1,29 @@
 package eeit.OldProject.rita.Service;
 
-import eeit.OldProject.rita.Entity.*;
-import eeit.OldProject.rita.Repository.*;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import eeit.OldProject.rita.Entity.Appointment;
+import eeit.OldProject.rita.Entity.AppointmentDisease;
+import eeit.OldProject.rita.Entity.AppointmentPhysical;
+import eeit.OldProject.rita.Entity.AppointmentServiceItem;
+import eeit.OldProject.rita.Entity.AppointmentTimeContinuous;
+import eeit.OldProject.rita.Entity.AppointmentTimeMulti;
+import eeit.OldProject.rita.Entity.Payment;
+import eeit.OldProject.rita.Repository.AppointmentDiseaseRepository;
+import eeit.OldProject.rita.Repository.AppointmentPhysicalRepository;
+import eeit.OldProject.rita.Repository.AppointmentRepository;
+import eeit.OldProject.rita.Repository.AppointmentServiceItemRepository;
+import eeit.OldProject.rita.Repository.AppointmentTimeContinuousRepository;
+import eeit.OldProject.rita.Repository.AppointmentTimeMultiRepository;
+import eeit.OldProject.rita.Repository.PaymentRepository;
 import eeit.OldProject.steve.Repository.UserRepository;
 import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +34,12 @@ public class AppointmentService {
     private final AppointmentServiceItemRepository appointmentServiceItemRepository;
     private final AppointmentTimeContinuousRepository continuousRepository;
     private final AppointmentTimeMultiRepository multiRepository;
-    private final TimeCalculationService timeCalculationService;
     private final EmailTemplateService emailTemplateService;
     private final NotificationService notificationService;
     private final CaregiversRepository caregiverRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final TimeCalculationService timeCalculationService;
 
 
     /**
@@ -144,14 +158,25 @@ public class AppointmentService {
     /**
      * 計算總時數並返回格式化的時間
      **/
-    public String calculateTotalTime(Long appointmentId) {
-        // 從資料庫中查詢 AppointmentTimeContinuous 和 AppointmentTimeMulti
-        List<AppointmentTimeContinuous> continuousTimes = continuousRepository.findByAppointmentId(appointmentId);
-        List<AppointmentTimeMulti> multiTimes = multiRepository.findByAppointmentId(appointmentId);
-
-        // 使用 TimeCalculationService 來計算總時間
-        return timeCalculationService.calculateTotalTime(continuousTimes, multiTimes);  // 返回 "X天 Y小時"
+    
+    /**
+     * 計算預約金額（使用新的計算邏輯）
+     */
+    public BigDecimal estimateContinuousAmount(Long caregiverId, String startTime, String endTime) {
+        return timeCalculationService.calculateContinuousAmount(caregiverId, startTime, endTime);
     }
+
+    public BigDecimal estimateMultiAmount(Long caregiverId, String startDate, String endDate, List<Map<String, String>> timeSlots) {
+        return timeCalculationService.calculateMultiAmount(caregiverId, startDate, endDate, timeSlots);
+    }
+//    public String calculateTotalTime(Long appointmentId) {
+//        // 從資料庫中查詢 AppointmentTimeContinuous 和 AppointmentTimeMulti
+//        List<AppointmentTimeContinuous> continuousTimes = continuousRepository.findByAppointmentId(appointmentId);
+//        List<AppointmentTimeMulti> multiTimes = multiRepository.findByAppointmentId(appointmentId);
+//
+//        // 使用 TimeCalculationService 來計算總時間
+//        return timeCalculationService.calculateTotalTime(continuousTimes, multiTimes);  // 返回 "X天 Y小時"
+//    }
 
     public void sendPaidEmail(Appointment appointment, Payment payment) {
         String content = emailTemplateService.generateAppointmentPaidContent(appointment, payment);
@@ -161,5 +186,5 @@ public class AppointmentService {
 
 
 
-
 }
+

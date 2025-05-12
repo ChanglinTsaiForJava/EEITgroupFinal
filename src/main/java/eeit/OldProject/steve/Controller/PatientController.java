@@ -54,6 +54,7 @@ public class PatientController {
 
         List<Patient> patients = patientService.getAllPatientsByUserId(userId);
         return ResponseEntity.ok(patients);
+        
     }
 
     // 查詢特定病患資料
