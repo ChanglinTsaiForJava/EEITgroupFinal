@@ -1,6 +1,7 @@
 package eeit.OldProject.rita.Controller;
 
 import java.math.BigDecimal;
+import java.security.PublicKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -164,6 +165,13 @@ public class AppointmentController {
 				// 如果没有图片，使用默认图片
 				caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/default-placeholder.jpg");
 			}
+			
+			
+			  BigDecimal xxx =  timeCalculationService.calculateContinuousAmount(caregiver.getCaregiverId(), desiredStartTime, desiredEndTime);
+			 caregiver.setTotalPrice(xxx);
+			
+			
+			
 		});
 
 		return ResponseEntity.ok(caregivers);

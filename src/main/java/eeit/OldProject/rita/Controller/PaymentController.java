@@ -1,6 +1,8 @@
 package eeit.OldProject.rita.Controller;
 
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,8 +48,15 @@ public class PaymentController {
 		AioCheckOutALL obj = new AioCheckOutALL();
 
 		obj.setMerchantTradeNo("carePlus0522id"+appointment.getAppointmentId());
-
-		obj.setMerchantTradeDate("2025/05/06 06:05:23");
+		
+//		// 設定當前時間
+//        LocalDateTime now = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+//        String formattedDate = now.format(formatter);
+//        obj.setMerchantTradeDate(formattedDate);
+        
+		obj.setMerchantTradeDate("2025/05/13 06:05:23");
+     
 
 		obj.setTotalAmount(appointment.getTotalPrice().setScale(0, RoundingMode.DOWN).toString());
 
@@ -55,9 +64,11 @@ public class PaymentController {
 
 		obj.setItemName("Caregiver Service");
 		
+		obj.setClientBackURL("https://820d-1-160-3-119.ngrok-free.app/frontend/");
+		
 		
 		//回傳URl
-		obj.setReturnURL("https://e456-106-104-84-183.ngrok-free.app/payment/callback");
+		obj.setReturnURL("https://820d-1-160-3-119.ngrok-free.app/api/payment/callback");
 		obj.setNeedExtraPaidInfo("N");
 		
 		

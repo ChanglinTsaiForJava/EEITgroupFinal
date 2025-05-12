@@ -22,6 +22,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -78,8 +79,8 @@ public class Caregiver {
     @Column(name = "photo", columnDefinition = "LONGBLOB")
     private byte[] photo;
     
-//    @Column(nullable = false, length = 255,name="PhotoPath")
-//    private String photoPath;
+    @Column(nullable = true, length = 255,name="PhotoPath")
+    private String photoPath;
 
     @Column(nullable = false, length = 20,name="Gender")
     private String gender;
@@ -140,6 +141,8 @@ public class Caregiver {
     @Column(nullable = false, name = "Created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
     
+    @Transient
+    private BigDecimal totalPrice; //rita
 
     // ENUM 狀態類別
     public enum Status {
