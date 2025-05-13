@@ -322,5 +322,11 @@ public class ProgressController {
         return ResponseEntity.ok(completedCourseIds);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllProgress() {
+        List<Progress> progressList = progressRepository.findAllWithRelations();
+        return ResponseEntity.ok(progressList);
+    }
+
 
 }
