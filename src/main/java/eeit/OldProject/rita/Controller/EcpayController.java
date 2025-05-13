@@ -3,17 +3,17 @@ package eeit.OldProject.rita.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import eeit.OldProject.rita.Service.EcpayFunction;
 
-@RestController
+@Controller
 @RequestMapping("/payment")
 public class EcpayController {
     @Autowired
@@ -21,6 +21,7 @@ public class EcpayController {
     
     @PostMapping("/ecpay")
     @CrossOrigin
+    @ResponseBody
     public ResponseEntity<String> processPayment(@RequestParam Long appointmentId) {
         try {
             String form = ecpayFunction.buildEcpayForm(appointmentId);
@@ -45,38 +46,37 @@ public class EcpayController {
     
  // 用於瀏覽器重導向的 Result URL
     @PostMapping("/result")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = "*")
     public String ecpayResult(@RequestBody String body) {
-        System.out.println("ecpay result " + System.currentTimeMillis());
+        System.out.println("ecpay result2 " + System.currentTimeMillis());
         System.out.println("body=" + body);
         
         // 這裡應該使用 302 重導向
-        return "redirect:http://localhost:5173/payment/success";
+//        return "redirect:http://localhost:5173/payment/success";
+        return "redirect:https://tw.yahoo.com";
+
     }
 
     // 用於伺服器之間的通知 (Server to Server)
     @PostMapping("/return")
-    @ResponseBody
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public String ecpayReturn(@RequestBody String body) {
-        System.out.println("ecpay return " + System.currentTimeMillis());
+        System.out.println("ecpay return1 " + System.currentTimeMillis());
         System.out.println("body=" + body);
         
         // 直接回傳 OK，告訴 ECPay 已經處理完成
-        return "OK";
+        return "";
     }
     
-    @PostMapping("/send")
-    @ResponseBody
-    @CrossOrigin
-    public String send(@RequestParam Long appointmentId) {
-    	try {
-            String form = ecpayFunction.buildEcpayForm(appointmentId);
-            return form;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    
-    }
+//    @PostMapping("/send")
+//    @ResponseBody
+//    @CrossOrigin
+//    public String send(@RequestParam Long appointmentId) {
+//    	try {
+//            String form = ecpayFunction.buildEcpayForm(appointmentId);
+//            return form;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "Error: " + e.getMessage();
+//        }
+//    }
 }
