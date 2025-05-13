@@ -1,12 +1,31 @@
 package eeit.OldProject.rita.Entity;
 
+import java.math.BigDecimal;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import eeit.OldProject.steve.Entity.Patient;
 import eeit.OldProject.steve.Entity.User;
 import eeit.OldProject.yuuhou.Entity.Caregiver;
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.math.BigDecimal;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name= "appointment")
@@ -83,16 +102,35 @@ public class Appointment {
 
     // Relationships
     @ManyToOne
+    @JsonIgnoreProperties("appointments") 
     @JoinColumn(name = "UserId", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
+    @JsonIgnoreProperties("appointments") 
     @JoinColumn(name = "CaregiverId", insertable = false, updatable = false)
     private Caregiver caregiver;
 
     @ManyToOne
+    @JsonIgnoreProperties("appointments") 
     @JoinColumn(name = "PatientId", insertable = false, updatable = false)
     private Patient patient;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY)
+    private Set<AppointmentDisease> diseases;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY)
+    private Set<AppointmentPhysical> physicalConditions;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY)
+    private Set<AppointmentServiceItem> services;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY)
+    private Set<AppointmentTimeContinuous> timeContinuous;
 
     public static enum AppointmentStatus {
         Pending,

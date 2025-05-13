@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -38,11 +39,13 @@ public class Caregiver {
 
 	@Builder.Default
 	  @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("caregiver")
 	    private List<CaregiverComment> comments = new ArrayList<>();
 
 	@Builder.Default
 	    @OneToMany(mappedBy = "caregiver", cascade = CascadeType.ALL, orphanRemoval = true)
-	 @JsonManagedReference
+//	 @JsonManagedReference
+	 @JsonIgnoreProperties("caregiver") 
 	    private List<CaregiverLicense> licenses = new ArrayList<>();
 	  
 	@Builder.Default

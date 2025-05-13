@@ -562,7 +562,7 @@ public class AllInOne extends AllInOneBase{
 		fieldValue.put("CheckMacValue", CheckMacValue);
 		Set<String> key = fieldValue.keySet();
 		String name[] = key.toArray(new String[key.size()]);
-		builder.append("<form id=\"allPayAPIForm\" action=\""+ aioCheckOutUrl + "\" method=\"post\">");
+		builder.append("<form id=\"allPayAPIForm\" target='_blank' action=\""+ aioCheckOutUrl + "\" method=\"post\">");
 		for(int i = 0 ; i < name.length ; i++) {
 			builder.append("<input type=\"hidden\" name=\""+name[i]+"\" value=\""+fieldValue.get(name[i])+"\">");
 		}
