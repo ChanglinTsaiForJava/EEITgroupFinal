@@ -26,18 +26,21 @@ public class Progress {
     @ManyToOne
     @JoinColumn(name = "UserId", referencedColumnName = "UserId")
 //	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "progresses"})
     private User userId;
 
 //    private Integer courseId;
     @ManyToOne
     @JoinColumn(name = "CourseId", referencedColumnName = "CourseId")
 //	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "chapters", "progresses"})
     private Course courseId;
 
 //    private Integer chapterId;
     @ManyToOne
     @JoinColumn(name = "ChapterId", referencedColumnName = "ChapterId")
 //	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "course", "progresses"})
     private Chapter chapterId;
 
 	public Progress() {
