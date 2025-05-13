@@ -37,7 +37,8 @@ public interface ProgressRepository extends JpaRepository<Progress, Integer> {
     List<Integer> findCompletedCoursesByUserId(@Param("userId") Long userId);
 
 
-
+    @Query("SELECT p FROM Progress p " + "JOIN FETCH p.userId " + "JOIN FETCH p.courseId " + "JOIN FETCH p.chapterId")
+    List<Progress> findAllWithRelations();
 
 }
 

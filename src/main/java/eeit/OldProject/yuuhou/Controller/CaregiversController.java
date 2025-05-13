@@ -1,5 +1,6 @@
 package eeit.OldProject.yuuhou.Controller;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,14 +40,7 @@ public class CaregiversController {
 
     // ✅ 提供頭貼 API
  
-    
-    
-    
-    
-    
-    
-    
-    
+   
  // ✅ 確保圖片正確儲存到資料庫
     @PostMapping("/photo")
     public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file, Authentication authentication) {
@@ -271,6 +265,7 @@ public class CaregiversController {
         response.put("nationality", caregiver.getNationality());
         response.put("yearOfExperience", caregiver.getYearOfExperience());
         response.put("description", caregiver.getDescription());
+        response.put("languages", caregiver.getLanguages());
         response.put("photo", base64Photo); // ✅ 加入照片
 
         return ResponseEntity.ok(response);
@@ -278,7 +273,72 @@ public class CaregiversController {
 
     
     
-    
+    @GetMapping("/me/service-settings")
+    public ResponseEntity<?> getMyServiceSettings() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(currentUserEmail);
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ 找不到登入的照顧者帳號！");
+        }
+
+        Caregiver caregiver = caregiverOpt.get();
+
+        // 回傳服務設定的 JSON
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("serviceCity", caregiver.getServiceCity());
+        response.put("serviceDistrict", caregiver.getServiceDistrict());
+        response.put("hourlyRate", caregiver.getHourlyRate());
+        response.put("halfDayRate", caregiver.getHalfDayRate());
+        response.put("fullDayRate", caregiver.getFullDayRate());
+
+        return ResponseEntity.ok(response);
+    }
+    @PutMapping("/me/service-settings")
+    public ResponseEntity<?> updateMyServiceSettings(@RequestBody Map<String, Object> updatedSettings) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(currentUserEmail);
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ 找不到登入的照顧者帳號！");
+        }
+
+        Caregiver caregiver = caregiverOpt.get();
+
+        // ✅ 更新服務設定
+        if (updatedSettings.containsKey("serviceCity")) {
+            caregiver.setServiceCity((String) updatedSettings.get("serviceCity"));
+        }
+        if (updatedSettings.containsKey("serviceDistrict")) {
+            caregiver.setServiceDistrict((String) updatedSettings.get("serviceDistrict"));
+        }
+        if (updatedSettings.containsKey("hourlyRate")) {
+            Object hourlyRateObj = updatedSettings.get("hourlyRate");
+            if (hourlyRateObj instanceof Number) {
+                caregiver.setHourlyRate(BigDecimal.valueOf(((Number) hourlyRateObj).doubleValue()));
+            }
+        }
+        if (updatedSettings.containsKey("halfDayRate")) {
+            Object halfDayRateObj = updatedSettings.get("halfDayRate");
+            if (halfDayRateObj instanceof Number) {
+                caregiver.setHalfDayRate(BigDecimal.valueOf(((Number) halfDayRateObj).doubleValue()));
+            }
+        }
+        if (updatedSettings.containsKey("fullDayRate")) {
+            Object fullDayRateObj = updatedSettings.get("fullDayRate");
+            if (fullDayRateObj instanceof Number) {
+                caregiver.setFullDayRate(BigDecimal.valueOf(((Number) fullDayRateObj).doubleValue()));
+            }
+        }
+
+        // ✅ 儲存變更
+        caregiversService.save(caregiver);
+
+        return ResponseEntity.ok("✅ 服務設定已更新！");
+    }
+
     
     
 }
