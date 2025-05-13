@@ -1,6 +1,9 @@
 package eeit.OldProject.allen.Controller;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,9 +65,22 @@ public class NewsPublicController {
     public Page<News> searchPublishedNews(
         @RequestBody NewsPublicSearchRequest searchRequest,
         @RequestParam int page,
-        @RequestParam int size
+        @RequestParam int size,
+        @RequestParam(required = false, defaultValue = "publishAt") String sortBy, // ✅ 新增排序欄位
+        @RequestParam(required = false, defaultValue = "desc") String sortDirection // ✅ 排序方向
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("publishAt").descending());
+    	 // 排序字段白名單，防止 SQL Injection
+        List<String> allowedSortFields = Arrays.asList("publishAt", "viewCount", "modifyAt");
+        // 如果 sortBy 不在白名單內，默認為 publishAt
+        if (!allowedSortFields.contains(sortBy)) {
+            sortBy = "publishAt";
+        }
+        // 設置排序方向，預設為 DESC
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        
+        // 動態排序
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        
         return newsService.searchPublicNewsPaged(searchRequest, pageable);
     }
       
