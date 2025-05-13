@@ -6,21 +6,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.security.core.Authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +25,8 @@ import eeit.OldProject.yuuhou.RequestDTO.LoginRequest;
 import eeit.OldProject.yuuhou.RequestDTO.RegisterRequest;
 import eeit.OldProject.yuuhou.Service.CaregiversService;
 import eeit.OldProject.yuuhou.Util.JwtUtil;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -202,22 +196,44 @@ public class AuthController {
         verificationTokens.put(token, email);
 
         // 建立重設密碼的連結
-        String resetUrl = "http://localhost:5173/reset-password?token=" + token; // 這是給前端用的連結
+        String resetUrl = "http://localhost:5173/reset/yuuhou?token=" + token; // 這是給前端用的連結
 
-        // 寄出 email
+        // 寄出 email	
         sendResetPasswordEmail(email, resetUrl);
 
         return ResponseEntity.ok("如果該信箱存在，我們已寄出重設密碼信件！");
     }
 
     // 寄送重設密碼的 Email
+ // 寄送重設密碼的 Email
     private void sendResetPasswordEmail(String to, String resetUrl) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("重設密碼 - OldProject平台");
-        message.setText("請點擊以下連結重新設定您的密碼：\n" + resetUrl);
-        mailSender.send(message);
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject("🔒 重設密碼 - CarePlus平台");
+
+            // 📝 Email 內容 (HTML 格式)
+            String htmlContent = "<h2>重設密碼</h2>" +
+                    "<p>請點擊以下連結重新設定您的密碼：</p>" +
+                    "<a href=\"" + resetUrl + "\" target=\"_blank\">" + resetUrl + "</a>" ;
+                    
+
+            helper.setText(htmlContent, true);  // ✅ 設定 HTML 內容
+            mailSender.send(message);
+            System.out.println("✅ 重設密碼信件已發送：" + to);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("❌ 寄信失敗：" + e.getMessage());
+        }
     }
+    // 寄送重設密碼的 Email
+//  private void sendResetPasswordEmail(String to, String resetUrl) {
+//         SimpleMailMessage message = new SimpleMailMessage();
+//         message.setTo(to);
+//         message.setSubject("重設密碼 - OldProject平台");
+//         message.setText("請點擊以下連結重新設定您的密碼：\n" + resetUrl);
+//         mailSender.send(message);
 
     // 重設密碼 (用token驗證)
     @PostMapping("/reset-password")

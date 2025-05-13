@@ -4,6 +4,7 @@ package eeit.OldProject.yuuhou.Controller;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -80,5 +82,34 @@ public class AdminController {
     @GetMapping("/test")
     public ResponseEntity<String> testAdminAccess() {
         return ResponseEntity.ok("你是超級使用者，可以看到這段訊息 🎉");
+    }
+    
+    @PutMapping("/caregivers/{id}")
+    public ResponseEntity<?> updateCaregiver(@PathVariable Long id, @RequestBody Caregiver updatedCaregiver) {
+        Optional<Caregiver> existingOpt = caregiversService.findById(id);
+        if (existingOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ 找不到這個照顧者！");
+        }
+        
+        Caregiver existing = existingOpt.get();
+        
+        // ✅ 保留原有密碼，如果前端沒有提供
+        if (updatedCaregiver.getPassword() == null || updatedCaregiver.getPassword().isEmpty()) {
+            updatedCaregiver.setPassword(existing.getPassword());
+        }
+
+        // ✅ 保留原有照片，如果前端沒有提供
+        if (updatedCaregiver.getPhoto() == null || updatedCaregiver.getPhoto().length == 0) {
+            updatedCaregiver.setPhoto(existing.getPhoto());
+        }
+
+        // ✅ 保留 Email，不允許更改
+        updatedCaregiver.setEmail(existing.getEmail());
+        updatedCaregiver.setCaregiverId(existing.getCaregiverId());
+        updatedCaregiver.setCreatedAt(existing.getCreatedAt());
+        updatedCaregiver.setVerified(existing.isVerified());
+
+        caregiversService.save(updatedCaregiver);
+        return ResponseEntity.ok("✅ 照顧者資料已成功更新！");
     }
 }
