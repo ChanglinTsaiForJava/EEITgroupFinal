@@ -1,13 +1,17 @@
 package eeit.OldProject.rita.Repository;
 
-import eeit.OldProject.rita.Entity.Appointment;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import eeit.OldProject.rita.Entity.Appointment;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+	
+
     List<Appointment> findByUserId (Long userId);
     /**
      * 根據使用者 ID 查找該使用者所有預約紀錄

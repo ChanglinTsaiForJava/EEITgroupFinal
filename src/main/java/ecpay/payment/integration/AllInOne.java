@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -562,7 +562,7 @@ public class AllInOne extends AllInOneBase{
 		fieldValue.put("CheckMacValue", CheckMacValue);
 		Set<String> key = fieldValue.keySet();
 		String name[] = key.toArray(new String[key.size()]);
-		builder.append("<form id=\"allPayAPIForm\" action=\""+ aioCheckOutUrl + "\" method=\"post\">");
+		builder.append("<form id=\"allPayAPIForm\" target='_blank' action=\""+ aioCheckOutUrl + "\" method=\"post\">");
 		for(int i = 0 ; i < name.length ; i++) {
 			builder.append("<input type=\"hidden\" name=\""+name[i]+"\" value=\""+fieldValue.get(name[i])+"\">");
 		}
