@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface Favorite_courseRepository extends JpaRepository<Favorite_course, Long> {
+public interface Favorite_courseRepository extends JpaRepository<Favorite_course, Integer> {
     // 根據使用者和課程ID查詢收藏
     Optional<Favorite_course> findByUserIdAndCourseId(Long userId, Integer courseId);;
 

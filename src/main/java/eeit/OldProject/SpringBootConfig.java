@@ -15,7 +15,8 @@ public class SpringBootConfig implements WebMvcConfigurer {
 						//add stuff
 						"http://192.168.66.54:4173",
 						"http://192.168.66.54:4174",  // 有時 Vite 會自動往上找沒被占用的 port test
-						"http://localhost:4175"   ) // 前端 localhost:5173
+						"http://localhost:4175","http://192.168.36.96:4173" ) // 前端 localhost:5173
+				 // 前端 localhost:5173  *edit by allen
 				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") //
 				.allowedHeaders("*")
 				.exposedHeaders("Authorization", "Content-Type")
