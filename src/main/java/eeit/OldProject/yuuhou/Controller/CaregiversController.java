@@ -32,9 +32,7 @@ import eeit.OldProject.yuuhou.Service.CaregiversService;
 public class CaregiversController {
     @Autowired
     private CaregiversService caregiversService;
-    
-    
-    
+
     @Autowired
     private CaregiversRepository caregiversRepository ;
 
