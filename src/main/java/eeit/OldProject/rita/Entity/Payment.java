@@ -43,7 +43,7 @@ public class Payment {
     @Column(name = "CreatedAt", nullable = true)
     private Timestamp createdAt;
 
-    @Column(name = "MerchantTradeNo", length = 20, nullable = false)
+    @Column(name = "MerchantTradeNo", length = 40, nullable = false)
     private String merchantTradeNo;
 
     @Column(name = "TradeDate", nullable = false)

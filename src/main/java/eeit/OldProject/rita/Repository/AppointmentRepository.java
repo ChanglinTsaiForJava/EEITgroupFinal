@@ -2,8 +2,9 @@ package eeit.OldProject.rita.Repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import eeit.OldProject.rita.Entity.Appointment;
@@ -24,6 +25,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * 看護端查詢「我有哪些預約還沒處理 / 已付款 / 已完成」
      * SELECT * FROM appointment WHERE caregiver_id = ? AND status = ?
      */
-    
-    List<Appointment> findByAppointmentId(Long appointmentId);
+//    
+//    List<Appointment> findByAppointmentId(Long appointmentId);
+//    
+// // 使用 JOIN FETCH 來加載關聯的資料
+//    @Query("SELECT a FROM Appointment a JOIN FETCH a.caregiver c JOIN FETCH a.patient p JOIN FETCH a.services s WHERE a.userId = :userId")
+//    List<Appointment> findByUserIdWithDetails(@Param("userId") Long userId);
+
 }

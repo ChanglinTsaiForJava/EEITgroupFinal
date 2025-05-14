@@ -21,8 +21,8 @@ import eeit.OldProject.rita.Service.AppointmentWorkflowService;
 @Component
 public class EcpayFunction {
     private static final String ACTION_URL = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";
-    private static final String RETURN_URL = "https://0448-1-160-3-119.ngrok-free.app/payment/callback";
-    private static final String RESULT_URL = "https://0448-1-160-3-119.ngrok-free.app/payment/callback";
+    private static final String RETURN_URL = "https://0448-1-160-3-119.ngrok-free.app/payment/return";
+    private static final String RESULT_URL = "https://0448-1-160-3-119.ngrok-free.app/payment/result";
     private static final String MERCHANT_ID = "2000132";
     private static final String HASH_KEY = "5294y06JbISpM5x9";
     private static final String HASH_IV = "v77hoKGq4kWxNNIS";
@@ -44,8 +44,13 @@ public class EcpayFunction {
             String date = "2025/05/13 06:05:23";
             Map<String, String> parameters = this.createEcpayData(id, name, total, desc, date);
             
+            
             StringBuilder builder = new StringBuilder();
-            builder.append("<form id='payForm' action='" + ACTION_URL + "' method='POST'>");
+//            builder.append("<form id='payForm' action='" + ACTION_URL + "' method='POST'>");
+          builder = builder.append("<form id='payForm' target='_blank' action='"+ACTION_URL+"' method='POST'>");
+
+            
+            
             for (String key : parameters.keySet()) {
                 builder.append("<input type='hidden' name='").append(key).append("' value='").append(parameters.get(key)).append("'/>");
             }
@@ -68,8 +73,9 @@ public class EcpayFunction {
         parameters.put("PaymentType", "aio");
         parameters.put("ChoosePayment", "ALL");
         parameters.put("ReturnURL", RETURN_URL);
-        parameters.put("OrderResultURL", RESULT_URL);
-        parameters.put("NeedExtraPaidInfo", "N");
+//        parameters.put("OrderResultURL", RESULT_URL);
+//        parameters.put("NeedExtraPaidInfo", "N");
+        
         String checkMacValue = genCheckMacValue(parameters, HASH_KEY, HASH_IV);
         parameters.put("CheckMacValue", checkMacValue);
         return parameters;

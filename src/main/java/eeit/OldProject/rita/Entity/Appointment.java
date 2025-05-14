@@ -46,7 +46,7 @@ public class Appointment {
     private Long caregiverId;
 
     @Column(name = "PatientId")
-    private Integer patientId;
+    private Long patientId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TimeType",nullable = true)
@@ -149,5 +149,6 @@ enum TimeType {
 enum HospitalWardType {
     一般病房,
     急診室
+
 }
 

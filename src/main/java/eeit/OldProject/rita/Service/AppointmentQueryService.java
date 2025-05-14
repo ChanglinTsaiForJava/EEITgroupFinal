@@ -1,13 +1,20 @@
 package eeit.OldProject.rita.Service;
 
-import eeit.OldProject.rita.Entity.Appointment;
-import eeit.OldProject.rita.Repository.*;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import eeit.OldProject.rita.Entity.Appointment;
+import eeit.OldProject.rita.Repository.AppointmentDiseaseRepository;
+import eeit.OldProject.rita.Repository.AppointmentPhysicalRepository;
+import eeit.OldProject.rita.Repository.AppointmentRepository;
+import eeit.OldProject.rita.Repository.AppointmentServiceItemRepository;
+import eeit.OldProject.rita.Repository.AppointmentTimeContinuousRepository;
+import eeit.OldProject.rita.Repository.AppointmentTimeMultiRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +42,17 @@ public class AppointmentQueryService {
     public List<Appointment> getByUserId(Long userId) {
         return appointmentRepository.findByUserId(userId);
     }
+    
+//    public List<AppointmentDetailsDTO> getAppointmentDetailsByUserId(Long userId) {
+//        // 使用 JOIN FETCH 加載所有關聯資料
+//        List<Appointment> appointments = appointmentRepository.findByUserIdWithDetails(userId);
+//        
+//        // 轉換為詳細資料 DTO
+//        return appointments.stream()
+//                .map(appointment -> new AppointmentDetailsDTO(appointment))
+//                .collect(Collectors.toList());
+//    }
+    
 
 
     /**

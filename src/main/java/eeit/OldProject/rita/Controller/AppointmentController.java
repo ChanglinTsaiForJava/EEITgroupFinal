@@ -1,7 +1,6 @@
 package eeit.OldProject.rita.Controller;
 
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -68,6 +67,12 @@ public class AppointmentController {
 	public ResponseEntity<List<Appointment>> getUserAppointments(@PathVariable Long userId) {
 		return ResponseEntity.ok(appointmentQueryService.getByUserId(userId));
 	}
+//	
+//	 @GetMapping("/user/{userId}")
+//	    public ResponseEntity<List<AppointmentDetailsDTO>> getAppointmentsByUserId(@PathVariable Long userId) {
+//	        List<AppointmentDetailsDTO> appointmentDetails = appointmentQueryService.getAppointmentDetailsByUserId(userId);
+//	        return ResponseEntity.ok(appointmentDetails);
+//	    }
 
 	/**
 	 * ✏️ 單純更新預約狀態（例如看護接受、顧客付款等） PUT /api/appointments/{id}/status?status=Paid
@@ -103,79 +108,80 @@ public class AppointmentController {
 
 	/** 透過條件查詢 **/
 	@GetMapping("/caregiver/available")
-	public ResponseEntity<List<Caregiver>> searchAvailableCaregivers(@RequestParam String serviceCity,
-			@RequestParam(required = false) String serviceDistrict,
+	public ResponseEntity<List<Caregiver>> searchAvailableCaregivers(
+	        @RequestParam String serviceCity,
+	        @RequestParam(required = false) String serviceDistrict,
+	        @RequestParam(required = false) String desiredStartTime,
+	        @RequestParam(required = false) String desiredEndTime,
+	        @RequestParam(required = false) String startDate,
+	        @RequestParam(required = false) String endDate,
+	        @RequestParam(required = false) String gender,
+	        @RequestParam(required = false) String nationality,
+	        @RequestParam(required = false) String languages,
+	        @RequestParam(required = false) BigDecimal hourlyRateMin,
+	        @RequestParam(required = false) BigDecimal hourlyRateMax) {
 
-			// Continuous 模式用
-			@RequestParam(required = false) String desiredStartTime,
-			@RequestParam(required = false) String desiredEndTime,
+	    List<Caregiver> caregivers;
 
-			// 移除 Multi 模式的 repeatDays
-			@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate,
+	    DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-			@RequestParam(required = false) String gender, @RequestParam(required = false) String nationality,
-			@RequestParam(required = false) String languages, @RequestParam(required = false) BigDecimal hourlyRateMin,
-			@RequestParam(required = false) BigDecimal hourlyRateMax) {
+	    // 檢查連續時間
+	    if (desiredStartTime != null && !desiredStartTime.isEmpty() && desiredEndTime != null && !desiredEndTime.isEmpty()) {
+	        try {
+	            LocalDateTime start = LocalDateTime.parse(desiredStartTime, dtFormatter);
+	            LocalDateTime end = LocalDateTime.parse(desiredEndTime, dtFormatter);
 
-		// 打印出接收到的時間參數
-		System.out.println("Start time: " + desiredStartTime);
-		System.out.println("End time: " + desiredEndTime);
+	            caregivers = caregiverQueryService.findAvailableCaregivers(serviceCity, serviceDistrict, start, end,
+	                    null, null, null, gender, nationality, languages, hourlyRateMin, hourlyRateMax);
+	        } catch (DateTimeParseException e) {
+	            System.err.println("Error parsing datetime: " + e.getMessage());
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	    }
+	    // 檢查日期範圍
+	    else if (startDate != null && endDate != null) {
+	        try {
+	            LocalDate start = LocalDate.parse(startDate);
+	            LocalDate end = LocalDate.parse(endDate);
 
-		List<Caregiver> caregivers;
+	            caregivers = caregiverQueryService.findAvailableCaregivers(serviceCity, serviceDistrict, null, null,
+	                    start, end, null, gender, nationality, languages, hourlyRateMin, hourlyRateMax);
+	        } catch (DateTimeParseException e) {
+	            System.err.println("Error parsing date: " + e.getMessage());
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	    } else {
+	        return ResponseEntity.badRequest().build();
+	    }
 
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+	    // 處理圖片路徑
+	    caregivers.forEach(caregiver -> {
+	        String photoPath = caregiver.getPhotoPath();
+	        byte[] photoBytes = caregiver.getPhoto();
 
-		// 檢查 desiredStartTime 和 desiredEndTime 是否為空
-		if (desiredStartTime != null && !desiredStartTime.isEmpty() && desiredEndTime != null
-				&& !desiredEndTime.isEmpty()) {
-			try {
-				LocalDateTime start = LocalDateTime.parse(desiredStartTime, dtFormatter);
-				LocalDateTime end = LocalDateTime.parse(desiredEndTime, dtFormatter);
+	        // ✅ **優先抓 URL 圖片**
+	        if (photoPath != null && !photoPath.isEmpty()) {
+	            // 檢查圖片路徑是否已包含 S3 域名
+	            if (!photoPath.startsWith("https://finalimagesbucket.s3.amazonaws.com/")) {
+	                caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/" + photoPath.replaceAll("^/+", ""));
+	            }
+	        }
+	        // ✅ **如果 URL 無效，抓 byte[] 圖片**
+	        else if (photoBytes != null && photoBytes.length > 0) {
+	            String base64Photo = "data:image/jpeg;base64," + java.util.Base64.getEncoder().encodeToString(photoBytes);
+	            caregiver.setPhotoPath(base64Photo);
+	        }
+	        // ✅ **都沒有就用預設圖片**
+	        else {
+	            caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/default-placeholder.jpg");
+	        }
 
-				caregivers = caregiverQueryService.findAvailableCaregivers(serviceCity, serviceDistrict, start, end,
-						null, null, null, gender, nationality, languages, hourlyRateMin, hourlyRateMax);
-			} catch (DateTimeParseException e) {
-				System.err.println("Error parsing datetime: " + e.getMessage());
-				return ResponseEntity.badRequest().body(null); // 返回錯誤，表示時間解析錯誤
-			}
-		} else if (startDate != null && endDate != null) {
-			try {
-				LocalDate start = LocalDate.parse(startDate);
-				LocalDate end = LocalDate.parse(endDate);
+	        // 計算總價
+	        BigDecimal xxx = timeCalculationService.calculateContinuousAmount(caregiver.getCaregiverId(), desiredStartTime, desiredEndTime);
+	        caregiver.setTotalPrice(xxx);
+	    });
 
-				caregivers = caregiverQueryService.findAvailableCaregivers(serviceCity, serviceDistrict, null, null,
-						start, end, null, // 移除 repeatDays
-						gender, nationality, languages, hourlyRateMin, hourlyRateMax);
-			} catch (DateTimeParseException e) {
-				System.err.println("Error parsing date: " + e.getMessage());
-				return ResponseEntity.badRequest().body(null); // 返回錯誤，表示日期解析錯誤
-			}
-		} else {
-			return ResponseEntity.badRequest().build(); // 如果時間都沒有填寫，返回錯誤
-		}
-		// 處理圖片路徑
-		caregivers.forEach(caregiver -> {
-			if (caregiver.getPhotoPath() != null && !caregiver.getPhotoPath().isEmpty()) {
-				// 检查图片路径是否已包含 S3 域名，避免重复拼接
-				if (!caregiver.getPhotoPath().startsWith("https://finalimagesbucket.s3.amazonaws.com/")) {
-					caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/"
-							+ caregiver.getPhotoPath().replaceAll("^/+", ""));
-				}
-			} else {
-				// 如果没有图片，使用默认图片
-				caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/default-placeholder.jpg");
-			}
-			
-			
-			  BigDecimal xxx =  timeCalculationService.calculateContinuousAmount(caregiver.getCaregiverId(), desiredStartTime, desiredEndTime);
-			 caregiver.setTotalPrice(xxx);
-			
-			
-			
-		});
-
-		return ResponseEntity.ok(caregivers);
-
+	    return ResponseEntity.ok(caregivers);
 	}
 
 	/** 連續時間 **/
