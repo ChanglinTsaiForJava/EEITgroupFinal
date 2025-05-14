@@ -162,8 +162,8 @@ public class AppointmentController {
 	        // ✅ **優先抓 URL 圖片**
 	        if (photoPath != null && !photoPath.isEmpty()) {
 	            // 檢查圖片路徑是否已包含 S3 域名
-	            if (!photoPath.startsWith("https://finalimagesbucket.s3.amazonaws.com/")) {
-	                caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/" + photoPath.replaceAll("^/+", ""));
+	            if (!photoPath.startsWith("https://finalimagesbucket.s3.ap-northeast-1.amazonaws.com/")) {
+	                caregiver.setPhotoPath("https://finalimagesbucket.s3.ap-northeast-1.amazonaws.com/" + photoPath.replaceAll("^/+", ""));
 	            }
 	        }
 	        // ✅ **如果 URL 無效，抓 byte[] 圖片**
