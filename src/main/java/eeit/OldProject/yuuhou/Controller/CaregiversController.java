@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import eeit.OldProject.rita.Entity.Appointment;
+import eeit.OldProject.rita.Service.AppointmentQueryService;
 import eeit.OldProject.yuuhou.Entity.Caregiver;
 import eeit.OldProject.yuuhou.Repository.CaregiversRepository;
 import eeit.OldProject.yuuhou.Service.CaregiversService;
@@ -33,7 +35,8 @@ public class CaregiversController {
     @Autowired
     private CaregiversService caregiversService;
     
-    
+    @Autowired
+    private AppointmentQueryService appointmentQueryService;  
     
     @Autowired
     private CaregiversRepository caregiversRepository ;
@@ -339,6 +342,46 @@ public class CaregiversController {
         return ResponseEntity.ok("✅ 服務設定已更新！");
     }
 
+    
+    
+//    @GetMapping("/me/appointments")
+//    public ResponseEntity<List<Appointment>> getMyAppointments() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUserEmail = authentication.getName();
+//        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(currentUserEmail);
+//
+//        if (caregiverOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+//        }
+//
+//        Long userId = caregiverOpt.get().getCaregiverId();
+//        List<Appointment> appointments = appointmentQueryService.getByUserId(userId);
+//        return ResponseEntity.ok(appointments);
+//    }
+
+    @GetMapping("/me/appointments")
+    public ResponseEntity<List<Appointment>> getMyAppointments() {
+        // 取得當前登入的照服員 Email
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        // 查找照服員
+        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(currentUserEmail);
+        if (caregiverOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        // **改成用 Caregiver ID 查詢**
+        Long caregiverId = caregiverOpt.get().getCaregiverId();
+
+        // **查找照服員的所有訂單**
+        List<Appointment> appointments = appointmentQueryService.findByCaregiver_CaregiverId(caregiverId);
+
+        // **回傳結果**
+        return ResponseEntity.ok(appointments);
+    }
+
+    
     
     
 }

@@ -144,6 +144,12 @@ public class Caregiver {
     @Column(nullable = false, name = "Created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
     
+    @Column(name = "VerificationCode", length = 6)
+    private String verificationCode;
+    
+    @Column(name = "VerificationCodeExpiresAt")
+    private LocalDateTime verificationCodeExpiresAt;
+    
     @Transient
     private BigDecimal totalPrice; //rita
 

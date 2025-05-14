@@ -1,12 +1,13 @@
 package eeit.OldProject.yuuhou.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import eeit.OldProject.yuuhou.Entity.Caregiver;
+import eeit.OldProject.yuuhou.RequestDTO.RegisterRequest;
 
 public interface CaregiversService {
-
 
     List<Caregiver> findAll();
 
@@ -19,7 +20,16 @@ public interface CaregiversService {
     Optional<Caregiver> findByEmail(String email);
     
     List<Caregiver> searchByServiceArea(String serviceCity, String serviceDistrict);
-    
-//    Optional<Caregiver> findByIdWithLicenses(Long id); //Rita新增
 
+    void cacheRegistrationData(RegisterRequest request);
+    
+    RegisterRequest getCachedRegistrationData(String email);
+
+    void removeCachedRegistrationData(String email);
+    
+    void saveVerificationCode(String email, String verificationCode, LocalDateTime expiresAt);
+    
+    boolean verifyCode(String email, String inputCode);
+    
+    boolean isVerificationCodeExpired(String email);
 }

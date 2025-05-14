@@ -26,4 +26,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      */
     
     List<Appointment> findByAppointmentId(Long appointmentId);
+    
+    //yuuhou
+    List<Appointment> findByCaregiver_CaregiverId(Long caregiverId);
 }

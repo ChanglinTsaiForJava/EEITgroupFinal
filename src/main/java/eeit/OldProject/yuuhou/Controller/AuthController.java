@@ -59,61 +59,39 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         // 檢查 Email 是否已存在
         if (caregiversService.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("此 Email 已被註冊！");
-        }
-        
-
-
-        // 建立照顧者（先 isVerified=false）
-        Caregiver caregiver = Caregiver.builder()
-                .caregiverName(request.getCaregiverName())
-                .gender(request.getGender())
-                .birthday(request.getBirthday())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .phone(request.getPhone())
-                .nationality(request.getNationality())
-                .languages(request.getLanguages())
-                .yearOfExperience(request.getYearOfExperience())
-                .serviceCity(request.getServiceCity())
-                .serviceDistrict(request.getServiceDistrict())
-                .description(request.getDescription())
-                .hourlyRate(request.getHourlyRate())
-                .halfDayRate(request.getHalfDayRate())
-                .fullDayRate(request.getFullDayRate())
-                .status(Caregiver.Status.ACTIVE)
-                .createdAt(LocalDateTime.now())
-                .isVerified(false) // ✅ 設成未驗證
-                .build();
-        if (request.getBase64Photo() != null && !request.getBase64Photo().isEmpty()) {
-            try {
-                caregiver.setPhoto(java.util.Base64.getDecoder().decode(request.getBase64Photo()));
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body("圖片格式錯誤，無法解析 Base64！");
-            }
+            return ResponseEntity.badRequest().body("❌ 此 Email 已被註冊！");
         }
 
+        // ✅ 檢查是否有上傳大頭貼
+        if (request.getBase64Photo() == null || request.getBase64Photo().isEmpty()) {
+            return ResponseEntity.badRequest().body("❌ 必須上傳大頭貼！");
+        }
 
-        caregiversService.save(caregiver);
+        // ✅ 產生驗證碼
+        String verificationCode = String.valueOf((int)(Math.random() * 900000) + 100000);
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(10);
+        caregiversService.saveVerificationCode(request.getEmail(), verificationCode, expiresAt);
 
-        // ✅ 產生驗證Token
-        String token = UUID.randomUUID().toString();
-        verificationTokens.put(token, caregiver.getEmail());
+        // ✅ 暫存註冊資料（不直接存入資料庫）
+        caregiversService.cacheRegistrationData(request);
 
-        // ✅ 發送驗證信
-        String verificationUrl = "http://localhost:8082/api/auth/verify?token=" + token;
-        sendVerificationEmail(caregiver.getEmail(), verificationUrl);
+        // ✅ 發送驗證碼
+        sendVerificationCodeEmail(request.getEmail(), verificationCode);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("註冊成功！請至信箱點擊連結完成驗證！");
+        return ResponseEntity.ok("✅ 驗證碼已發送到您的信箱，請輸入驗證碼完成註冊！");
     }
+
+
+
     
-    private void sendVerificationEmail(String to, String verificationUrl) {
+    private void sendVerificationCodeEmail(String to, String verificationCode) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject("帳號驗證信 - OldProject平台");
-        message.setText("歡迎您註冊！請點擊以下連結完成驗證：\n" + verificationUrl);
+        message.setSubject("🔒 驗證碼 - OldProject平台");
+        message.setText("您的驗證碼是：" + verificationCode + "\n請在 10 分鐘內使用。");
         mailSender.send(message);
     }
+
 
 
     @PostMapping("/login")
@@ -262,34 +240,59 @@ public class AuthController {
         return ResponseEntity.ok("✅ 密碼重設成功！可以使用新密碼登入了！");
     }
     
-//    @PostMapping("/api/caregivers/photo")
-//    public ResponseEntity<?> uploadPhoto(@RequestPart("file") MultipartFile file,
-//                                         Authentication authentication) {
-//        String email = authentication.getName();
-//        Optional<Caregiver> caregiverOpt = caregiversService.findByEmail(email);
-//
-//        if (caregiverOpt.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("找不到使用者");
-//        }
-//
-//        Caregiver caregiver = caregiverOpt.get();
-//
-//        try {
-//            // 存檔案到 static/images 資料夾（先確認有此資料夾）
-//            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
-//            Path path = Paths.get("src/main/resources/static/yuuhou/images/" + filename);
-//            Files.createDirectories(path.getParent()); // 若目錄不存在則建立
-//            Files.write(path, file.getBytes());
-//
-//            // 設定路徑到資料庫
-//            caregiver.setPhotoPath("/yuuhou/images/" + filename);
-//            caregiversService.save(caregiver);
-//
-//            return ResponseEntity.ok(Collections.singletonMap("photoPath", caregiver.getPhotoPath()));
-//        } catch (IOException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("上傳失敗");
-//        }
-//    }
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String inputCode = request.get("verificationCode");
+
+        // ✅ 檢查驗證碼是否過期
+        if (caregiversService.isVerificationCodeExpired(email)) {
+            caregiversService.removeCachedRegistrationData(email);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ 驗證碼已過期，請重新註冊！");
+        }
+
+        // ✅ 檢查驗證碼是否正確
+        if (!caregiversService.verifyCode(email, inputCode)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ 驗證碼錯誤！");
+        }
+
+        // ✅ 讀取暫存的註冊資料
+        RegisterRequest cachedRequest = caregiversService.getCachedRegistrationData(email);
+        if (cachedRequest == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ 註冊資料已過期或不存在！");
+        }
+
+        // ✅ 將註冊資料存入資料庫
+        Caregiver caregiver = Caregiver.builder()
+                .caregiverName(cachedRequest.getCaregiverName())
+                .gender(cachedRequest.getGender())
+                .birthday(cachedRequest.getBirthday())
+                .email(cachedRequest.getEmail())
+                .password(cachedRequest.getPassword())
+                .phone(cachedRequest.getPhone())
+                .nationality(cachedRequest.getNationality())
+                .languages(cachedRequest.getLanguages())
+                .yearOfExperience(cachedRequest.getYearOfExperience())
+                .serviceCity(cachedRequest.getServiceCity())
+                .serviceDistrict(cachedRequest.getServiceDistrict())
+                .description(cachedRequest.getDescription())
+                .hourlyRate(cachedRequest.getHourlyRate())
+                .halfDayRate(cachedRequest.getHalfDayRate())
+                .fullDayRate(cachedRequest.getFullDayRate())
+                .photo(java.util.Base64.getDecoder().decode(cachedRequest.getBase64Photo()))
+                .status(Caregiver.Status.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .isVerified(true)  // ✅ 設為已驗證
+                .build();
+
+        caregiversService.save(caregiver);
+
+        // ✅ 驗證成功後清除暫存資料
+        caregiversService.removeCachedRegistrationData(email);
+
+        return ResponseEntity.ok("✅ 驗證成功！您的帳號已啟用，可以登入囉！");
+    }
+
 
     
 

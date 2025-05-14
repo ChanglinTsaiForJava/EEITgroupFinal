@@ -13,7 +13,7 @@ public class JwtUtil {
 
     // ✅ 安全長度密鑰
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long jwtExpirationMs = 3600000; // 1 小時
+    private final long jwtExpirationMs = 1000L * 60 * 60 * 24 * 365 * 10; // 1 小時
 
     // ✅ 建立 Token（加上 role）
     public String generateToken(String email, String role) {
