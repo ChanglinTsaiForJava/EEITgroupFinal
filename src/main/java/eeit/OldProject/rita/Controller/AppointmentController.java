@@ -1,6 +1,7 @@
 package eeit.OldProject.rita.Controller;
 
 import java.math.BigDecimal;
+import java.security.PublicKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -67,12 +68,6 @@ public class AppointmentController {
 	public ResponseEntity<List<Appointment>> getUserAppointments(@PathVariable Long userId) {
 		return ResponseEntity.ok(appointmentQueryService.getByUserId(userId));
 	}
-//	
-//	 @GetMapping("/user/{userId}")
-//	    public ResponseEntity<List<AppointmentDetailsDTO>> getAppointmentsByUserId(@PathVariable Long userId) {
-//	        List<AppointmentDetailsDTO> appointmentDetails = appointmentQueryService.getAppointmentDetailsByUserId(userId);
-//	        return ResponseEntity.ok(appointmentDetails);
-//	    }
 
 	/**
 	 * ✏️ 單純更新預約狀態（例如看護接受、顧客付款等） PUT /api/appointments/{id}/status?status=Paid
@@ -162,8 +157,8 @@ public class AppointmentController {
 	        // ✅ **優先抓 URL 圖片**
 	        if (photoPath != null && !photoPath.isEmpty()) {
 	            // 檢查圖片路徑是否已包含 S3 域名
-	            if (!photoPath.startsWith("https://finalimagesbucket.s3.ap-northeast-1.amazonaws.com/")) {
-	                caregiver.setPhotoPath("https://finalimagesbucket.s3.ap-northeast-1.amazonaws.com/" + photoPath.replaceAll("^/+", ""));
+	            if (!photoPath.startsWith("https://finalimagesbucket.s3.amazonaws.com/")) {
+	                caregiver.setPhotoPath("https://finalimagesbucket.s3.amazonaws.com/" + photoPath.replaceAll("^/+", ""));
 	            }
 	        }
 	        // ✅ **如果 URL 無效，抓 byte[] 圖片**

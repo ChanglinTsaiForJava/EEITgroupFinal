@@ -26,7 +26,7 @@ public class AppointmentQueryService {
     private final AppointmentDiseaseRepository appointmentDiseaseRepository;
     private final AppointmentTimeContinuousRepository appointmentTimeContinuousRepository;
     private final AppointmentTimeMultiRepository appointmentTimeMultiRepository;
-
+    
     /**
      * 根據"預約" ID 查詢單一預約資料
      * 前端點擊查看預約詳情時可使用
@@ -54,6 +54,10 @@ public class AppointmentQueryService {
 //    }
     
 
+    public List<Appointment> findByCaregiver_CaregiverId(Long caregiverId){
+    	return appointmentRepository.findByCaregiver_CaregiverId(caregiverId);
+    }
+     
 
     /**
      * 刪除預約

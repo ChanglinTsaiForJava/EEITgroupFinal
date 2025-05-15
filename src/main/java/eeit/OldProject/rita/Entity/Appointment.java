@@ -129,7 +129,7 @@ public class Appointment {
     private Set<AppointmentServiceItem> services;
     
     @JsonIgnore
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "appointment")
     private Set<AppointmentTimeContinuous> timeContinuous;
 
     public static enum AppointmentStatus {
