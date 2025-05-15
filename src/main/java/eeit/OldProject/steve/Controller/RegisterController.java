@@ -49,7 +49,7 @@ public class RegisterController {
             return ResponseEntity.badRequest().body("信箱已存在");
         }
 
-        // 建立一個 User 實體（尚未存入 DB）
+        // 建立一個 User 實體（尚未存入 DB）ASD
         User user = new User();
         user.setUserAccount(requestDTO.getUserAccount());
         user.setUserPassword(requestDTO.getUserPassword());
