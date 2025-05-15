@@ -21,7 +21,11 @@ public class SpringBootConfig implements WebMvcConfigurer {
                         // nginx
                         "http://localhost:6173",
                         "http://192.168.36.156:6173",
-						"http://localhost:4175","http://192.168.36.96:4173" ) // 前端 localhost:5173
+						"http://localhost:4175","http://192.168.36.96:4173",
+						
+//						Rita
+						"http://192.168.66.77:4173","http://localhost:5173","http://192.168.66.77:5173"
+						) // 前端 localhost:5173
 				//自行加入部署網域
 				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") //
 				.allowedHeaders("*")
