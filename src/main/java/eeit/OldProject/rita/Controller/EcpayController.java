@@ -32,18 +32,6 @@ public class EcpayController {
         }
     }
     
-//    @PostMapping("/callback")
-//    public ResponseEntity<String> handlePaymentCallback(@RequestBody String body) {
-//        System.out.println("Received callback body: " + body);
-//        return ResponseEntity.ok("Callback received.");
-//    }
-//    
-//    @PostMapping("/result")
-//    public ResponseEntity<String> handlePaymentResult(@RequestBody String body) {
-//        System.out.println("Received result body: " + body);
-//        return ResponseEntity.ok("Result received.");
-//    }
-    
  // 用於瀏覽器重導向的 Result URL
     @PostMapping("/result")
     @CrossOrigin(origins = "*")
@@ -66,17 +54,4 @@ public class EcpayController {
         // 直接回傳 OK，告訴 ECPay 已經處理完成
         return "";
     }
-    
-//    @PostMapping("/send")
-//    @ResponseBody
-//    @CrossOrigin
-//    public String send(@RequestParam Long appointmentId) {
-//    	try {
-//            String form = ecpayFunction.buildEcpayForm(appointmentId);
-//            return form;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "Error: " + e.getMessage();
-//        }
-//    }
 }
