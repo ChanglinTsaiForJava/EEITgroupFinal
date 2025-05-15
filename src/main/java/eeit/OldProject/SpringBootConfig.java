@@ -11,8 +11,10 @@ public class SpringBootConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**") // 全部後端路徑都允許跨域
 				//允許來自這些網域的請求
-				.allowedOrigins( "http://localhost:5173",  // dev
+				.allowedOrigins("http://localhost:5173",  // dev
+						
 						"http://localhost:4173",  // preview 預設
+						"http://192.168.66.118:4173",
 						//add required ip
 						"http://192.168.66.54:4173",
 						"http://192.168.66.54:4174",
@@ -21,7 +23,10 @@ public class SpringBootConfig implements WebMvcConfigurer {
                         // nginx
                         "http://localhost:6173",
                         "http://192.168.36.156:6173",
-						"http://localhost:4175","http://192.168.36.96:4173" ) // 前端 localhost:5173
+						"http://localhost:4175","http://192.168.36.96:4173"
+						) // 前端 localhost:5173
+				
+						
 				//自行加入部署網域
 				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") //
 				.allowedHeaders("*")
