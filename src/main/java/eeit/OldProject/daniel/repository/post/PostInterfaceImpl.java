@@ -73,30 +73,30 @@ public class PostInterfaceImpl implements PostInterface {
 			predicates.add(criteriaBuilder.equal(post.get("user").get("userId"), filter.getUserId()));
 		}
 
-		List<Predicate> classifierPreds = new ArrayList<>();
+//		List<Predicate> classifierPreds = new ArrayList<>();
 
 		// postCategoryId in ?
 		if (filter.getPostCategoryIds() != null && !filter.getPostCategoryIds().isEmpty()) {
 			Join<Post, PostCategoryClassifier> catJoin = post.join("postCategoryClassifiers", JoinType.LEFT);
-			classifierPreds.add(catJoin.get("postCategory").get("postCategoryId").in(filter.getPostCategoryIds()));
+			predicates.add(catJoin.get("postCategory").get("postCategoryId").in(filter.getPostCategoryIds()));
 		}
 
 		// postTopicId in ?
 		if (filter.getPostTopicIds() != null && !filter.getPostTopicIds().isEmpty()) {
 			Join<Post, PostTopicClassifier> topJoin = post.join("postTopicClassifiers", JoinType.LEFT);
-			classifierPreds.add(topJoin.get("postTopic").get("postTopicId").in(filter.getPostTopicIds()));
+			predicates.add(topJoin.get("postTopic").get("postTopicId").in(filter.getPostTopicIds()));
 		}
 
 		// postTagId in ?
 		if (filter.getPostTagIds() != null && !filter.getPostTagIds().isEmpty()) {
 			Join<Post, PostTag> tagJoin = post.join("postTags", JoinType.LEFT);
-			classifierPreds.add(tagJoin.get("tag").get("tagId").in(filter.getPostTagIds()));
+			predicates.add(tagJoin.get("tag").get("tagId").in(filter.getPostTagIds()));
 		}
 
 		// 如果有任何一組 classifier 條件，改用 OR 串起來，再加入主 predicates
-		if (!classifierPreds.isEmpty()) {
-			predicates.add(criteriaBuilder.or(classifierPreds.toArray(new Predicate[0])));
-		}
+//		if (!classifierPreds.isEmpty()) {
+//			predicates.add(criteriaBuilder.or(classifierPreds.toArray(new Predicate[0])));
+//		}
 
 		// 將查詢結果投影到自訂 DTO
 //        criteriaQuery.select(criteriaBuilder.construct(
