@@ -19,7 +19,7 @@ public class LoginController {
     @Autowired
     private UserRepository userRepository;
 
-    // 登入方法
+    // 登入方法.
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User requestUser, HttpSession session) {
         Optional<User> optionalUser = userRepository.findByUserAccount(requestUser.getUserAccount());
