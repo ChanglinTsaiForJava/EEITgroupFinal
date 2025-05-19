@@ -25,9 +25,11 @@ public class SpringBootConfig implements WebMvcConfigurer {
                         "http://192.168.36.156:6173",
 						"http://localhost:4175","http://192.168.36.96:4173",
 						// yuni
-						"http://192.168.36.75:4173","http://192.168.36.75:5173"
+						"http://192.168.36.75:4173","http://192.168.36.75:5173",
 //						Rita
-//						"http://192.168.66.77:4173","http://localhost:5173","http://192.168.66.77:5173"
+//						"http://192.168.66.77:4173","http://localhost:5173","http://192.168.66.77:5173",
+						// daniel
+						"http://192.168.50.140:4173", "http://192.168.50.140:5173"
 						) // 前端 localhost:5173.
 				//自行加入部署網域
 				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") //
