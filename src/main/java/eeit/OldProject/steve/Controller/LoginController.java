@@ -19,7 +19,7 @@ public class LoginController {
     @Autowired
     private UserRepository userRepository;
 
-    // 登入方法
+    // 登入方法.
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User requestUser, HttpSession session) {
         Optional<User> optionalUser = userRepository.findByUserAccount(requestUser.getUserAccount());
@@ -31,10 +31,10 @@ public class LoginController {
                 return ResponseEntity.ok("登入成功");
                 // 登入成功，這裡會建立 Session 並儲存 userId，將 userId 存入 session
             } else {
-                return ResponseEntity.badRequest().body("密碼錯誤");
+                return ResponseEntity.badRequest().body("帳號或是密碼錯誤");
             }
         } else {
-            return ResponseEntity.badRequest().body("帳號不存在");
+            return ResponseEntity.badRequest().body("帳號或是密碼錯誤 ");
         }
     }
     @PostMapping("/logout")
