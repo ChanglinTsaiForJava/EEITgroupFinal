@@ -6,11 +6,17 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+/**
+ * ✅ NotificationService：寄送 HTML 格式 Email
+ *    通知使用者預約成功
+ */
+
 @Service
 public class NotificationService {
 
     private final JavaMailSender mailSender;
 
+    // 建構子注入 JavaMailSender
     public NotificationService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
@@ -23,7 +29,7 @@ public class NotificationService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlBody, true);
-            helper.setFrom("changlin.stevetsai@gmail.com");
+            helper.setFrom("ririhung11@gmail.com");
 
             mailSender.send(message);
             System.out.println("📬 已寄出 HTML Email 給：" + to);

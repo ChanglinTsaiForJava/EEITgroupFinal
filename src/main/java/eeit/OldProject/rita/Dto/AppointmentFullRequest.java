@@ -1,10 +1,13 @@
 package eeit.OldProject.rita.Dto;
 
+import eeit.OldProject.rita.Controller.AppointmentController;
 import eeit.OldProject.rita.Entity.*;
 import eeit.OldProject.rita.Service.AppointmentService;
 import lombok.Data;
 
 import java.util.List;
+
+//新增預約時使用（AppointmentController Post/full）
 
 @Data
 public class AppointmentFullRequest {

@@ -39,7 +39,6 @@ public class Appointment {
     @Column(name = "AppointmentId")
     private Long appointmentId;
 
-    @Column(name = "UserId")
     private Long userId;
 
     @Column(name = "CaregiverId")

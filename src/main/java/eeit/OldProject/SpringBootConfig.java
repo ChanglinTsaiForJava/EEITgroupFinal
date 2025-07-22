@@ -14,7 +14,7 @@ public class SpringBootConfig implements WebMvcConfigurer {
 				.allowedOrigins( "http://localhost:5173",  // dev
 						"http://localhost:4173",  // preview 預設
 						//add required ip
-						"http://192.168.66.167:4173"
+						"http://172.20.10.2:5173"
 //						"http://192.168.66.54:4173",
 //						"http://192.168.66.54:4174",
 //                        "http://192.168.36.156:4173",

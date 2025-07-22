@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eeit.OldProject.rita.Dto.AppointmentFullRequest;
-import eeit.OldProject.rita.Dto.EstimateMultiRequest;
+//import eeit.OldProject.rita.Dto.EstimateMultiRequest;
 import eeit.OldProject.rita.Entity.Appointment;
 import eeit.OldProject.rita.Service.AppointmentQueryService;
 import eeit.OldProject.rita.Service.AppointmentService;
@@ -32,7 +32,7 @@ import eeit.OldProject.yuuhou.Entity.Caregiver;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/appointment") // 所有路徑都以 /api/appointment 開頭
+@RequestMapping("/api/appointment")
 @RequiredArgsConstructor
 public class AppointmentController {
 
@@ -43,7 +43,7 @@ public class AppointmentController {
 	private final TimeCalculationService timeCalculationService;
 
 	/**
-	 * ➕ 新增預約（顧客送出需求單時呼叫） POST /api/appointments RequestBody：Appointment JSON 資料
+	 * 1.新增預約 Appointment JSON 資料
 	 */
 	@PostMapping("/full")
 	public ResponseEntity<Appointment> createAppointmentWithDetails(@RequestBody AppointmentFullRequest request) {
@@ -54,54 +54,20 @@ public class AppointmentController {
 	}
 
 	/**
-	 * 🔍 查詢單一預約 GET /api/appointments/{id} PathVariable：預約 ID
-	 */
-	@GetMapping("/{id}")
-	public ResponseEntity<Appointment> getAppointment(@PathVariable Long id) {
-		return appointmentQueryService.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-	}
-
-	/**
-	 * 📋 查詢某個使用者的所有預約 GET /api/appointments/user/{userId} PathVariable：使用者 ID
+	 * 2.查詢某個使用者的所有預約 PathVariable：使用者 ID
 	 */
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<List<Appointment>> getUserAppointments(@PathVariable Long userId) {
 		return ResponseEntity.ok(appointmentQueryService.getByUserId(userId));
 	}
 
-	/**
-	 * ✏️ 單純更新預約狀態（例如看護接受、顧客付款等） PUT /api/appointments/{id}/status?status=Paid
-	 * PathVariable：預約 ID RequestParam：狀態 enum 值（Pending, CaregiverConfirmed, Paid,
-	 * Completed, Cancelled）
-	 */
-	@PutMapping("/{id}/status")
-	public ResponseEntity<Appointment> updateStatus(@PathVariable Long id,
-			@RequestParam Appointment.AppointmentStatus status) {
-		return ResponseEntity.ok(appointmentWorkflowService.updateStatus(id, status));
-	}
-
-	/**
-	 * ❌ 刪除預約（例如顧客取消、管理員清除） DELETE /api/appointments/{id}
-	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
-		appointmentQueryService.deleteById(id);
-		return ResponseEntity.noContent().build(); // 204 No Content 表示成功刪除，不需要回傳任何內容
-	}
-
-	/** 看護接受預約 **/
-	@PutMapping("/{id}/accept")
-	public ResponseEntity<Appointment> acceptAppointment(@PathVariable Long id) {
-		return ResponseEntity.ok(appointmentWorkflowService.acceptAndCreatePayment(id));
-	}
-
-	/** 顧客同意合約 **/
+	/** 3. 顧客同意合約 **/
 	@PutMapping("/{id}/contract")
 	public ResponseEntity<Appointment> confirmContract(@PathVariable Long id) {
 		return ResponseEntity.ok(appointmentWorkflowService.confirmContract(id));
 	}
 
-	/** 透過條件查詢 **/
+	/** 4. 透過篩選條件查詢 **/
 	@GetMapping("/caregiver/available")
 	public ResponseEntity<List<Caregiver>> searchAvailableCaregivers(
 	        @RequestParam String serviceCity,
@@ -179,24 +145,75 @@ public class AppointmentController {
 	    return ResponseEntity.ok(caregivers);
 	}
 
-	/** 連續時間 **/
-	@GetMapping("/estimate/continuous")
-	public BigDecimal estimateContinuousAmount(
-	        @RequestParam Long caregiverId,
-	        @RequestParam String startTime,
-	        @RequestParam String endTime) {
-	    return timeCalculationService.calculateContinuousAmount(caregiverId, startTime, endTime);
+	/**
+	 * 5. 查詢單一預約 GET /api/appointments/{id} PathVariable：預約 ID
+	 */
+	@GetMapping("/{id}")
+	public ResponseEntity<Appointment> getAppointment(@PathVariable Long id) {
+		return appointmentQueryService.getById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
 	}
 
-	/** 多時段時間 **/
-	@PostMapping("/estimate/multi")
-	public BigDecimal estimateMultiAmount(
-	        @RequestBody EstimateMultiRequest request) {
-	    return timeCalculationService.calculateMultiAmount(
-	            request.getCaregiverId(),
-	            request.getStartDate(),
-	            request.getEndDate(),
-	            request.getTimeSlots()
-	    );
+	/**
+	 * 6. 將預約狀態標記為 Paid（給前端）
+	 */
+	@PutMapping("/{id}/mark-paid")
+	public ResponseEntity<Appointment> markAppointmentAsPaid(@PathVariable Long id) {
+		try {
+			Appointment updated = appointmentWorkflowService.markAsPaid(id);
+			return ResponseEntity.ok(updated);
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
+
+	/**
+	 * 7. 手動更新預約狀態使用
+	 */
+	@PutMapping("/{id}/status")
+	public ResponseEntity<Appointment> updateStatus(@PathVariable Long id,
+													@RequestParam Appointment.AppointmentStatus status) {
+		return ResponseEntity.ok(appointmentWorkflowService.updateStatus(id, status));
+	}
+
+//以下為供未來擴充功能使用：
+//
+//	/** 連續時間 **/
+//	@GetMapping("/estimate/continuous")
+//	public BigDecimal estimateContinuousAmount(
+//	        @RequestParam Long caregiverId,
+//	        @RequestParam String startTime,
+//	        @RequestParam String endTime) {
+//	    return timeCalculationService.calculateContinuousAmount(caregiverId, startTime, endTime);
+//	}
+//
+//	/** 多時段時間 **/
+//	@PostMapping("/estimate/multi")
+//	public BigDecimal estimateMultiAmount(
+//	        @RequestBody EstimateMultiRequest request) {
+//	    return timeCalculationService.calculateMultiAmount(
+//	            request.getCaregiverId(),
+//	            request.getStartDate(),
+//	            request.getEndDate(),
+//	            request.getTimeSlots()
+//	    );
+//	}
+
+//
+//	/**
+//	 * ❌ 刪除預約（例如顧客取消、管理員清除） DELETE /api/appointments/{id}
+//	 */
+//	@DeleteMapping("/{id}")
+//	public ResponseEntity<Void> deleteAppointment(@PathVariable Long id) {
+//		appointmentQueryService.deleteById(id);
+//		return ResponseEntity.noContent().build(); // 204 No Content 表示成功刪除，不需要回傳任何內容
+//	}
+//
+//
+//	/** 看護接受預約 **/
+//	@PutMapping("/{id}/accept")
+//	public ResponseEntity<Appointment> acceptAppointment(@PathVariable Long id) {
+//		return ResponseEntity.ok(appointmentWorkflowService.acceptAndCreatePayment(id));
+//	}
+//
+
 }

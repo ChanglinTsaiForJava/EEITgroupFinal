@@ -43,8 +43,7 @@ public class AppointmentService {
 
 
     /**
-     * 新增預約：初始化預約狀態為 Pending，並儲存至資料庫
-     * 顧客送出預約需求時
+     * 新增預約
      */
     public Appointment createWithDetails(
             Appointment appointment,
@@ -80,17 +79,17 @@ public class AppointmentService {
             }
         });
 
-        multi.ifPresent(m -> {
-            if (m.getStartDate() == null || m.getEndDate() == null || m.getDailyStartTime() == null || m.getDailyEndTime() == null) {
-                throw new IllegalArgumentException("多時段類型需填寫完整日期與時間");
-            }
-            if (m.getStartDate().isAfter(m.getEndDate())) {
-                throw new IllegalArgumentException("多時段的起始日不可晚於結束日");
-            }
-            if (m.getDailyStartTime().isAfter(m.getDailyEndTime())) {
-                throw new IllegalArgumentException("每日服務開始時間不可晚於結束時間");
-            }
-        });
+//        multi.ifPresent(m -> {
+//            if (m.getStartDate() == null || m.getEndDate() == null || m.getDailyStartTime() == null || m.getDailyEndTime() == null) {
+//                throw new IllegalArgumentException("多時段類型需填寫完整日期與時間");
+//            }
+//            if (m.getStartDate().isAfter(m.getEndDate())) {
+//                throw new IllegalArgumentException("多時段的起始日不可晚於結束日");
+//            }
+//            if (m.getDailyStartTime().isAfter(m.getDailyEndTime())) {
+//                throw new IllegalArgumentException("每日服務開始時間不可晚於結束時間");
+//            }
+//        });
 
         // 設定預設狀態
         appointment.setStatus(Appointment.AppointmentStatus.Pending);
@@ -130,22 +129,26 @@ public class AppointmentService {
             continuousRepository.save(c);
         });
 
-        // 子表資料：多時段（可選）
-        multi.ifPresent(m -> {
-            m.setAppointmentId(appointmentId);
-            multiRepository.save(m);
-        });
+//        // 子表資料：多時段（可選）
+//        multi.ifPresent(m -> {
+//            m.setAppointmentId(appointmentId);
+//            multiRepository.save(m);
+//        });
 
         // 取得完整的 Caregiver 與 User 資料（為了抓出 lineToken 和 userName）
         saved.setCaregiver(caregiverRepository.findById(saved.getCaregiverId()).orElse(null));
         saved.setUser(userRepository.findById(saved.getUserId()).orElse(null));
 
-        if (saved.getCaregiver() != null && saved.getCaregiver().getEmail() != null) {
-            String subject = "【Care+ 看護預約通知】您有一筆新的預約申請";
-            String content = emailTemplateService.generateNewAppointmentNotifyContent(saved);
+        if (saved.getUser() != null && saved.getUser().getEmailAddress() != null) {
+
+            Payment fakePayment = new Payment();
+            fakePayment.setFinalAmount(saved.getTotalPrice());
+
+            String subject = "【Care+ 預約付款完成通知】";
+            String content = emailTemplateService.generateAppointmentPaidContent(saved, fakePayment);
 
             notificationService.sendEmail(
-                    saved.getCaregiver().getEmail(),
+                    saved.getUser().getEmailAddress(),
                     subject,
                     content
             );
@@ -153,34 +156,20 @@ public class AppointmentService {
 
         return saved;
     }
-
-
-    /**
-     * 計算總時數並返回格式化的時間
-     **/
     
     /**
-     * 計算預約金額（使用新的計算邏輯）
+     * 計算預約總金額
      */
     public BigDecimal estimateContinuousAmount(Long caregiverId, String startTime, String endTime) {
         return timeCalculationService.calculateContinuousAmount(caregiverId, startTime, endTime);
     }
 
-    public BigDecimal estimateMultiAmount(Long caregiverId, String startDate, String endDate, List<Map<String, String>> timeSlots) {
-        return timeCalculationService.calculateMultiAmount(caregiverId, startDate, endDate, timeSlots);
-    }
-//    public String calculateTotalTime(Long appointmentId) {
-//        // 從資料庫中查詢 AppointmentTimeContinuous 和 AppointmentTimeMulti
-//        List<AppointmentTimeContinuous> continuousTimes = continuousRepository.findByAppointmentId(appointmentId);
-//        List<AppointmentTimeMulti> multiTimes = multiRepository.findByAppointmentId(appointmentId);
-//
-//        // 使用 TimeCalculationService 來計算總時間
-//        return timeCalculationService.calculateTotalTime(continuousTimes, multiTimes);  // 返回 "X天 Y小時"
+//    public BigDecimal estimateMultiAmount(Long caregiverId, String startDate, String endDate, List<Map<String, String>> timeSlots) {
+//        return timeCalculationService.calculateMultiAmount(caregiverId, startDate, endDate, timeSlots);
 //    }
 
     public void sendPaidEmail(Appointment appointment, Payment payment) {
         String content = emailTemplateService.generateAppointmentPaidContent(appointment, payment);
-        // 寄信邏輯這邊可以整合 JavaMailSender 或其他寄信工具
         System.out.println("寄出 email: \n" + content);
     }
 
